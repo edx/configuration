@@ -7,6 +7,18 @@ source {{ edxapp_app_dir }}/edxapp_env
 {% if COMMON_ENABLE_NEWRELIC_APP %}
 {% set executable = edxapp_venv_bin + '/newrelic-admin run-program ' + edxapp_venv_bin + '/celery' %}
 
+{% if COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP %}
+{% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
+export DD_TAGS=$(dd_trace_service_name)
+export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
+# Copied from edx_django_service playbook for consistency; Datadog
+# trace debug logging issue doesn't actually affect edxapp for some
+# reason.
+export DD_TRACE_LOG_STREAM_HANDLER=false
+# Datadog's instrumentation breaks pymongo: https://github.com/edx/edx-arch-experiments/issues/580
+export DD_TRACE_PYMONGO_ENABLED=false
+{% endif -%}
+
 export NEW_RELIC_CONFIG_FILE="{{ edxapp_app_dir }}/newrelic.ini"
 if command -v ec2metadata >/dev/null 2>&1; then
   INSTANCEID=$(ec2metadata --instance-id);
