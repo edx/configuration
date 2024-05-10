@@ -19,7 +19,7 @@ fi
 
 {% if COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
-export DD_TAGS=$(dd_tags)
+export DD_TAGS="$1"
 export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
 # Copied from edx_django_service playbook for consistency; Datadog
 # trace debug logging issue doesn't actually affect edxapp for some
@@ -27,6 +27,7 @@ export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
 export DD_TRACE_LOG_STREAM_HANDLER=false
 # Datadog's instrumentation breaks pymongo: https://github.com/edx/edx-arch-experiments/issues/580
 export DD_TRACE_PYMONGO_ENABLED=false
+shift
 {% endif -%}
 
 # We exec so that celery is the child of supervisor and can be managed properly
