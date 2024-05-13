@@ -1911,3 +1911,5 @@ edxapp_staticfiles_storage_overrides: !!null
 EDXAPP_SITE_CONFIGURATION: {}
 
 EDXAPP_ENABLE_MONGODB_INDEXES: false
+
+COMMON_ENABLE_DATADOG_APP: true
