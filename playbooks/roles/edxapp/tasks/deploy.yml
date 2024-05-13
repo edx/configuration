@@ -217,7 +217,7 @@
     - install:app-requirements
 
 - name: "Install Datadog APM requirements"
-  when: COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP
+  when: EDXAPP_DATADOG_ENABLE
   pip:
     name:
       - ddtrace

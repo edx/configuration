@@ -20,7 +20,7 @@ fi
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
 {% endif -%}
 
-{% if COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP %}
+{% if EDXAPP_DATADOG_ENABLE %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
 export DD_TAGS="service:edx-edxapp-cms"
 export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
