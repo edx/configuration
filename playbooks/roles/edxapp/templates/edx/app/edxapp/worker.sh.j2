@@ -19,7 +19,7 @@ fi
 
 {% if EDXAPP_DATADOG_ENABLE %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
-export DD_TAGS=("service:edx-edxapp-{{ SERVICE_VARIANT }}-workers", "queue:{{EDX_REST_API_CLIENT_NAME}}")
+export DD_TAGS=("service:edx-edxapp-workers-{{ SERVICE_VARIANT }}", "queue:{{QUEUE_NAME}}")
 export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
 # Copied from edx_django_service playbook for consistency; Datadog
 # trace debug logging issue doesn't actually affect edxapp for some
