@@ -104,6 +104,7 @@ edx_django_service_basic_auth_exempted_paths: '{{ edx_django_service_basic_auth_
 edx_django_service_newrelic_appname: '{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-{{ edx_django_service_name }}'
 edx_django_service_enable_newrelic_distributed_tracing: false
 edx_django_datadog_service: 'edx-{{ edx_django_service_name }}'
+edx_django_service_datadog_enable: '{{ COMMON_ENABLE_DATADOG and (COMMON_ENABLE_DATADOG_APP or edx_django_service_name in COMMON_ENABLE_DATADOG_APP_SERVICES }}'
 
 edx_django_service_repos:
   - PROTOCOL: '{{ edx_django_service_git_protocol }}'
