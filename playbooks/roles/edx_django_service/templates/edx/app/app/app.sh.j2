@@ -20,7 +20,7 @@ fi
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
 {% endif -%}
 
-{% if edx_django_service_datadog_enable %}
+{% if COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP %}
 {% set executable = edx_django_service_venv_bin + '/ddtrace-run ' + executable %}
 export DD_TAGS="service:{{ edx_django_datadog_service }} version:{{ app_version }}"
 export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
