@@ -14,7 +14,7 @@ export NEW_RELIC_APP_NAME='{{ ECOMMERCE_WORKER_NEWRELIC_APPNAME }}'
 export NEW_RELIC_LICENSE_KEY='{{ NEWRELIC_LICENSE_KEY }}'
 {% endif -%}
 
-{% if COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP %}
+{% if ECOMMERCE_WORKER_DATADOG_ENABLE %}
 {% set executable = ecommerce_worker_venv_bin + '/ddtrace-run ' + executable %}
 export DD_TAGS="service:edx-{{ ecommerce_worker_service_name }} version:{{ app_version }}"
 export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
