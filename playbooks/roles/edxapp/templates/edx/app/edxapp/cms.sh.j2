@@ -35,13 +35,13 @@ export DD_TRACE_PYMONGO_ENABLED=false
 # This might help us (or DD support) identify an interaction with incoming trace
 # headers that causes trace concatenation in edxapp.
 # See https://github.com/edx/edx-arch-experiments/issues/692
-DD_TRACE_HEADER_TAGS=tracecontext:tracecontext,tracestate:tracestate,x-datadog-trace-id:x-datadog-trace-id,x-datadog-parent-id:x-datadog-parent-id
+export DD_TRACE_HEADER_TAGS=tracecontext:tracecontext,tracestate:tracestate,x-datadog-trace-id:x-datadog-trace-id,x-datadog-parent-id:x-datadog-parent-id
 # Temporary: We currently have a span (or several) for each Django middleware,
 # and Datadog Support has implied that it will be easier to debug our tracing
 # issues if we don't record those middleware. (They make up the bulk of traces,
 # at least visually.)
 # See https://github.com/edx/edx-arch-experiments/issues/692
-DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
+export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
 {% endif -%}
 
 export PORT="{{ edxapp_cms_gunicorn_port }}"
