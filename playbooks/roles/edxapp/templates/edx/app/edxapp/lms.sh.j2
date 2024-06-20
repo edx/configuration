@@ -17,7 +17,18 @@ if command -v ec2metadata >/dev/null 2>&1; then
   HOSTNAME=$(hostname)
   export NEW_RELIC_PROCESS_HOST_DISPLAY_NAME="$HOSTNAME-$INSTANCEID"
 fi
+
+
+{% if COMMON_DEPLOYMENT == "edge" %}
+# Another attempt at a temporary workaround for trace concatenation in Datadog.
+# (Maybe this will keep NR trace instrumentation in place, but not cost us anything,
+# because no data will be shipped to NR.)
+# See https://github.com/edx/edx-arch-experiments/issues/692
+export NEW_RELIC_LICENSE_KEY="xxx"
+{% else %}
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
+{% endif %}
+
 {% endif -%}
 
 {% if EDXAPP_DATADOG_ENABLE %}
