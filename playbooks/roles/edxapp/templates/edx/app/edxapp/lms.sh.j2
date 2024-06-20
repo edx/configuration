@@ -19,7 +19,7 @@ if command -v ec2metadata >/dev/null 2>&1; then
 fi
 
 
-{% if COMMON_DEPLOYMENT == "edge" %}
+{% if COMMON_ENVIRONMENT == "stage" or COMMON_DEPLOYMENT == "edge" %}
 # Another attempt at a temporary workaround for trace concatenation in Datadog.
 # (Maybe this will keep NR trace instrumentation in place, but not cost us anything,
 # because no data will be shipped to NR.)
