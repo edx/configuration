@@ -53,19 +53,6 @@
     path: /home/vagrant
   register: vagrant_home_dir
 
-# Ensure that we get a current version of Git
-# GitHub requires version 1.7.10 or later
-# https://help.github.com/articles/https-cloning-errors
-- name: Add git apt repository
-  apt_repository:
-    repo: "{{ common_git_ppa }}"
-    update_cache: yes
-  register: add_repo
-  until: add_repo is success
-  retries: 10
-  delay: 5
-  when: ansible_distribution in common_debian_variants
-
 # Ensure that we can install old software if need be.
 - name: Add edX PPA apt key
   apt_key:
