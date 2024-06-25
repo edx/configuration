@@ -24,7 +24,7 @@ fi
 # (Maybe this will keep NR trace instrumentation in place, but not cost us anything,
 # because this free-tier NR account will throw away most data.)
 # See https://github.com/edx/edx-arch-experiments/issues/692
-export NEW_RELIC_LICENSE_KEY="{{ EDXAPP_NEWRELIC_LICENSE_TEST_FREE }}"
+export NEW_RELIC_LICENSE_KEY="{{ EDXAPP_NEWRELIC_LICENSE_TEST_FREE | default('') }}"
 {% else %}
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
 {% endif %}
