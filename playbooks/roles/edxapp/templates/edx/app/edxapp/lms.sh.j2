@@ -20,11 +20,11 @@ fi
 
 
 {% if COMMON_ENVIRONMENT == "stage" or COMMON_DEPLOYMENT == "edge" %}
-# Another attempt at a temporary workaround for trace concatenation in Datadog.
+# Testing a temporary workaround for trace concatenation in Datadog.
 # (Maybe this will keep NR trace instrumentation in place, but not cost us anything,
-# because no data will be shipped to NR.)
+# because this free-tier NR account will throw away most data.)
 # See https://github.com/edx/edx-arch-experiments/issues/692
-export NEW_RELIC_LICENSE_KEY="xxx"
+export NEW_RELIC_LICENSE_KEY="{{ EDXAPP_NEWRELIC_LICENSE_TEST_FREE }}"
 {% else %}
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
 {% endif %}
