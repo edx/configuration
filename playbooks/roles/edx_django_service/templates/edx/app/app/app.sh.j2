@@ -6,7 +6,7 @@
 
 {% set executable = edx_django_service_venv_bin + '/gunicorn' %}
 
-{% if COMMON_ENABLE_NEWRELIC_APP and edx_django_service_enable_newrelic_app  %}
+{% if edx_django_service_enable_newrelic_app %}
 {% set executable = edx_django_service_venv_bin + '/newrelic-admin run-program ' + executable %}
 
 export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED="{{ edx_django_service_enable_newrelic_distributed_tracing }}"
@@ -53,7 +53,7 @@ exec docker run \
   --name {{ edx_django_service_name }} \
   --mount type=bind,src={{ edx_django_service_app_config_file }},dst={{ edx_django_service_app_config_file }} \
   --publish 127.0.0.1:{{ edx_django_service_gunicorn_port }}:{{ edx_django_service_gunicorn_port }}/tcp \
-{% if COMMON_ENABLE_NEWRELIC_APP and edx_django_service_enable_newrelic_app  %}
+{% if edx_django_service_enable_newrelic_app %}
   --env NEW_RELIC_DISTRIBUTED_TRACING_ENABLED \
   --env NEW_RELIC_APP_NAME \
   --env NEW_RELIC_PROCESS_HOST_DISPLAY_NAME \
