@@ -6,7 +6,7 @@
 
 {% set executable = ecommerce_worker_venv_bin + '/celery' %}
 
-{% if COMMON_ENABLE_NEWRELIC_APP %}
+{% if ECOMMERCE_WORKER_ENABLE_NEWRELIC_APP %}
 {% set executable = ecommerce_worker_venv_bin + '/newrelic-admin run-program ' + ecommerce_worker_venv_bin + '/celery' %}
 
 export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED='{{ ECOMMERCE_WORKER_ENABLE_NEWRELIC_DISTRIBUTED_TRACING }}'
