@@ -43,6 +43,14 @@ export DD_TRACE_HEADER_TAGS=traceparent:traceparent_header,tracestate:tracestate
 # at least visually.)
 # See https://github.com/edx/edx-arch-experiments/issues/692
 export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
+
+{% if COMMON_ENVIRONMENT == "stage" or COMMON_DEPLOYMENT == "edge" %}
+# Temporary 2024-07-02: See if trace concatenation persists in Datadog
+# when it doesn't attempt to extract any headers.
+# See https://github.com/edx/edx-arch-experiments/issues/692
+export DD_TRACE_PROPAGATION_STYLE_EXTRACT=none
+{% endif %}
+
 {% endif -%}
 
 export PORT="{{ edxapp_lms_gunicorn_port }}"
