@@ -30,7 +30,6 @@ browser_monitoring.enabled=false
 browser_monitoring.auto_instrument=false
 browser_monitoring.attributes.enabled=false
 
-{% if COMMON_ENVIRONMENT == "stage" or COMMON_DEPLOYMENT == "edge" %}
 
 # Experiment 2024-07-22: See if instrumentation of Mako templates is
 # related to the recursive uncaught error handling problem we're
@@ -41,5 +40,3 @@ enabled = false
 
 [import-hook:mako.template]
 enabled = false
-
-{% endif %}
