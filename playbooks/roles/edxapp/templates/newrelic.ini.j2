@@ -29,14 +29,3 @@
 browser_monitoring.enabled=false
 browser_monitoring.auto_instrument=false
 browser_monitoring.attributes.enabled=false
-
-
-# Experiment 2024-07-22: See if instrumentation of Mako templates is
-# related to the recursive uncaught error handling problem we're
-# seeing in https://github.com/openedx/edx-platform/issues/35151
-
-[import-hook:mako.runtime]
-enabled = false
-
-[import-hook:mako.template]
-enabled = false
