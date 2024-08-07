@@ -28,8 +28,6 @@ export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
 # trace debug logging issue doesn't actually affect edxapp for some
 # reason.
 export DD_TRACE_LOG_STREAM_HANDLER=false
-# Datadog's instrumentation breaks pymongo: https://github.com/edx/edx-arch-experiments/issues/580
-export DD_TRACE_PYMONGO_ENABLED=false
 
 # Temporary: Include span tags representing a variety of tracing HTTP headers.
 # This might help us (or DD support) identify an interaction with incoming trace
