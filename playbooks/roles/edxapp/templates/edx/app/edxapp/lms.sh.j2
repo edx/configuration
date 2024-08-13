@@ -47,6 +47,11 @@ export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
 # when it doesn't attempt to extract any headers.
 # See https://github.com/edx/edx-arch-experiments/issues/692
 export DD_TRACE_PROPAGATION_STYLE_EXTRACT=none
+
+# Temporary 2024-08-13: Check if celery instrumentation is causing
+# missing spans that might lead to anomalous traces.
+# https://github.com/edx/edx-arch-experiments/issues/692
+export DD_TRACE_CELERY_ENABLED=false
 {% endif %}
 
 {% endif -%}
