@@ -29,11 +29,6 @@ export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
 # reason.
 export DD_TRACE_LOG_STREAM_HANDLER=false
 
-# Temporary: Include span tags representing a variety of tracing HTTP headers.
-# This might help us (or DD support) identify an interaction with incoming trace
-# headers that causes trace concatenation in edxapp.
-# See https://github.com/edx/edx-arch-experiments/issues/692
-export DD_TRACE_HEADER_TAGS=traceparent:traceparent_header,tracestate:tracestate_header,x-datadog-trace-id:x-datadog-trace-id,x-datadog-parent-id:x-datadog-parent-id
 # Temporary: We currently have a span (or several) for each Django middleware,
 # and Datadog Support has implied that it will be easier to debug our tracing
 # issues if we don't record those middleware. (They make up the bulk of traces,
