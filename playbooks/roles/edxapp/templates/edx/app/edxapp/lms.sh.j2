@@ -6,7 +6,7 @@
 
 {% set executable = edxapp_venv_bin + '/gunicorn' %}
 
-{% if COMMON_ENABLE_NEWRELIC_APP %}
+{% if EDXAPP_NEWRELIC_ENABLE %}
 {% set executable = edxapp_venv_bin + '/newrelic-admin run-program ' + executable %}
 
 export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED="{{ EDXAPP_LMS_ENABLE_NEWRELIC_DISTRIBUTED_TRACING }}"
