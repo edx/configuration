@@ -5,16 +5,6 @@
 {% set edxapp_venv_bin = edxapp_venv_dir + "/bin" %}
 source {{ edxapp_app_dir }}/edxapp_env
 {% set executable = edxapp_venv_bin + '/celery' %}
-{% if EDXAPP_NEWRELIC_ENABLE %}
-{% set executable = edxapp_venv_bin + '/newrelic-admin run-program ' + executable %}
-
-export NEW_RELIC_CONFIG_FILE="{{ edxapp_app_dir }}/newrelic.ini"
-if command -v ec2metadata >/dev/null 2>&1; then
-  INSTANCEID=$(ec2metadata --instance-id);
-  HOSTNAME=$(hostname)
-  export NEW_RELIC_PROCESS_HOST_DISPLAY_NAME="$HOSTNAME-$INSTANCEID"
-fi
-{% endif %}
 
 {% if EDXAPP_DATADOG_ENABLE %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
