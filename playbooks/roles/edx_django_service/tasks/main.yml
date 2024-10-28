@@ -80,7 +80,6 @@
   pip:
     name: pip
     version: "24.2"
-    executable: /usr/bin/python3.12
   when: edx_django_service_use_python312 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
@@ -96,7 +95,6 @@
       - zipp==3.20.2
       - importlib-resources==6.4.5
     state: present
-    executable: /usr/bin/python3.12
   when: edx_django_service_use_python312 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
