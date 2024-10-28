@@ -76,16 +76,27 @@
     - install
     - install:system-requirements
 
+- name: Install Python 3.12 compatible pip version
+  pip:
+    name: pip
+    version: "24.2"
+    executable: /usr/bin/python3.12
+  when: edx_django_service_use_python312 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
 - name: Update common deps for Python 3.12 Support
   pip:
     name: 
-      - pip==24.2
+      - pip
       - configparser==7.0.0
       - setuptools==75.0.0
       - virtualenv==20.27.0
       - zipp==3.20.2
       - importlib-resources==6.4.5
     state: present
+    executable: /usr/bin/python3.12
   when: edx_django_service_use_python312 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
