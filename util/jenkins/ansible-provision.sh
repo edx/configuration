@@ -166,8 +166,8 @@ fi
 if [[ -z $ami ]]; then
   if [[ $server_type == "full_edx_installation" ]]; then
     ami="ami-0644020c3c81d30ba"
-  elif [[ $server_type == "ubuntu_18.04" ]]; then
-    ami="ami-07ebfd5b3428b6f4d"
+  elif [[ $server_type == "ubuntu_24.04" ]]; then
+    ami="ami-0866a3c8686eaeeba"
   elif [[ $server_type == "ubuntu_20.04" || $server_type == "full_edx_installation_from_scratch" ]]; then
     ami="ami-089b5711e63812c2a"
     # Ansible will always use Python3 interpreter on Ubuntu 20.04 hosts to execute modules
