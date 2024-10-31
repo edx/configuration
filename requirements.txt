@@ -4,9 +4,9 @@
 #
 #    make upgrade
 #
-ansible==2.10.7
+ansible==3.0.0
     # via -r requirements/base.in
-ansible-base==2.10.17
+ansible-base==3.0.0
     # via ansible
 awscli==1.32.2
     # via -r requirements/base.in
