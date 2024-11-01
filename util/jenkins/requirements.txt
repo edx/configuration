@@ -108,6 +108,11 @@ tzdata==2024.2
     #   celery
     #   kombu
 urllib3==1.26.18
+    # via
+    #   -r requirements/jenkins.in
+    #   botocore
+    #   opsgenie-sdk
+    #   requests
 vine==5.1.0
     # via
     #   amqp
