@@ -487,9 +487,6 @@ EDXAPP_CMS_STATIC_URL_BASE: "{{ EDXAPP_STATIC_URL_BASE }}"
 # does not affect verified students
 EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY: ['usd', '$']
 
-# Configure paver tasks in edx-platform to skip Python/Ruby/Node installation
-EDXAPP_NO_PREREQ_INSTALL: 1
-
 # whether to setup the python codejail or not
 EDXAPP_PYTHON_SANDBOX: true
 # this next setting, if true, turns on actual sandbox enforcement.  If not true,
