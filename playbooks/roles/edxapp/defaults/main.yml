@@ -1169,7 +1169,6 @@ edxapp_helper_scripts:
 
 edxapp_environment_default:
   LANG: "{{ EDXAPP_LANG }}"
-  NO_PREREQ_INSTALL: "{{ EDXAPP_NO_PREREQ_INSTALL }}"
   SKIP_WS_MIGRATIONS: 1
   PATH: "{{ edxapp_deploy_path }}"
   # the settings module for edxapp, DJANGO_SETTINGS_MODULE
