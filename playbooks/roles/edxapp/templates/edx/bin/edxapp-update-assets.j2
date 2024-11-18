@@ -4,11 +4,11 @@
 {% for override in edxapp_staticfiles_storage_overrides %}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" "STATICFILES_STORAGE={{ override }}" \
-    npm run build && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --debug-collect --settings=$EDX_PLATFORM_SETTINGS && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --debug-collect --settings=$EDX_PLATFORM_SETTINGS
+    npm run build && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS
 {% endfor %}
 {% else %}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
-    npm run build && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --debug-collect --settings=$EDX_PLATFORM_SETTINGS && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --debug-collect --settings=$EDX_PLATFORM_SETTINGS
+    npm run build && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS
 {% endif %}
  
