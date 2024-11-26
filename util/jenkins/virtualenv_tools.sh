@@ -38,8 +38,16 @@ function create_virtualenv () {
     # create a unique hash for the job based location of where job is run
     venvname="$(pwd | md5sum | cut -d' ' -f1)"
 
+    if [[ "$@" == *"--python=python3.12"* ]]; then
+        # Use python3.12 with -m virtualenv if Python 3.12 is specified
+        venv_exec="/opt/python3.12/bin/python3.12 -m virtualenv"
+    else
+        # Use the system default virtualenv for other Python versions
+        venv_exec="virtualenv"
+    fi
+
     # create the virtualenv
-    virtualenv "$@" "$JOBVENVDIR/$venvname"
+    "$venv_exec" "$@" "$JOBVENVDIR/$venvname"
 
     # This variable is created in global scope if function is sourced
     # so we can access it after running this function.
