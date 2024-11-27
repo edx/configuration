@@ -5,7 +5,6 @@
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
         "STATICFILES_STORAGE={{ override }}" \
-        "WEBPACK_CONFIG_PATH=webpack.prod.config.js" \
         "STATIC_ROOT=/edx/var/edxapp/staticfiles" \
         "STATIC_ROOT_LMS=/edx/var/edxapp/staticfiles" \
         "STATIC_ROOT_CMS=/edx/var/edxapp/staticfiles/studio" \
@@ -18,7 +17,7 @@ sudo -E -H -u {{ edxapp_user }} \
 {% else %}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
-        "WEBPACK_CONFIG_PATH=webpack.prod.config.js" \
+        "STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage" \
         "STATIC_ROOT=/edx/var/edxapp/staticfiles" \
         "STATIC_ROOT_LMS=/edx/var/edxapp/staticfiles" \
         "STATIC_ROOT_CMS=/edx/var/edxapp/staticfiles/studio" \
