@@ -12,7 +12,7 @@
 #
 dependencies:
   - role: edx_django_service
-    edx_django_service_use_python311: true
+    edx_django_service_use_python312: true
     edx_django_service_version: '{{ COMMERCE_COORDINATOR_VERSION }}'
     edx_django_service_name: '{{ commerce_coordinator_service_name }}'
     edx_django_service_home: '{{ COMMON_APP_DIR }}/{{ commerce_coordinator_service_name }}'
