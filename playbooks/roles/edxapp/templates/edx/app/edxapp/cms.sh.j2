@@ -33,6 +33,10 @@ export DD_PROFILING_STACK_V2_ENABLED=true
 export DD_PROFILING_TIMELINE_ENABLED=true
 {% endif -%}
 
+{% if EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE %}
+export DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
+{% endif -%}
+
 export PORT="{{ edxapp_cms_gunicorn_port }}"
 export ADDRESS="{{ edxapp_cms_gunicorn_host }}"
 export LANG="{{ EDXAPP_LANG }}"

@@ -632,6 +632,10 @@ EDXAPP_XML_S3_KEY: !!null
 
 EDXAPP_DATADOG_ENABLE: "{{COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP}}"
 EDXAPP_DATADOG_PROFILING_ENABLE: "{{EDXAPP_DATADOG_ENABLE and COMMON_ENABLE_DATADOG_PROFILING}}"
+# Inferred Services allows for unification of service names for all
+# spans in the webapp and faceting metrics by service.
+# https://docs.datadoghq.com/tracing/guide/inferred-service-opt-in/?tab=python
+EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE: false
 # ddtrace 2.7.9 contains a fix for a pymongo incompatibility.
 # (Same fix is present in 2.8.2 on the 2.8.x release line.)
 EDXAPP_DDTRACE_PIP_SPEC: 'ddtrace>=2.7.9'
