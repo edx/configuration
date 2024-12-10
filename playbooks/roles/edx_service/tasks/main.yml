@@ -149,7 +149,6 @@
   apt:
     pkg:
       - python3.12-dev
-      - python3.12-distutils
     update_cache: yes
   register: install_pkgs
   until: install_pkgs is success
