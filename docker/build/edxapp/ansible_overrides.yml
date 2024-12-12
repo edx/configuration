@@ -12,7 +12,6 @@ edxapp_npm_production: "no"
 
 EDXAPP_LMS_GUNICORN_EXTRA_CONF: 'reload = True'
 
-EDXAPP_NO_PREREQ_INSTALL: 0
 COMMON_SSH_PASSWORD_AUTH: "yes"
 EDXAPP_CMS_BASE: "edx.devstack.studio:18010"
 EDXAPP_OAUTH_ENFORCE_SECURE: false
