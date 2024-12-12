@@ -36,7 +36,7 @@ export DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
 # Temporary: Override django.cache span service tag to match IDA name.
 # This *should* be done by DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED
 # but it's not working due to a missing `schematize_service_name` call.
-# See https://help.datadoghq.com/hc/en-us/requests/1958899
+# See https://github.com/edx/edx-arch-experiments/issues/737
 export DD_DJANGO_CACHE_SERVICE_NAME=edx-edxapp-lms
 {% endif -%}
 
