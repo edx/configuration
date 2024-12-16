@@ -6,7 +6,7 @@
 #
 boto==2.49.0
     # via -r requirements/vpc-tools.in
-certifi==2024.8.30
+certifi==2024.12.14
     # via requests
 charset-normalizer==3.4.0
     # via requests
