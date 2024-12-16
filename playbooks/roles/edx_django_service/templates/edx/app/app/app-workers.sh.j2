@@ -4,20 +4,7 @@
 
 {% set edx_django_service_venv_bin = edx_django_service_venv_dir + "/bin" %}
 
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-{% set executable = edx_django_service_venv_bin + '/newrelic-admin run-program ' + edx_django_service_venv_bin + '/celery' %}
-{% else %}
 {% set executable = edx_django_service_venv_bin + '/celery' %}
-{% endif %}
-
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-HOSTNAME=$(hostname)
-export NEW_RELIC_PROCESS_HOST_DISPLAY_NAME="$HOSTNAME"
-if command -v ec2metadata >/dev/null 2>&1; then
-  INSTANCEID=$(ec2metadata --instance-id);
-  export NEW_RELIC_PROCESS_HOST_DISPLAY_NAME="$HOSTNAME-$INSTANCEID"
-fi
-{% endif %}
 
 source {{ edx_django_service_home }}/{{ edx_django_service_name }}_env
 
@@ -45,12 +32,7 @@ exec docker run \
   --env {{ name }} \
 {% endif %}
 {%- endfor %}
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-  {{ edx_django_service_docker_image_name }}:latest-newrelic \
-  newrelic-admin run-program \
-{% else %}
   {{ edx_django_service_docker_image_name }}:latest \
-{% endif %}
   celery \
   $@
 {% else %}
