@@ -20,7 +20,8 @@ export DD_TRACE_LOG_STREAM_HANDLER=false
 
 # Suppress middleware spans because there are about 100 for each request.
 # Remove (or set to true) for debugging.
-export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
+# Temporarily enabled as part of https://github.com/edx/edx-arch-experiments/issues/879
+export DD_DJANGO_INSTRUMENT_MIDDLEWARE=true
 {% endif -%}
 
 # We want to be able to toggle this on separately from DD in general.
