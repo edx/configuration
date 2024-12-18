@@ -7,6 +7,7 @@
     devstack: true
     disable_edx_services: true
     mongo_enable_journal: false
+    EDXAPP_NO_PREREQ_INSTALL: 0
     COMMON_SSH_PASSWORD_AUTH: "yes"
     EDXAPP_LMS_BASE: 127.0.0.1:8000
     EDXAPP_OAUTH_ENFORCE_SECURE: false
