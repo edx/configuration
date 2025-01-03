@@ -1115,7 +1115,7 @@ EDXAPP_COMPLETION_AGGREGATOR_URL: null
 edxapp_data_dir: "{{ COMMON_DATA_DIR }}/edxapp"
 edxapp_app_dir: "{{ COMMON_APP_DIR }}/edxapp"
 edxapp_log_dir: "{{ COMMON_LOG_DIR }}/edx"
-edxapp_gunicorn_log_dir: 
+edxapp_gunicorn_log_dir:
   - "{{ COMMON_LOG_DIR }}/gunicorn-lms"
   - "{{ COMMON_LOG_DIR }}/gunicorn-cms"
 edxapp_venvs_dir: "{{ edxapp_app_dir }}/venvs"
@@ -1765,6 +1765,7 @@ custom_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/custom.txt"
 base_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/base.txt"
 django_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/django.txt"
 openstack_requirements_file: "{{ edxapp_code_dir }}/requirements/edx/openstack.txt"
+assets_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/assets.txt"
 
 sandbox_base_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/releases/quince.txt"
 
@@ -1774,6 +1775,7 @@ edxapp_requirements_files:
   - "{{ custom_requirements_file }}"
   - "{{ base_requirements_file }}"
   - "{{ django_requirements_file }}"
+  - "{{ assets_requirements_file }}"
 
 # All edxapp requirements files potentially containing Github URLs.  When using a custom
 # Github mirror, occurrences of "github.com" are replaced by the custom mirror in these
