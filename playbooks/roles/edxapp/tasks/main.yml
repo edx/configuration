@@ -49,21 +49,24 @@
     - devstack
     - devstack:install
 
-- name: add paver autocomplete to bashrc
-  lineinfile:
-    dest: /root/.bashrc
-    line: "source {{ edxapp_code_dir }}/scripts/paver_autocomplete.sh"
-  when: devstack is defined and devstack
-  tags:
-  - devstack
-  - devstack:install
-
 - name: create edxapp log dir
   file:
     path: "{{ edxapp_log_dir }}"
     state: directory
     owner: "{{ common_log_user }}"
     group: "{{ common_log_user }}"
+  tags:
+    - install
+    - install:base
+
+- name: create edxapp gunicorn log dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ common_web_user }}"
+    group: "{{ common_web_user }}"
+  with_items:
+    - "{{ edxapp_gunicorn_log_dir }}"
   tags:
     - install
     - install:base

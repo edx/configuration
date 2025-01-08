@@ -1,13 +1,32 @@
 {% include "edxapp_common.j2" %}
 
+export WEBPACK_CONFIG_PATH=webpack.prod.config.js
+export STATIC_ROOT_LMS=/edx/var/edxapp/staticfiles
+export STATIC_ROOT_CMS=/edx/var/edxapp/staticfiles/studio
+# This is necessary to properly build webworkers, which depends on this value being a dictionary.
+export JS_ENV_EXTRA_CONFIG={}
+
+
+# We need to make a call to a management command before running webpack because proctoring runs a webpack
+# webworker that only gets built if the proctoring djangoapp writes out a `workers.json`:
+# https://github.com/openedx/edx-proctoring/blob/73c7f55e2be91324fa07fec6e6ac0a667fdd8412/edx_proctoring/apps.py#L4
 {% if edxapp_staticfiles_storage_overrides %}
 {% for override in edxapp_staticfiles_storage_overrides %}
+export STATICFILES_STORAGE={{ override | quote }}
 sudo -E -H -u {{ edxapp_user }} \
-    env "PATH=$PATH" "STATICFILES_STORAGE={{ override }}" \
-    {{ edxapp_venv_bin }}/paver update_assets --debug-collect --settings=$EDX_PLATFORM_SETTINGS
+    env "PATH=$PATH" \
+    {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting STATIC_ROOT WEBPACK_CONFIG_PATH \
+    && npm run webpack \
+    && npm run compile-sass -- --theme-dir /edx/var/edx-themes/edx-themes/edx-platform --theme-dir /edx/app/edxapp/edx-platform/themes \
+    && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS \
+    && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS
 {% endfor %}
 {% else %}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
-    {{ edxapp_venv_bin }}/paver update_assets --debug-collect --settings $EDX_PLATFORM_SETTINGS
+    {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting STATIC_ROOT WEBPACK_CONFIG_PATH \
+    && npm run webpack \
+    && npm run compile-sass -- --theme-dir /edx/var/edx-themes/edx-themes/edx-platform --theme-dir /edx/app/edxapp/edx-platform/themes \
+    && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS \
+    && {{ edxapp_venv_bin }}/python manage.py cms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS
 {% endif %}

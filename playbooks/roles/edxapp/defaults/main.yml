@@ -35,6 +35,8 @@ EDXAPP_CMS_GUNICORN_EXTRA: ""
 EDXAPP_CMS_GUNICORN_EXTRA_CONF: ""
 EDXAPP_CMS_GUNICORN_TIMEOUT: 300
 
+EDXAPP_USE_GUNICORN_SEPARATE_LOG_FILE: False
+
 # Set this to the maximum number
 # of requests for gunicorn for the lms and cms
 # gunicorn --max-requests <num>
@@ -486,9 +488,6 @@ EDXAPP_CMS_STATIC_URL_BASE: "{{ EDXAPP_STATIC_URL_BASE }}"
 
 # does not affect verified students
 EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY: ['usd', '$']
-
-# Configure paver tasks in edx-platform to skip Python/Ruby/Node installation
-EDXAPP_NO_PREREQ_INSTALL: 1
 
 # whether to setup the python codejail or not
 EDXAPP_PYTHON_SANDBOX: true
@@ -1116,6 +1115,9 @@ EDXAPP_COMPLETION_AGGREGATOR_URL: null
 edxapp_data_dir: "{{ COMMON_DATA_DIR }}/edxapp"
 edxapp_app_dir: "{{ COMMON_APP_DIR }}/edxapp"
 edxapp_log_dir: "{{ COMMON_LOG_DIR }}/edx"
+edxapp_gunicorn_log_dir:
+  - "{{ COMMON_LOG_DIR }}/gunicorn-lms"
+  - "{{ COMMON_LOG_DIR }}/gunicorn-cms"
 edxapp_venvs_dir: "{{ edxapp_app_dir }}/venvs"
 edxapp_venv_dir: "{{ edxapp_venvs_dir }}/edxapp"
 edxapp_venv_bin: "{{ edxapp_venv_dir }}/bin"
@@ -1176,7 +1178,6 @@ edxapp_helper_scripts:
 
 edxapp_environment_default:
   LANG: "{{ EDXAPP_LANG }}"
-  NO_PREREQ_INSTALL: "{{ EDXAPP_NO_PREREQ_INSTALL }}"
   SKIP_WS_MIGRATIONS: 1
   PATH: "{{ edxapp_deploy_path }}"
   # the settings module for edxapp, DJANGO_SETTINGS_MODULE
@@ -1764,8 +1765,9 @@ custom_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/custom.txt"
 base_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/base.txt"
 django_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/django.txt"
 openstack_requirements_file: "{{ edxapp_code_dir }}/requirements/edx/openstack.txt"
+assets_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/assets.txt"
 
-sandbox_base_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/py38.txt"
+sandbox_base_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/releases/quince.txt"
 
 # The Python requirements files in the order they should be installed.  This order should
 # match the order of PYTHON_REQ_FILES in edx-platform/pavelib/prereqs.py.
@@ -1773,6 +1775,7 @@ edxapp_requirements_files:
   - "{{ custom_requirements_file }}"
   - "{{ base_requirements_file }}"
   - "{{ django_requirements_file }}"
+  - "{{ assets_requirements_file }}"
 
 # All edxapp requirements files potentially containing Github URLs.  When using a custom
 # Github mirror, occurrences of "github.com" are replaced by the custom mirror in these

@@ -51,4 +51,8 @@ export EDX_REST_API_CLIENT_NAME="{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }
 
 source {{ edxapp_app_dir }}/edxapp_env
 # We exec so that gunicorn is the child of supervisor and can be managed properly
+{% if EDXAPP_USE_GUNICORN_SEPARATE_LOG_FILE %}
+exec {{ executable }} -c {{ edxapp_app_dir }}/lms_gunicorn.py lms.wsgi --log-file {{ edxapp_gunicorn_log_dir[0] }}/edx.log
+{% else %}
 exec {{ executable }} -c {{ edxapp_app_dir }}/lms_gunicorn.py lms.wsgi
+{% endif %}
