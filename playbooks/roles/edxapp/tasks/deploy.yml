@@ -251,6 +251,7 @@
     LMS_CFG: lms/envs/minimal.yml
     STUDIO_CFG: lms/envs/minimal.yml
     OPENEDX_ATLAS_PULL: true
+    ATLAS_OPTIONS: "--revision={{ EDXAPP_TRANSLATION_REVISION }}"
   become_user: "{{ edxapp_user }}"
   tags:
     - install

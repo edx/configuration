@@ -1916,3 +1916,6 @@ edxapp_staticfiles_storage_overrides: !!null
 EDXAPP_SITE_CONFIGURATION: {}
 
 EDXAPP_ENABLE_MONGODB_INDEXES: false
+
+# Revision for atlas to use from https://github.com/openedx/openedx-translations
+EDXAPP_TRANSLATION_REVISION: main
