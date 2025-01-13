@@ -4,9 +4,9 @@
 #
 #    make upgrade
 #
-ansible==2.10.7
+ansible==11.1.0
     # via -r requirements/base.in
-ansible-base==2.10.17
+ansible-core==2.18.1
     # via ansible
 awscli==1.36.38
     # via -r requirements/base.in
@@ -36,7 +36,7 @@ colorama==0.4.6
     # via awscli
 cryptography==44.0.0
     # via
-    #   ansible-base
+    #   ansible-core
     #   paramiko
 datadog==0.8.0
     # via -r requirements/base.in
@@ -55,7 +55,7 @@ idna==3.10
 jinja2==3.1.5
     # via
     #   -r requirements/base.in
-    #   ansible-base
+    #   ansible-core
 jmespath==1.0.1
     # via
     #   boto3
@@ -69,17 +69,15 @@ mysqlclient==1.4.6
 networkx==1.11
     # via -r requirements/base.in
 packaging==24.2
-    # via ansible-base
-paramiko==2.4.2
+    # via ansible-core
+paramiko==2.12.0
     # via -r requirements/base.in
 pathlib2==2.3.0
     # via -r requirements/base.in
 prettytable==0.7.2
     # via -r requirements/base.in
 pyasn1==0.6.1
-    # via
-    #   paramiko
-    #   rsa
+    # via rsa
 pycparser==2.22
     # via cffi
 pycryptodome==3.21.0
@@ -93,12 +91,14 @@ python-dateutil==2.9.0.post0
 pyyaml==6.0.2
     # via
     #   -r requirements/base.in
-    #   ansible-base
+    #   ansible-core
     #   awscli
 requests==2.32.3
     # via
     #   -r requirements/base.in
     #   datadog
+resolvelib==1.0.1
+    # via ansible-core
 rsa==4.7.2
     # via awscli
 s3transfer==0.10.4
@@ -108,6 +108,7 @@ s3transfer==0.10.4
 six==1.17.0
     # via
     #   bcrypt
+    #   paramiko
     #   pathlib2
     #   python-dateutil
 urllib3==1.26.18
