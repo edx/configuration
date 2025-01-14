@@ -21,6 +21,14 @@ export DD_TRACE_LOG_STREAM_HANDLER=false
 # Suppress middleware spans because there are about 100 for each request.
 # Remove (or set to true) for debugging.
 export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
+
+{% if COMMON_ENVIRONMENT == "stage" %}
+# Temporary 2025-01-09: Enable Celery distributed tracing to see if it
+# has an effect on the remaining orphaned spans.
+# https://github.com/edx/edx-arch-experiments/issues/822
+export DD_CELERY_DISTRIBUTED_TRACING=true
+{% endif %}
+
 {% endif -%}
 
 # We want to be able to toggle this on separately from DD in general.
