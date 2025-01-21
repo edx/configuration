@@ -141,6 +141,36 @@
     update_cache: yes
   when: ansible_distribution in common_redhat_variants
 
+- name: Remove Amazon SSM Agent installed via snap
+  snap:
+    name: "amazon-ssm-agent"
+    state: absent
+  when: ansible_distribution in common_debian_variants
+
+- name: Download Amazon SSM Agent
+  get_url:
+    url: "{{ common_amazon_ssm_agent_package_url }}"
+    dest: "{{ common_amazon_ssm_agent_package_local_path }}"
+    mode: '0644'
+  when: ansible_distribution in common_debian_variants
+
+- name: Install Amazon SSM Agent via apt
+  apt:
+    deb: "{{ common_amazon_ssm_agent_package_local_path }}"
+  when: ansible_distribution in common_debian_variants
+
+- name: Remove Amazon SSM Agent package
+  file:
+    path: "{{ common_amazon_ssm_agent_package_local_path }}"
+    state: absent
+  when: ansible_distribution in common_debian_variants
+
+- name: Enable Amazon SSM Agent
+  systemd:
+    name: "amazon-ssm-agent"
+    state: stopped
+    enabled: true
+  when: ansible_distribution in common_debian_variants
 
 - name: Create common directories
   file:

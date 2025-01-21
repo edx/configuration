@@ -137,6 +137,7 @@ common_debian_pkgs_default:
   - unzip
   - net-tools
   - python3-pip
+  - xz-utils
 
 common_release_specific_debian_pkgs:
   xenial:
@@ -151,6 +152,9 @@ common_release_specific_debian_pkgs:
     - python3.8
 
 common_debian_pkgs: "{{ common_debian_pkgs_default + common_release_specific_debian_pkgs[ansible_distribution_release] }}"
+
+common_amazon_ssm_agent_package_url: "https://s3.us-east-1.amazonaws.com/amazon-ssm-us-east-1/latest/debian_amd64/amazon-ssm-agent.deb"
+common_amazon_ssm_agent_package_local_path: "/tmp/amazon-ssm-agent.deb"
 
 common_debian_devstack_pkgs:
   - watchman
