@@ -4,11 +4,11 @@
 #
 #    make upgrade
 #
-amqp==5.2.0
+amqp==5.3.1
     # via kombu
-argcomplete==3.5.1
+argcomplete==3.5.3
     # via yq
-awscli==1.35.20
+awscli==1.37.6
     # via -r requirements/jenkins.in
 backoff==1.4.3
     # via -r requirements/jenkins.in
@@ -16,22 +16,22 @@ billiard==4.2.1
     # via celery
 boto==2.49.0
     # via -r requirements/jenkins.in
-boto3==1.35.54
+boto3==1.36.6
     # via -r requirements/jenkins.in
-botocore==1.35.54
+botocore==1.36.6
     # via
     #   awscli
     #   boto3
     #   s3transfer
 celery==5.4.0
     # via -r requirements/jenkins.in
-certifi==2024.8.30
+certifi==2024.12.14
     # via
     #   opsgenie-sdk
     #   requests
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via requests
-click==8.1.7
+click==8.1.8
     # via
     #   -r requirements/jenkins.in
     #   celery
@@ -60,7 +60,7 @@ kombu==5.4.2
     # via celery
 opsgenie-sdk==0.3.1
     # via -r requirements/jenkins.in
-prompt-toolkit==3.0.48
+prompt-toolkit==3.0.50
     # via click-repl
 pyasn1==0.6.1
     # via rsa
@@ -72,7 +72,7 @@ python-dateutil==2.9.0.post0
     #   celery
     #   opsgenie-sdk
     #   s3cmd
-python-gnupg==0.5.3
+python-gnupg==0.5.4
     # via -r requirements/jenkins.in
 python-magic==0.4.27
     # via s3cmd
@@ -91,11 +91,11 @@ rsa==4.7.2
     # via awscli
 s3cmd==2.4.0
     # via -r requirements/jenkins.in
-s3transfer==0.10.3
+s3transfer==0.11.2
     # via
     #   awscli
     #   boto3
-six==1.16.0
+six==1.17.0
     # via
     #   opsgenie-sdk
     #   python-dateutil
@@ -103,11 +103,16 @@ splunk-sdk==1.6.16
     # via -r requirements/jenkins.in
 tomlkit==0.13.2
     # via yq
-tzdata==2024.2
+tzdata==2025.1
     # via
     #   celery
     #   kombu
 urllib3==1.26.18
+    # via
+    #   -r requirements/jenkins.in
+    #   botocore
+    #   opsgenie-sdk
+    #   requests
 vine==5.1.0
     # via
     #   amqp
