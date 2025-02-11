@@ -4,11 +4,11 @@
 #
 #    make upgrade
 #
-ansible==2.10.7
+ansible==11.1.0
     # via -r requirements/base.in
-ansible-base==2.10.17
+ansible-core==2.18.1
     # via ansible
-awscli==1.35.20
+awscli==1.36.38
     # via -r requirements/base.in
 bcrypt==3.1.7
     # via
@@ -16,27 +16,27 @@ bcrypt==3.1.7
     #   paramiko
 boto==2.49.0
     # via -r requirements/base.in
-boto3==1.35.54
+boto3==1.35.97
     # via -r requirements/base.in
-botocore==1.35.54
+botocore==1.35.97
     # via
     #   awscli
     #   boto3
     #   s3transfer
-certifi==2024.8.30
+certifi==2024.12.14
     # via requests
 cffi==1.17.1
     # via
     #   bcrypt
     #   cryptography
     #   pynacl
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via requests
 colorama==0.4.6
     # via awscli
-cryptography==43.0.3
+cryptography==44.0.0
     # via
-    #   ansible-base
+    #   ansible-core
     #   paramiko
 datadog==0.8.0
     # via -r requirements/base.in
@@ -52,10 +52,10 @@ ecdsa==0.13.3
     # via -r requirements/base.in
 idna==3.10
     # via requests
-jinja2==2.8
+jinja2==3.1.5
     # via
     #   -r requirements/base.in
-    #   ansible-base
+    #   ansible-core
 jmespath==1.0.1
     # via
     #   boto3
@@ -68,18 +68,16 @@ mysqlclient==1.4.6
     # via -r requirements/base.in
 networkx==1.11
     # via -r requirements/base.in
-packaging==24.1
-    # via ansible-base
-paramiko==2.4.2
+packaging==24.2
+    # via ansible-core
+paramiko==2.12.0
     # via -r requirements/base.in
 pathlib2==2.3.0
     # via -r requirements/base.in
 prettytable==0.7.2
     # via -r requirements/base.in
 pyasn1==0.6.1
-    # via
-    #   paramiko
-    #   rsa
+    # via rsa
 pycparser==2.22
     # via cffi
 pycryptodome==3.21.0
@@ -93,21 +91,28 @@ python-dateutil==2.9.0.post0
 pyyaml==6.0.2
     # via
     #   -r requirements/base.in
-    #   ansible-base
+    #   ansible-core
     #   awscli
 requests==2.32.3
     # via
     #   -r requirements/base.in
     #   datadog
+resolvelib==1.0.1
+    # via ansible-core
 rsa==4.7.2
     # via awscli
-s3transfer==0.10.3
+s3transfer==0.10.4
     # via
     #   awscli
     #   boto3
-six==1.16.0
+six==1.17.0
     # via
     #   bcrypt
+    #   paramiko
     #   pathlib2
     #   python-dateutil
 urllib3==1.26.18
+    # via
+    #   -r requirements/base.in
+    #   botocore
+    #   requests
