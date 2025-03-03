@@ -35,8 +35,7 @@
   when: terminate_instance == true and elb and tag_lookup.instance_ids|length == 1
 
 - name: Launch ec2 instance
-  local_action:
-    module: community.aws.ec2_instance
+  community.aws.ec2_instance:
     key_name: "continuous-integration"
     security_group: "sandbox-vpc"
     instance_type: "r5.large"
@@ -51,6 +50,7 @@
         delete_on_termination: true
         volume_type: "gp2"
         encrypted: true
+  delegate_to: localhost
   register: ec2
 
 - name: Add DNS name
