@@ -36,26 +36,21 @@
 
 - name: Launch ec2 instance
   local_action:
-    module: ec2
-    keypair: "{{ keypair }}"
-    group: "{{ security_group }}"
-    instance_type: "{{ instance_type }}"
-    instance_initiated_shutdown_behavior: "{{ instance_initiated_shutdown_behavior }}"
-    image: "{{ ami }}"
-    vpc_subnet_id: "{{ vpc_subnet_id }}"
-    assign_public_ip: yes
+    module: community.aws.ec2_instance
+    key_name: "continuous-integration"
+    security_group: "sandbox-vpc"
+    instance_type: "r5.large"
+    instance_initiated_shutdown_behavior: "terminate"
+    image_id: "ami-04b4f1a9cf54c11d0"
+    vpc_subnet_id: "subnet-cd867aba"
     wait: true
-    region: "{{ region }}"
-    instance_tags: "{{ instance_tags }}"
+    region: "us-east-1"
     volumes:
       - device_name: /dev/sda1
-        volume_size: "{{ root_ebs_size }}"
+        volume_size: 50
         delete_on_termination: true
         volume_type: "gp2"
         encrypted: true
-    zone: "{{ zone }}"
-    instance_profile_name: "{{ instance_profile_name }}"
-    user_data: "{{ user_data }}"
   register: ec2
 
 - name: Add DNS name
