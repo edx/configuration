@@ -50,7 +50,6 @@
         delete_on_termination: true
         volume_type: "gp2"
         encrypted: true
-  delegate_to: localhost
   register: ec2
 
 - name: Add DNS name
