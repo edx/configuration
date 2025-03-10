@@ -25,3 +25,28 @@
   tags:
     - manage
     - manage:app-users
+
+- name: install python3.11
+  apt:
+    pkg:
+      - python3.11-dev
+      - python3.11-distutils
+    update_cache: yes
+  register: install_pkgs
+  until: install_pkgs is success
+  retries: 10
+  delay: 5
+  when: edx_django_service_use_python311
+  tags:
+    - install
+    - install:system-requirements
+
+- name: build virtualenv with python3.11
+  command: "virtualenv --python=python3.11 {{ edx_django_service_venv_dir }}"
+  args:
+    creates: "{{ edx_django_service_venv_dir }}/bin/pip"
+  become_user: "{{ edx_django_service_user }}"
+  when: edx_django_service_use_python311
+  tags:
+    - install
+    - install:system-requirements
