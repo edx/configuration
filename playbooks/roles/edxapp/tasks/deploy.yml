@@ -320,7 +320,7 @@
 # Installing npm aliases
 - name: Install NPM aliases
   shell: >
-    npm install {{ item.value }}
+    npm install {{ item.key }}@{{ item.value }}
   args:
     chdir: "{{ edxapp_code_dir }}"
   environment: "{{ edxapp_environment | combine(git_ssh_environment_mixin) }}"
