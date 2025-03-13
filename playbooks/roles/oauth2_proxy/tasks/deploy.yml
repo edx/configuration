@@ -82,11 +82,11 @@
     - manage
     - manage:start
 
-- include: test.yml
+- include_tasks: test.yml
   tags:
     - deploy
 
-- include: tag_ec2.yml
+- include_tasks: tag_ec2.yml
   when: COMMON_TAG_EC2_INSTANCE
   tags:
     - deploy

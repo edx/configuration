@@ -81,4 +81,4 @@
   - python
   - pip
 
-- include: deploy.yml tags=deploy
+- include_tasks: deploy.yml tags=deploy

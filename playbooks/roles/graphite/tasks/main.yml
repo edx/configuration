@@ -85,6 +85,6 @@
     - install
     - install:base
 
-- include: whisper.yml
-- include: carbon.yml
-- include: graphite-api.yml
+- include_tasks: whisper.yml
+- include_tasks: carbon.yml
+- include_tasks: graphite-api.yml
