@@ -53,7 +53,7 @@
   tags:
     - install:system-requirements
 
-- include_tasks: deploy.yml
+- import_tasks: deploy.yml
   tags:
     - deploy
     
