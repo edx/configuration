@@ -21,12 +21,6 @@
     /usr/lib/{{ edxapp_sandbox_python_version }}/lib-dynload/pyexpat.so mr,
     /usr/lib/{{ edxapp_sandbox_python_version }}/lib-dynload/future_builtins.so mr,
 
-    # Matplot lib  needs a place for temp caches
-    {{ edxapp_sandbox_venv_dir }}/.config/ wrix,
-    {{ edxapp_sandbox_venv_dir }}/.cache/ wrix,
-    {{ edxapp_sandbox_venv_dir }}/.config/** wrix,
-    {{ edxapp_sandbox_venv_dir }}/.cache/** wrix,
-
     # Matplotlib related libraries
     /usr/lib/{{ edxapp_sandbox_python_version }}/lib-dynload/termios.so mr,
     /usr/lib/{{ edxapp_sandbox_python_version }}/lib-dynload/parser.so mr,
