@@ -21,9 +21,9 @@
 #
 #
 
-- include: security-ubuntu.yml
+- import_tasks: security-ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
 
-- include: security-amazon.yml
+- import_tasks: security-amazon.yml
   when: ansible_distribution == 'Amazon'
   

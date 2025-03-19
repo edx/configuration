@@ -11,6 +11,6 @@
 # Therefore we use "include" here (instead of "include_role")
 # And because the theme is only needed for the web application, we skip running
 # the role for the Celery workers
-- include: deploy.yml
+- import_tasks: deploy.yml
   when: SIMPLETHEME_ENABLE_DEPLOY and (celery_worker is not defined or not (celery_worker|bool))
 

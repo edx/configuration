@@ -334,11 +334,10 @@ ecommerce_debian_pkgs:
   - python3-dev
 
 ecommerce_release_specific_debian_pkgs:
-  xenial:
-    - python-dev
   bionic:
     - python-dev
   focal: []
+  noble: []
 
 ecommerce_redhat_pkgs: []
 

@@ -57,7 +57,7 @@
     state: absent
   when: MARIADB_LISTEN_ALL|bool or MARIADB_CLUSTERED|bool
 
-- include: cluster.yml
+- import_tasks: cluster.yml
   when: MARIADB_CLUSTERED|bool
 
 - name: start everything

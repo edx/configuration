@@ -129,11 +129,11 @@
     - manage
     - manage:db
 
-- include: test.yml
+- import_tasks: test.yml
   tags:
     - deploy
 
-- include: tag_ec2.yml
+- import_tasks: tag_ec2.yml
   when: COMMON_TAG_EC2_INSTANCE
   tags:
     - deploy

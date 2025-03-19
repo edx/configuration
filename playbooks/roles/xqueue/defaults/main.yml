@@ -191,11 +191,11 @@ xqueue_debian_pkgs:
   # Needed for mysqlcient==2.2.0 python pacakge
   - pkg-config
 xqueue_release_specific_debian_pkgs:
-  xenial:
-    - python-mysqldb
   bionic:
     - python-mysqldb
   focal:
+    - python3-mysqldb
+  noble:
     - python3-mysqldb
 
 # flag to run xqueue on python3
