@@ -318,12 +318,13 @@
     - install:app-requirements
 
 - name: Install private node dependencies
-  shell: "easy_install --version && npm install {{ item.name }}{{ '@' + item.version_range if item.version_range is defined else '' }}"
+  shell: "easy_install --version && npm install --no-save {{ item.name }}{{ '@' + item.version_range if item.version_range is defined else '' }}"
   with_items: "{{ EDXAPP_EXTRA_NPM_REQUIREMENTS }}"
   args:
     chdir: "{{ edxapp_code_dir }}"
   environment: "{{ edxapp_environment | combine(git_ssh_environment_mixin) }}"
   become_user: "{{ edxapp_user }}"
+  when: "{{ EDXAPP_EXTRA_NPM_REQUIREMENTS }} | length > 0"
   tags:
     - install
     - install:app-requirements
