@@ -108,6 +108,12 @@ fi
 
 apt-key update -y
 
+# Wait for apt lock to be released
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+    echo "Waiting for apt lock to be released..."
+    sleep 5
+done
+
 if [ "${UPGRADE_OS}" = true ]; then
     echo "Upgrading the OS..."
     apt-get upgrade -y
