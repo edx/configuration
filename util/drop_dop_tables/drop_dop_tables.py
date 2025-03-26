@@ -36,20 +36,25 @@ from datetime import datetime, timedelta
 MAX_TRIES = 5
 
 TABLES_TO_DROP = [
-    "oauth2_provider_trustedclient",  # FK reference to oauth2_client
     "third_party_auth_providerapipermissions",  # FK reference to oauth2_client
-    "oauth2_client",
-    "oauth2_grant",
-    "oauth2_accesstoken",
-    "oauth2_refreshtoken",
-    "oauth_provider_consumer",
-    "oauth_provider_nonce",
-    "oauth_provider_scope",
-    "oauth_provider_token",
+    "oauth2_provider_trustedclient",  # FK reference to oauth2_client
+    "oauth2_grant",  # FK references to oauth2_client, auth_user
+    "oauth2_accesstoken",  # FK references to oauth2_client, auth_user
+    "oauth2_refreshtoken",  # FK references to oauth2_accesstoken, oauth2_client, auth_user
+    "oauth_provider_token",  # FK references to oauth_provider_consumer, oauth_provider_scope, auth_user
+    "oauth_provider_consumer",  # FK reference to auth_user
+    "oauth2_client",  # No FK references, but referenced by multiple tables
+    "oauth_provider_scope",  # Referenced by oauth_provider_token
+    "oauth_provider_nonce",  # No known FK references
 ]
 FK_DEPENDENCIES = {
-    "third_party_auth_providerapipermissions": "oauth2_client",
-    "oauth2_provider_trustedclient": "oauth2_client",
+    "third_party_auth_providerapipermissions": ["oauth2_client"],
+    "oauth2_provider_trustedclient": ["oauth2_client"],
+    "oauth2_grant": ["oauth2_client", "auth_user"],
+    "oauth2_accesstoken": ["oauth2_client", "auth_user"],
+    "oauth2_refreshtoken": ["oauth2_accesstoken", "oauth2_client", "auth_user"],
+    "oauth_provider_token": ["oauth_provider_consumer", "oauth_provider_scope", "auth_user"],
+    "oauth_provider_consumer": ["auth_user"],
 }
 
 # Configure logging
@@ -89,13 +94,6 @@ def connect_to_db(db_host, db_user, db_password, db_name):
 
 
 def drop_foreign_key(connection, db_name, table_name, referenced_table, dry_run):
-    last_activity = get_last_activity_date(connection, table_name)
-    if last_activity:
-        one_year_ago = datetime.now() - timedelta(days=365)
-        if last_activity > one_year_ago:
-            logging.info(f"Skipping {table_name}: Last activity was on {last_activity}")
-            return
-
     query = f"""
     SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
     WHERE TABLE_SCHEMA = '{db_name}' AND TABLE_NAME = '{table_name}' AND REFERENCED_TABLE_NAME = '{referenced_table}';
@@ -133,14 +131,21 @@ def get_last_activity_date(connection, table_name):
         return None  # If no activity, return None
 
 
-def drop_table(connection, table_name, dry_run):
-    last_activity = get_last_activity_date(connection, table_name)
-    if last_activity:
-        one_year_ago = datetime.now() - timedelta(days=365)
-        if last_activity > one_year_ago:
-            logging.info(f"Skipping {table_name}: Last activity was on {last_activity}")
-            return
+def check_all_tables_before_proceeding(connection):
+    """ Check if any table has recent activity (within 12 months) """
+    one_year_ago = datetime.now() - timedelta(days=365)
 
+    for table in TABLES_TO_DROP:
+        last_activity = get_last_activity_date(connection, table)
+        if last_activity and last_activity > one_year_ago:
+            logging.info(f"Skipping all operations: Table {table} has recent activity on {last_activity}.")
+            return False  # Stop execution if any table is active
+
+    logging.info("All tables have no updates in the last 12 months. Proceeding with FK and table drops.")
+    return True  # Continue execution if all tables are inactive
+
+
+def drop_table(connection, table_name, dry_run):
     logging.info(f"Dropping table {table_name}...")
     if dry_run:
         logging.info(f"[Dry Run] Would drop table {table_name}.")
@@ -164,15 +169,18 @@ def drop_tables(db_host, db_user, db_password, db_name, dry_run):
     """
     try:
         connection = connect_to_db(db_host, db_user, db_password, db_name)
-        
-        for table, referenced_table in FK_DEPENDENCIES.items():
-            drop_foreign_key(connection, db_name, table, referenced_table, dry_run)
-        
-        for table in TABLES_TO_DROP:
-            drop_table(connection, table, dry_run)
 
-        connection.close()
-        logging.info("Database cleanup completed successfully.")
+        tables_activity = check_all_tables_before_proceeding(connection)
+        if tables_activity:
+            for table, referenced_tables in FK_DEPENDENCIES.items():
+                for referenced_table in referenced_tables:
+                    drop_foreign_key(connection, db_name, table, referenced_table, dry_run)
+
+            for table in TABLES_TO_DROP:
+                drop_table(connection, table, dry_run)
+
+            connection.close()
+            logging.info("Database cleanup completed successfully.")
     except Exception as e:
         logging.error(f"An error occurred: {e}")
 
