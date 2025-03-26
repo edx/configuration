@@ -172,11 +172,10 @@ if [[ -z $ami ]]; then
     ami="ami-089b5711e63812c2a"
     # Ansible will always use Python3 interpreter on Ubuntu 20.04 hosts to execute modules
     extra_var_arg+=' -e ansible_python_interpreter=auto'
-  fi
   elif [[ $server_type == "ubuntu_24.04" ]]; then
     ami="ami-04b4f1a9cf54c11d0"
-    # Ansible will always use Python3 interpreter on Ubuntu 24.04 hosts to execute modules
-    extra_var_arg+=' -e ansible_python_interpreter=auto'
+    # Ansible will always use Python3.12 interpreter on Ubuntu 24.04 hosts to execute modules
+    extra_var_arg+=' -e ansible_python_interpreter=/usr/bin/python3.12'
   fi
 fi
 
