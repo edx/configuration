@@ -62,6 +62,13 @@
         path: /var/log/cloud-init.log
         timeout: 15
         search_regex: "final-message"
+      when: ansible_distribution_release != 'noble'
+    - name: Wait for cloud-init to finish
+      wait_for:
+        path: /var/log/cloud-init.log
+        timeout: 15
+        search_regex: "final_message"
+      when: ansible_distribution_release == 'noble'
     - name: gather_facts
       setup: ""
   vars_files:
