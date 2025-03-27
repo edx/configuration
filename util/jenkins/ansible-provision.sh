@@ -729,7 +729,7 @@ done
 
 # If reconfigure was selected or if starting from an ubuntu 16.04 AMI
 # run non-deploy tasks for all plays
-if [[ $reconfigure == "true" || $server_type == "full_edx_installation_from_scratch" || $server_type == "ubuntu_20.04" ]]; then
+if [[ $reconfigure == "true" || $server_type == "full_edx_installation_from_scratch" || $server_type == "ubuntu_20.04" || $server_type == "ubuntu_24.04" ]]; then
     cat $extra_vars_file
     if [[ $edxapp_container_enabled == "true" ]]; then
       cat << EOF > $WORKSPACE/edxapp_extra_var.yml
