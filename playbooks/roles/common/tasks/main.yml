@@ -4,7 +4,7 @@
     msg: "Configuration Sources Checking (COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING) is enabled, you must define {{ item }}"
   when: 
     - COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING
-    - item is not defined or item != True
+    - item not in vars or vars[item] != True
   with_items: "{{ COMMON_EXTRA_CONFIGURATION_SOURCES }}"
   tags:
     - "install"
