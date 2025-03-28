@@ -37,4 +37,6 @@
     owner: "{{ demo_edxapp_user }}"
     group: "{{ common_web_group }}"
 
-- include: deploy.yml tags=deploy
+- import_tasks: deploy.yml 
+  tags:
+   - deploy
