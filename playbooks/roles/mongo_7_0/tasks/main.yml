@@ -27,6 +27,18 @@
     state: present
     version: "{{ PYMONGO_VERSION }}"
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
+  when: ansible_distribution_release != "noble"
+  tags:
+    - "install"
+    - "install:app-requirements"
+
+- name: install python pymongo for mongo_user ansible module
+  pip:
+    name: pymongo
+    state: present
+    version: "{{ PYMONGO_VERSION }}"
+    extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --break-system-packages"
+  when: ansible_distribution_release == "noble"
   tags:
     - "install"
     - "install:app-requirements"
