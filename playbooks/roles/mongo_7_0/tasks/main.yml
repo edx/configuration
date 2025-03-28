@@ -58,6 +58,17 @@
   apt_repository:
     repo: "{{ MONGODB_REPO }}"
     state: present
+  ansible_distribution_release != "noble"
+  tags:
+    - "install"
+    - "install:app-requirements"
+    - "mongo_packages"
+
+- name: add the mongodb repo to the sources list
+  apt_repository:
+    repo: "{{ MONGODB_REPO_NOBLE }}"
+    state: present
+  ansible_distribution_release == "noble"
   tags:
     - "install"
     - "install:app-requirements"
