@@ -58,7 +58,7 @@
   apt_repository:
     repo: "{{ MONGODB_REPO }}"
     state: present
-  ansible_distribution_release != "noble"
+  when: ansible_distribution_release != "noble"
   tags:
     - "install"
     - "install:app-requirements"
@@ -68,7 +68,7 @@
   apt_repository:
     repo: "{{ MONGODB_REPO_NOBLE }}"
     state: present
-  ansible_distribution_release == "noble"
+  when: ansible_distribution_release == "noble"
   tags:
     - "install"
     - "install:app-requirements"
