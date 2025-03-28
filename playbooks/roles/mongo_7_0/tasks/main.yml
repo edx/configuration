@@ -195,7 +195,9 @@
 - name: determine if backup tasks should run
   set_fact:
     is_backup_node: true
-  when: MONGO_BACKUP_ENABLED and '{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}' == '{{ MONGO_BACKUP_NODE }}'
+  when:
+    - MONGO_BACKUP_ENABLED
+    - ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) == MONGO_BACKUP_NODE
   tags:
     - "backup:mongo"
 
