@@ -522,10 +522,8 @@ EDXAPP_UPDATE_STATIC_FILES_KEY: false
 
 EDXAPP_INSTALL_PRIVATE_REQUIREMENTS: false
 
-# Do NOT use EDXAPP_EXTRA_REQUIREMENTS.
-# This setting has been deprecated. Use EDXAPP_PRIVATE_REQUIREMENTS instead.
-# See argocd/applications/edxapp-lms/docs/decisions/0001-consolidate-edxapp-private-requirements.rst
-EDXAPP_EXTRA_REQUIREMENTS: []
+# EDXAPP_EXTRA_REQUIREMENTS has been deprecated and removed. All dependencies
+# have been moved to EDXAPP_PRIVATE_REQUIREMENTS.
 
 # These defaults for EDXAPP_PRIVATE_REQUIREMENTS are used for Edge and
 # sandboxes in EC2. Post containerization, there will be a single
