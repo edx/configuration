@@ -1,6 +1,7 @@
 Configuration Management
 ########################
 
+(Note: This is the 2U fork of `<https://github.com/openedx/configuration>`__, which has been deprecated from Open edX.)
 
 Description
 ***********
