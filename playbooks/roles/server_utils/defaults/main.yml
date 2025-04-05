@@ -36,7 +36,7 @@ server_utils_debian_pkgs:
   - vim
   - dnsutils
   - inetutils-telnet
-  - netcat
+  - netcat-openbsd
 
 server_utils_redhat_pkgs: []
 

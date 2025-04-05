@@ -33,7 +33,9 @@ fi
 # Bootstrapping constants
 #
 VIRTUAL_ENV_VERSION="16.7.10"
+VIRTUAL_ENV_VERSION_NOBLE="20.27.0"
 PIP_VERSION="21.2.1"
+PIP_VERSION_NOBLE="24.0"
 SETUPTOOLS_VERSION="44.1.0"
 VIRTUAL_ENV="/tmp/bootstrap"
 PYTHON_BIN="${VIRTUAL_ENV}/bin"
@@ -71,6 +73,9 @@ then
 elif grep -q 'Focal Fossa' /etc/os-release
 then
     SHORT_DIST="focal"
+elif grep -q 'Noble Numbat' /etc/os-release
+then
+    SHORT_DIST="noble"
 else
     cat << EOF
 
@@ -82,7 +87,9 @@ EOF
    exit 1;
 fi
 
-if [[ "${SHORT_DIST}" == focal ]] ;then
+if [[ "${SHORT_DIST}" == noble ]]; then
+   PYTHON_VERSION="3.12" 
+elif [[ "${SHORT_DIST}" == focal ]] ;then
    PYTHON_VERSION="3.8"
 else
    PYTHON_VERSION="3.5"
@@ -101,6 +108,12 @@ fi
 
 apt-key update -y
 
+# Wait for apt lock to be released
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+    echo "Waiting for apt lock to be released..."
+    sleep 5
+done
+
 if [ "${UPGRADE_OS}" = true ]; then
     echo "Upgrading the OS..."
     apt-get upgrade -y
@@ -108,7 +121,7 @@ fi
 
 # Required for add-apt-repository
 apt-get install -y software-properties-common
-if [[ "${SHORT_DIST}" != trusty ]] && [[ "${SHORT_DIST}" != xenial ]] && [[ "${SHORT_DIST}" != bionic ]] && [[ "${SHORT_DIST}" != focal ]] ;then
+if [[ "${SHORT_DIST}" != trusty ]] && [[ "${SHORT_DIST}" != xenial ]] && [[ "${SHORT_DIST}" != bionic ]] && [[ "${SHORT_DIST}" != focal ]] && [[ "${SHORT_DIST}" != noble ]] ;then
   apt-get install -y python-software-properties
 fi
 
@@ -117,7 +130,7 @@ add-apt-repository -y ppa:git-core/ppa
 
 # For older software we need to install our own PPA
 # Phased out with Ubuntu 18.04 Bionic and Ubuntu 20.04 Focal
-if [[ "${SHORT_DIST}" != bionic ]] && [[ "${SHORT_DIST}" != focal ]] ;then
+if [[ "${SHORT_DIST}" != bionic ]] && [[ "${SHORT_DIST}" != focal ]] && [[ "${SHORT_DIST}" != noble ]] ;then
   apt-key adv --keyserver "${EDX_PPA_KEY_SERVER}" --recv-keys "${EDX_PPA_KEY_ID}"
   add-apt-repository -y "${EDX_PPA}"
 fi
@@ -133,7 +146,7 @@ fi
 # which may differ from what is pinned in virtualenvironments
 apt-get update -y
 
-if [[ "${SHORT_DIST}" != focal ]] ;then
+if [[ "${SHORT_DIST}" != focal ]] && [[ "${SHORT_DIST}" != noble ]] ;then
   apt-get install -y python2.7 python2.7-dev python-pip python-apt python-jinja2 build-essential sudo git-core libmysqlclient-dev libffi-dev libssl-dev
 else
   apt-get install -y python3-pip python3-apt python3-jinja2 build-essential sudo git-core libmysqlclient-dev libffi-dev libssl-dev
@@ -143,17 +156,24 @@ apt-get install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-dev python3-p
 
 # We want to link pip to pip3 for Ubuntu versions that don't have python 2.7 so older scripts work there
 # Applies to Ubuntu 20.04 Focal
-if [[ "${SHORT_DIST}" != trusty ]] && [[ "${SHORT_DIST}" != xenial ]] && [[ "${SHORT_DIST}" != bionic ]] ;then
+if [[ "${SHORT_DIST}" != trusty ]] && [[ "${SHORT_DIST}" != xenial ]] && [[ "${SHORT_DIST}" != bionic ]] && [[ "${SHORT_DIST}" != noble ]] ;then
   sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
   sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 fi
 
+if [[ "${SHORT_DIST}" == noble ]] ;then
+  sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
+  sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+fi
+
+if [[ "${SHORT_DIST}" != noble ]] ;then
 python${PYTHON_VERSION} -m pip install --upgrade pip=="${PIP_VERSION}"
 
 # pip moves to /usr/local/bin when upgraded
 PATH=/usr/local/bin:${PATH}
 python${PYTHON_VERSION} -m pip install setuptools=="${SETUPTOOLS_VERSION}"
 python${PYTHON_VERSION} -m pip install virtualenv=="${VIRTUAL_ENV_VERSION}"
+fi
 
 if [[ "true" == "${RUN_ANSIBLE}" ]]; then
     # create a new virtual env
@@ -166,7 +186,11 @@ if [[ "true" == "${RUN_ANSIBLE}" ]]; then
     git clone ${CONFIGURATION_REPO} ${CONFIGURATION_DIR}
     cd ${CONFIGURATION_DIR}
     git checkout ${CONFIGURATION_VERSION}
+    if [[ "${SHORT_DIST}" != noble ]] ;then
+    make requirements3_12
+    else
     make requirements
+    fi
 
     cd "${CONFIGURATION_DIR}"/playbooks
     "${PYTHON_BIN}"/ansible-playbook edx_ansible.yml -i '127.0.0.1,' -c local -e "CONFIGURATION_VERSION=${CONFIGURATION_VERSION}"
