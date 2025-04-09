@@ -10,12 +10,16 @@ export JS_ENV_EXTRA_CONFIG={}
 # We need to make a call to a management command before running webpack because proctoring runs a webpack
 # webworker that only gets built if the proctoring djangoapp writes out a `workers.json`:
 # https://github.com/openedx/edx-proctoring/blob/73c7f55e2be91324fa07fec6e6ac0a667fdd8412/edx_proctoring/apps.py#L4
+# We know that `print_setting` will load settings and apps, which is what we
+# actually need. Yes, this is absurd.
+
 {% if edxapp_staticfiles_storage_overrides %}
 {% for override in edxapp_staticfiles_storage_overrides %}
 export STATICFILES_STORAGE={{ override | quote }}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
-    {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting STATIC_ROOT WEBPACK_CONFIG_PATH \
+    echo "See comment above for why we're uselessly calling print_setting here." >/dev/null \
+    && {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting LMS_BASE >/dev/null \
     && npm run webpack \
     && npm run compile-sass -- --theme-dir /edx/var/edx-themes/edx-themes/edx-platform --theme-dir /edx/app/edxapp/edx-platform/themes \
     && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS \
@@ -24,7 +28,8 @@ sudo -E -H -u {{ edxapp_user }} \
 {% else %}
 sudo -E -H -u {{ edxapp_user }} \
     env "PATH=$PATH" \
-    {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting STATIC_ROOT WEBPACK_CONFIG_PATH \
+    echo "See comment above for why we're uselessly calling print_setting here." >/dev/null \
+    && {{ edxapp_venv_bin }}/python manage.py lms --settings=$EDX_PLATFORM_SETTINGS print_setting LMS_BASE >/dev/null \
     && npm run webpack \
     && npm run compile-sass -- --theme-dir /edx/var/edx-themes/edx-themes/edx-platform --theme-dir /edx/app/edxapp/edx-platform/themes \
     && {{ edxapp_venv_bin }}/python manage.py lms collectstatic --noinput --settings=$EDX_PLATFORM_SETTINGS \
