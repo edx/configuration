@@ -303,7 +303,7 @@
 # running npm install without this flag causes modifications to the package.json and package-lock.json
 # files. In turn, these modified files cause issues with working with the edxapp repository.
 - name: Install extra node dependencies
-  shell: "easy_install --version && npm install --no-save {{ item.name }}{{ '@' + item.version if item.version is defined else '' }}"
+  shell: "easy_install --version && npm install --no-save {{ item.name }"
   with_items: "{{ EDXAPP_PRIVATE_NPM_REQUIREMENTS }}"
   args:
     chdir: "{{ edxapp_code_dir }}"
