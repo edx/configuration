@@ -580,6 +580,11 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Plugins
     - name: edx-arch-experiments==6.1.0
 
+# List of additional npm packages that should be installed into the edxapp virtual environment.
+# For more help, see:
+# https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
+EDXAPP_PRIVATE_NPM_REQUIREMENTS: []
+
 # List of custom middlewares that should be used in edxapp to process
 # incoming HTTP resquests. Should be a list of plain strings that fully
 # qualify Python classes or functions that can be used as Django middleware.
