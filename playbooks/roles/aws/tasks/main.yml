@@ -71,6 +71,15 @@
     requirements: "{{ aws_requirements }}"
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
+  when: ansible_distribution_release != 'noble'
+
+- name: Install aws python packages
+  pip:
+    requirements: "{{ aws_requirements }}"
+    virtualenv: "{{ aws_venv_dir }}"
+    state: present
+    extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
+  when: ansible_distribution_release == 'noble'
 
 - name: Copy the boto global config file
   template:

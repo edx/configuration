@@ -138,4 +138,6 @@
     - install
     - install:base
   
-- include: deploy.yml tags=deploy
+- import_tasks: deploy.yml 
+  tags:
+    - deploy

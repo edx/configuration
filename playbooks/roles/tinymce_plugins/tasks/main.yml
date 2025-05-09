@@ -9,6 +9,6 @@
     - TINYMCE_ADDITIONAL_PLUGINS_LIST|length > 0
 
 - name: Rebuild tinymce files
-  include_tasks: rebuild_tinymce_files.yml
+  import_tasks: rebuild_tinymce_files.yml
   when:
     - TINYMCE_ADDITIONAL_PLUGINS_LIST|length > 0
