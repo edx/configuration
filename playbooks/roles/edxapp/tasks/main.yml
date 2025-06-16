@@ -205,12 +205,12 @@
     - install:base
 
 # Set up the python sandbox execution environment
-- include: python_sandbox_env.yml
+- import_tasks: python_sandbox_env.yml
   when: EDXAPP_PYTHON_SANDBOX
   tags:
     - deploy
 
-- include: deploy.yml
+- import_tasks: deploy.yml
   tags:
     - deploy
 

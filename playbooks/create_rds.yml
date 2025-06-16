@@ -83,5 +83,5 @@
     changed_when: "add_role_result.rc == 0"
     when: cluster_name is defined and cluster_role_arn is defined
 
-- include: create_db_and_users.yml
+- import_tasks: create_db_and_users.yml
   when: database_connection.login_host is defined

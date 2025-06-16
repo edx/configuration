@@ -24,10 +24,10 @@
     - install
     - install:configuration
     
-- include: deploy_watcher.yml
+- import_tasks: deploy_watcher.yml
   tags:
     - deploy-watcher
 
-- include: deploy_courses.yml
+- import_tasks: deploy_courses.yml
   tags:
     - deploy-courses

@@ -289,7 +289,7 @@
     - install:base
     - install:plugins
 
-- include: datadog.yml
+- import_tasks: datadog.yml
   when: COMMON_ENABLE_DATADOG
   tags:
     - datadog
