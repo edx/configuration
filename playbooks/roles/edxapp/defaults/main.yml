@@ -642,10 +642,9 @@ EDXAPP_DATADOG_PROFILING_ENABLE: "{{EDXAPP_DATADOG_ENABLE and COMMON_ENABLE_DATA
 # https://docs.datadoghq.com/tracing/guide/inferred-service-opt-in/?tab=python
 EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE: true
 
-# We are seeing issues with celery processing tasks with later versions of ddtrace,
-# so this pin is in place until we understand what's going on.
-# See ticket: https://github.com/edx/edx-arch-experiments/issues/1060
-EDXAPP_DDTRACE_PIP_SPEC: 'ddtrace==3.8.1'
+# This constraint was set to protect against auto-upgrading to a (future)
+# major release with possible breaking changes.
+EDXAPP_DDTRACE_PIP_SPEC: 'ddtrace<4.0.0'
 
 EDXAPP_ORA2_FILE_PREFIX: '{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}/ora2'
 EDXAPP_FILE_UPLOAD_STORAGE_BUCKET_NAME: '{{ EDXAPP_AWS_STORAGE_BUCKET_NAME }}'
