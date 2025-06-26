@@ -44,7 +44,7 @@
     name: "{{ mysql_server_pkg }}"
     install_recommends: yes
     state: present
-  when: ansible_distribution_release != 'focal'
+  when: ansible_distribution_release != 'focal' and ansible_distribution_release != 'noble'
 
 - name: Set default character sets and collations
   template:
@@ -53,7 +53,7 @@
     owner: root
     group: root
     mode: 0644
-  when: ansible_distribution_release != 'bionic' and ansible_distribution_release != 'focal'
+  when: ansible_distribution_release != 'bionic' and ansible_distribution_release != 'focal' and ansible_distribution_release != 'noble'
 
 - name: add the mysql signing key
   apt_key:
@@ -95,7 +95,7 @@
      name: "{{ mysql_server_8_0_pkgs }}"
      state: present
      update_cache: yes
-  when: ansible_distribution_release == 'focal' and mysql_8_0_install
+  when: ((ansible_distribution_release == 'focal') or (ansible_distribution_release == 'noble')) and mysql_8_0_install
 
 
 - name: restart mysql

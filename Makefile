@@ -20,6 +20,11 @@ requirements:
 	pip install -qr requirements/pip.txt --exists-action w
 	pip install -qr requirements.txt --exists-action w
 
+requirements3_12:
+	pip install -qr requirements/pip.txt --exists-action w
+	pip install -qr requirements3_12txt --exists-action w
+
+
 COMMON_CONSTRAINTS_TXT=requirements/common_constraints.txt
 .PHONY: $(COMMON_CONSTRAINTS_TXT)
 $(COMMON_CONSTRAINTS_TXT):

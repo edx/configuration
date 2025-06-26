@@ -27,6 +27,18 @@
     state: present
     version: "{{ PYMONGO_VERSION }}"
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
+  when: ansible_distribution_release != "noble"
+  tags:
+    - "install"
+    - "install:app-requirements"
+
+- name: install python pymongo for mongo_user ansible module
+  pip:
+    name: pymongo
+    state: present
+    version: "{{ PYMONGO_VERSION }}"
+    extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --break-system-packages"
+  when: ansible_distribution_release == "noble"
   tags:
     - "install"
     - "install:app-requirements"
@@ -46,6 +58,17 @@
   apt_repository:
     repo: "{{ MONGODB_REPO }}"
     state: present
+  when: ansible_distribution_release != "noble"
+  tags:
+    - "install"
+    - "install:app-requirements"
+    - "mongo_packages"
+
+- name: add the mongodb repo to the sources list
+  apt_repository:
+    repo: "{{ MONGODB_REPO_NOBLE }}"
+    state: present
+  when: ansible_distribution_release == "noble"
   tags:
     - "install"
     - "install:app-requirements"
@@ -172,7 +195,9 @@
 - name: determine if backup tasks should run
   set_fact:
     is_backup_node: true
-  when: MONGO_BACKUP_ENABLED and '{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}' == '{{ MONGO_BACKUP_NODE }}'
+  when:
+    - MONGO_BACKUP_ENABLED
+    - ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) == MONGO_BACKUP_NODE
   tags:
     - "backup:mongo"
 

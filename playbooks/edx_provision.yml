@@ -61,7 +61,7 @@
       wait_for:
         path: /var/log/cloud-init.log
         timeout: 15
-        search_regex: "final-message"
+        search_regex: "final[-_]message"
     - name: gather_facts
       setup: ""
   vars_files:

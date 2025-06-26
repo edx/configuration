@@ -2,7 +2,9 @@
 - name: Check Configuration Sources
   fail:
     msg: "Configuration Sources Checking (COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING) is enabled, you must define {{ item }}"
-  when: COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING and ({{ item }} is not defined or {{ item }} != True)
+  when: 
+    - COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING
+    - item not in vars or vars[item] != True
   with_items: "{{ COMMON_EXTRA_CONFIGURATION_SOURCES }}"
   tags:
     - "install"
@@ -170,8 +172,15 @@
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
     executable: pip3
-  when: ansible_distribution in common_debian_variants
+  when: ansible_distribution in common_debian_variants and ansible_distribution_release != "noble"
 
+- name: pip install virtualenv
+  pip:
+    name: "{{ common_pip_pkgs }}"
+    state: present
+    extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --break-system-packages"
+    executable: pip3
+  when: ansible_distribution in common_debian_variants and ansible_distribution_release == "noble"
 
 - name: update /etc/hosts
   template:
