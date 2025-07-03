@@ -1201,6 +1201,8 @@ edxapp_environment_default:
   REVISION_CFG: "{{ edxapp_revision_cfg }}"
   NODE_PATH: "{{ edxapp_npm_dir }}/lib/modules:/usr/lib/node_modules"
   MANPATH: "{{ edxapp_npm_dir }}/share/man:$(manpath)"
+  CAPTIONS_CONTENT_TO_REPLACE: "{{ EDXAPP_CAPTIONS_CONTENT_TO_REPLACE }}"
+  CAPTIONS_CONTENT_REPLACEMENT: "{{ EDXAPP_CAPTIONS_CONTENT_REPLACEMENT }}"
 
 edxapp_environment_extra: {}
 
