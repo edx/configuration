@@ -93,6 +93,13 @@
     - install
     - install:base
 
+# This can be very hard to debug if it fails, as the `no_log` is required in
+# order to prevent app secrets from being exposed.
+#
+# Known causes to investigate when this task fails:
+#
+# - AWS secrets with malformed JSON (even ones unrelated to the service being
+#   built). Possibly also references in ansible/vars/ to nonexistent AWS secrets.
 - name: Write out app config file
   template:
     src: "config.yml.j2"
