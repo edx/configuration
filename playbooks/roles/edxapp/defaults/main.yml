@@ -580,7 +580,7 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Plugins
     - name: edx-arch-experiments==6.1.0
 
-# This is an addendum to EDXAPP_EXTRA_REQUIREMENTS for us in installing
+# This is an addendum to EDXAPP_PRIVATE_REQUIREMENTS for us in installing
 # requirements only in the stage environment. (It should only be set in stage.)
 # This allows us to keep a single list of requirements that is always shared
 # between stage, prod, and edge and keep a separate list of deltas for stage.
