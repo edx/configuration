@@ -35,7 +35,7 @@ export DD_CELERY_DISTRIBUTED_TRACING=true
 # We want to be able to toggle this on separately from DD in general.
 {% if EDXAPP_DATADOG_PROFILING_ENABLE %}
 export DD_PROFILING_ENABLED=true
-export DD_PROFILING_MEMORY_ENABLED=false
+export DD_PROFILING_MEMORY_ENABLED=true
 {% endif -%}
 
 {% if EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE %}
