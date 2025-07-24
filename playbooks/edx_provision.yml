@@ -66,7 +66,6 @@
       setup: ""
   vars_files:
     - roles/edxapp/defaults/main.yml
-    - roles/xqueue/defaults/main.yml
     - roles/forum/defaults/main.yml
   roles:
     # rerun common to set the hostname, nginx to set basic auth
@@ -78,7 +77,6 @@
       nginx_sites:
       - cms
       - lms
-      - xqueue
       - forum
       nginx_default_sites:
       - lms
