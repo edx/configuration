@@ -35,7 +35,7 @@
     - { role: "edxapp", celery_worker: True, when: edxapp_containerized is defined and not edxapp_containerized }
     - { role: "edxapp", when: edxapp_containerized is defined and not edxapp_containerized }
     - { role: "testcourses", when: edxapp_containerized is defined and not edxapp_containerized }
-    - oraclejdk
+    - openjdk
     - elasticsearch
     - opensearch
     - forum

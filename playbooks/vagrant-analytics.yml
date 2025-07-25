@@ -27,7 +27,7 @@
     - role: rabbitmq
       rabbitmq_ip: 127.0.0.1
     - edxapp
-    - oraclejdk
+    - openjdk
     - elasticsearch
     - forum
     - ecommerce

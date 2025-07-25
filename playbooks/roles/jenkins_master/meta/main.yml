@@ -2,5 +2,4 @@
 dependencies:
   - common
   - nginx
-  - role: oraclejdk
-    tags: java
+  # Java dependency removed - Jenkins now handles its own Java installation

@@ -5,14 +5,12 @@
 #
 #   * common
 #   * elasticsearch
-#   * oraclejdk
-#   * rbenv
+#   * rbenv (Java runtime now managed by elasticsearch service itself)
 #
 #
 # Example play:
 #   roles:
 #   - common
-#   - oraclejdk
 #   - elasticsearch
 #   - role: rbenv
 #     rbenv_user: "{{ forum_user }}"

@@ -1,0 +1,13 @@
+---
+
+# OpenJDK version and packages
+OPENJDK_VERSION: "8"
+openjdk_package: "openjdk-{{ OPENJDK_VERSION }}-jdk"
+openjdk_link: "/usr/lib/jvm/java-{{ OPENJDK_VERSION }}-openjdk-amd64"
+
+# Package name may vary by Ubuntu version
+openjdk_debian_pkgs:
+  - "{{ openjdk_package }}"
+
+# JAVA_HOME should point to OpenJDK installation
+openjdk_java_home: "{{ openjdk_link }}"

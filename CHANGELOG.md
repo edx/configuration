@@ -1154,7 +1154,7 @@ Add any new changes to the top (right below this line).
 
  - 2017-06-15
      - Role: jenkins_master
-       - Update pinned use of JDK7 in Jenkins installs to default JDK version from role `oraclejdk`.
+       - Update pinned use of JDK7 in Jenkins installs to default JDK version from role `openjdk` (migrated from oraclejdk).
 
  - 2017-06-12
      - Role: elasticsearch

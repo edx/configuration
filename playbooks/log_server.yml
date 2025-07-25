@@ -6,7 +6,7 @@
   become: True
   roles:
     - common
-    - oraclejdk
+    - openjdk
     - elasticsearch
     - logstash
     - kibana

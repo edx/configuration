@@ -20,5 +20,5 @@
 # }
 
 dependencies:
-  - role: oraclejdk
+  # Java dependency removed - Hotg now handles its own Java installation
   - supervisor

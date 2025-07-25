@@ -19,7 +19,7 @@
 #
 # Dependencies:
 #
-# oraclejdk: Not strictly required, but we tend to trust it more than openjdk.
+# openjdk: Java runtime required for Hadoop.
 #
 
 - name: install system packages

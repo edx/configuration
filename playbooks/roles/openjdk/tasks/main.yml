@@ -1,0 +1,57 @@
+---
+# openjdk
+#
+# Dependencies:
+#
+#   * common
+#
+# Example play:
+#
+#   roles:
+#   - common
+#   - openjdk
+
+- name: Install OpenJDK
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ openjdk_debian_pkgs }}"
+
+- name: Find actual OpenJDK installation path
+  find:
+    paths: /usr/lib/jvm
+    patterns: "java-{{ OPENJDK_VERSION }}-openjdk*"
+    file_type: directory
+  register: openjdk_installation_paths
+
+- name: Set OpenJDK link path
+  set_fact:
+    openjdk_actual_path: "{{ openjdk_installation_paths.files[0].path }}"
+  when: openjdk_installation_paths.files|length > 0
+
+- name: Create symlink for compatibility with services expecting Oracle JDK path
+  file:
+    src: "{{ openjdk_actual_path }}"
+    dest: "/usr/lib/jvm/java-8-oracle"
+    state: link
+    force: yes
+  when: openjdk_actual_path is defined
+
+- name: Update alternatives for java tools
+  alternatives:
+    name: "{{ item }}"
+    link: "/usr/bin/{{ item }}"
+    path: "{{ openjdk_actual_path }}/bin/{{ item }}"
+  with_items:
+    - java
+    - javac
+  when: openjdk_actual_path is defined
+
+- name: Add JAVA_HOME for OpenJDK
+  template:
+    src: "java.sh.j2"
+    dest: "/etc/profile.d/java.sh"
+    owner: root
+    group: root
+    mode: "0755"

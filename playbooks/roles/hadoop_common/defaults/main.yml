@@ -44,7 +44,7 @@ hadoop_common_native_dist:
   url: "https://archive.apache.org/dist/hadoop/common/hadoop-{{ HADOOP_COMMON_VERSION }}/hadoop-{{ HADOOP_COMMON_VERSION }}-src.tar.gz"
   sha256sum: 7d48e61b5464a76543fecf5655d06215cf8674d248b28bc74f613bc8aa047d33
 
-hadoop_common_java_home: "{{ oraclejdk_link }}"
+hadoop_common_java_home: "{{ openjdk_java_home }}"
 hadoop_common_env: "{{ HADOOP_COMMON_HOME }}/hadoop_env"
 
 #

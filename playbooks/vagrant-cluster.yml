@@ -15,7 +15,7 @@
   roles:
     - user
     - mongo
-    - oraclejdk
+    # Java runtime now managed by elasticsearch service itself
     - elasticsearch
     - mariadb
     - edx_ansible
