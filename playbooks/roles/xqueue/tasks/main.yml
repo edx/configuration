@@ -4,15 +4,15 @@
   apt_repository:
       repo: ppa:deadsnakes/ppa
       update_cache: yes
-  when: xqueue_use_python38
+  when: xqueue_use_python311
 
-- name: install python3.8
+- name: install python3.11
   apt:
     name: "{{ item }}"
-  when: xqueue_use_python38
+  when: xqueue_use_python311
   with_items:
-    - python3.8-dev
-    - python3.8-distutils
+    - python3.11-dev
+    - python3.11-distutils
   tags:
     - install
     - install:system-requirements
@@ -28,12 +28,12 @@
     - install
     - install:system-requirements
 
-- name: build virtualenv with python3.8
-  command: "virtualenv --python=python3.8 {{ xqueue_venv_dir }}"
+- name: build virtualenv with python3.11
+  command: "virtualenv --python=python3.11 {{ xqueue_venv_dir }}"
   args:
     creates: "{{ xqueue_venv_dir }}/bin/pip"
   become_user: "{{ xqueue_user }}"
-  when: xqueue_use_python38
+  when: xqueue_use_python311
   tags:
     - install
     - install:system-requirements
@@ -48,15 +48,15 @@
     - install
     - install:system-requirements
 
-- name: "Install python3.8 requirements"
+- name: "Install python3.11 requirements"
   pip:
     requirements: "{{ xqueue_requirements_file }}"
     virtualenv: "{{ xqueue_venv_dir }}"
-    virtualenv_python: 'python3.8'
+    virtualenv_python: 'python3.11'
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
   become_user: "{{ xqueue_user }}"
-  when: xqueue_use_python38
+  when: xqueue_use_python311
   tags:
     - install
     - install:app-requirements
@@ -94,7 +94,7 @@
   args:
     creates: "{{ xqueue_venv_dir }}/bin/pip"
   become_user: "{{ xqueue_user }}"
-  when: not xqueue_use_python3 and not xqueue_use_python38
+  when: not xqueue_use_python3 and not xqueue_use_python311
   tags:
     - install
     - install:system-requirements
@@ -170,7 +170,7 @@
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
   become_user: "{{ xqueue_user }}"
-  when: not xqueue_use_python3 and not xqueue_use_python38
+  when: not xqueue_use_python3 and not xqueue_use_python311
   tags:
     - install
     - install:app-requirements

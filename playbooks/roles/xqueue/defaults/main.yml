@@ -205,5 +205,5 @@ xqueue_release_specific_debian_pkgs:
 
 # flag to run xqueue on python3
 xqueue_use_python3: false
-# flag to run xqueue on python3.8
-xqueue_use_python38: true
+# flag to run xqueue on python3.11
+xqueue_use_python311: true
