@@ -172,6 +172,10 @@ if [[ -z $ami ]]; then
     ami="ami-089b5711e63812c2a"
     # Ansible will always use Python3 interpreter on Ubuntu 20.04 hosts to execute modules
     extra_var_arg+=' -e ansible_python_interpreter=auto'
+  elif [[ $server_type == "ubuntu_24.04" ]]; then
+    ami="ami-04b4f1a9cf54c11d0"
+    # Ansible will always use Python3.12 interpreter on Ubuntu 24.04 hosts to execute modules
+    extra_var_arg+=' -e ansible_python_interpreter=/usr/bin/python3.12'
   fi
 fi
 
@@ -725,7 +729,7 @@ done
 
 # If reconfigure was selected or if starting from an ubuntu 16.04 AMI
 # run non-deploy tasks for all plays
-if [[ $reconfigure == "true" || $server_type == "full_edx_installation_from_scratch" || $server_type == "ubuntu_20.04" ]]; then
+if [[ $reconfigure == "true" || $server_type == "full_edx_installation_from_scratch" || $server_type == "ubuntu_20.04" || $server_type == "ubuntu_24.04" ]]; then
     cat $extra_vars_file
     if [[ $edxapp_container_enabled == "true" ]]; then
       cat << EOF > $WORKSPACE/edxapp_extra_var.yml

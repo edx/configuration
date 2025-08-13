@@ -112,6 +112,8 @@
     - install
     - install:base
 
-- include: code_jail.yml CODE_JAIL_COMPLAIN=false
+- import_tasks: code_jail.yml 
+  vars:
+    CODE_JAIL_COMPLAIN: false
 
-- include: deploy.yml
+- import_tasks: deploy.yml
