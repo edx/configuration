@@ -314,18 +314,6 @@
     - install
     - install:app-requirements
 
-- name: Install NPM aliases
-  shell: >
-    npm install {{ item.key }}@{{ item.value }} --no-save
-  args:
-    chdir: "{{ edxapp_code_dir }}"
-  environment: "{{ edxapp_environment | combine(git_ssh_environment_mixin) }}"
-  become_user: "{{ edxapp_user }}"
-  with_dict: "{{ NPM_ALIASES }}"
-  tags:
-    - install
-    - install:app-requirements
-
 # The next few tasks set up the python code sandbox
 
 # need to disable this profile, otherwise the pip inside the sandbox venv has no permissions
