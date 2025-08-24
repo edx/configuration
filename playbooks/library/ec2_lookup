@@ -16,7 +16,10 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
-import six
+import sys
+import boto3
+from ansible.module_utils.basic import AnsibleModule
+
 DOCUMENTATION = '''
 ---
 module: ec2_lookup
@@ -28,8 +31,8 @@ options:
   region:
     description:
       - The AWS region to use.  Must be specified if ec2_url
-        is not used.  If not specified then the value of the
-        EC2_REGION environment variable, if any, is used.
+        is not used.  If not specified then the value of
+        the EC2_REGION environment variable, if any, is used.
     required: false
     default: null
     aliases: [ 'aws_region', 'ec2_region' ]
@@ -42,20 +45,20 @@ options:
     aliases: [ 'ec2_secret_key', 'secret_key' ]
   aws_access_key:
     description:
-      - AWS access key. If not set then the value of the
-        AWS_ACCESS_KEY environment variable is used.
+      - AWS access key. If not set then the value of
+        the AWS_ACCESS_KEY environment variable is used.
     required: false
     default: null
     aliases: [ 'ec2_access_key', 'access_key' ]
   tags:
-    desription:
+    description:
       - tags to lookup
     required: false
     default: null
     type: dict
     aliases: []
 
-requirements: [ "boto" ]
+requirements: [ "boto3" ]
 author: John Jarvis
 '''
 
@@ -70,8 +73,6 @@ EXAMPLES = '''
         Name: foo
 '''
 
-import sys
-
 AWS_REGIONS = ['ap-northeast-1',
                'ap-southeast-1',
                'ap-southeast-2',
@@ -81,17 +82,8 @@ AWS_REGIONS = ['ap-northeast-1',
                'us-west-1',
                'us-west-2']
 
-try:
-    import boto.ec2
-    from boto.ec2 import connect_to_region
-except ImportError:
-    print("failed=True msg='boto required for this module'")
-    sys.exit(1)
-
-
 def main():
-
-    module=AnsibleModule(
+    module = AnsibleModule(
         argument_spec=dict(
             ec2_url=dict(),
             region=dict(aliases=['aws_region', 'ec2_region'],
@@ -108,35 +100,34 @@ def main():
     region = module.params.get('region')
     ec2_url = module.params.get('ec2_url')
 
-    # If we have a region specified, connect to its endpoint.
+    # If region is specified, create a session with boto3 and connect to the EC2 service
     if region:
         try:
-            ec2 = connect_to_region(region, aws_access_key_id=aws_access_key,
-                                    aws_secret_access_key=aws_secret_key)
-        except boto.exception.NoAuthHandlerFound as e:
-            module.fail_json(msg=str(e))
-    # If we specified an ec2_url then try connecting to it
-    elif ec2_url:
-        try:
-            ec2 = boto.connect_ec2_endpoint(ec2_url, aws_access_key,
-                                            aws_secret_key)
-        except boto.exception.NoAuthHandlerFound as e:
-            module.fail_json(msg=str(e))
+            ec2 = boto3.resource('ec2', region_name=region, aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
+        except Exception as e:
+            module.fail_json(msg=f"Error connecting to AWS EC2: {str(e)}")
     else:
-        module.fail_json(msg="Either region or ec2_url must be specified")
+        module.fail_json(msg="Region must be specified")
+
+    # If EC2 URL is provided, it can be used for connection
+    if ec2_url:
+        module.fail_json(msg="ec2_url is not supported in boto3 connection. Please use region instead.")
 
     instances = []
     instance_ids = []
-    for res in ec2.get_all_instances(filters={'tag:' + tag: value
-                                     for tag, value in six.iteritems(module.params.get('tags'))}):
-        for inst in res.instances:
-            if inst.state == "running":
-                instances.append({k: v for k, v in six.iteritems(inst.__dict__)
-                                  if isinstance(v, (six.string_types))})
-                instance_ids.append(inst.id)
-    module.exit_json(changed=False, instances=instances,
-                     instance_ids=instance_ids)
 
+    # Get all instances with the specified tags
+    filters = {'tag:' + tag: value for tag, value in module.params.get('tags', {}).items()}
+    try:
+        instances_query = ec2.instances.filter(Filters=[{'Name': f'tag:{tag}', 'Values': [value]} for tag, value in filters.items()])
+        for instance in instances_query:
+            if instance.state['Name'] == 'running':
+                instances.append({k: v for k, v in instance.__dict__.items() if isinstance(v, str)})
+                instance_ids.append(instance.id)
+    except Exception as e:
+        module.fail_json(msg=f"Error querying EC2 instances: {str(e)}")
+
+    module.exit_json(changed=False, instances=instances, instance_ids=instance_ids)
 
 # this is magic, see lib/ansible/module_common.py
 #<<INCLUDE_ANSIBLE_MODULE_COMMON>>

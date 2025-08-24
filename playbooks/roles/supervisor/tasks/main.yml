@@ -99,6 +99,7 @@
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
   become_user: "{{ supervisor_user }}"
+  when: ansible_distribution_release != "noble"
   tags:
     - install
     - install:base
@@ -110,18 +111,50 @@
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
   become_user: "{{ supervisor_user }}"
+  when: ansible_distribution_release != "noble"
   tags:
     - install
     - install:base
 
-  # 14.04
-- name: Create supervisor upstart job
-  template:
-    src: "etc/init/supervisor-upstart.conf.j2"
-    dest: "/etc/init/{{ supervisor_service }}.conf"
-    owner: root
-    group: root
-  when: ansible_distribution_release == 'trusty'
+# Supervisor is not yet compatible with Python 3.12
+# To ensure compatibility on Ubuntu 24.04 (Noble), create a virtual environment using Python 3.9
+- name: install python3.9
+  apt:
+    pkg:
+      - python3.9-dev
+      - python3.9-distutils
+      - python3.9-venv
+    update_cache: yes
+  register: install_pkgs
+  until: install_pkgs is success
+  retries: 10
+  delay: 5
+  when: ansible_distribution_release == "noble"
+  tags:
+    - install
+    - install:base
+
+- name: Create Supervisor virtual environment with Python 3.9
+  command: /usr/bin/python3.9 -m venv "{{ supervisor_venv_dir }}"
+  args:
+    creates: "{{ supervisor_venv_dir }}/bin/activate"
+  become_user: "{{ supervisor_user }}"
+  when: ansible_distribution_release == "noble"
+
+- name: Install supervisor in its venv with Python 3.9
+  command: "{{ supervisor_venv_dir }}/bin/pip install supervisor==4.2.5"
+  become_user: "{{ supervisor_user }}"
+  when: ansible_distribution_release == "noble"
+  tags:
+    - install
+    - install:base
+
+- name: Install supervisor in its venv with Python 3.9
+  command: "{{ supervisor_venv_dir }}/bin/pip install {{ item }} "
+  become_user: "{{ supervisor_user }}"
+  with_items:
+    - "{{ supervisor_pip_pkgs }}"
+  when: ansible_distribution_release == "noble"
   tags:
     - install
     - install:base
@@ -133,7 +166,7 @@
     dest: "/etc/systemd/system/{{ supervisor_service }}.service"
     owner: root
     group: root
-  when: ansible_distribution_release == 'xenial' or ansible_distribution_release == 'bionic' or ansible_distribution_release == 'focal'
+  when: ansible_distribution_release == 'bionic' or ansible_distribution_release == 'focal' or ansible_distribution_release == 'noble'
   tags:
     - install
     - install:base
@@ -211,7 +244,7 @@
   service:
     name: "{{ supervisor_service }}.service"
     enabled: yes
-  when: (ansible_distribution_release == 'xenial' or ansible_distribution_release == 'bionic' or ansible_distribution_release == 'focal') and docker_container.stdout != 'yes'
+  when: (ansible_distribution_release == 'bionic' or ansible_distribution_release == 'focal' or ansible_distribution_release == 'noble') and docker_container.stdout != 'yes'
   tags:
     - install
     - install:base
