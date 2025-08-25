@@ -1416,7 +1416,7 @@ generic_env_config:  &edxapp_generic_env
   AWS_SES_REGION_ENDPOINT: "{{ EDXAPP_AWS_SES_REGION_ENDPOINT }}"
   FEATURES: "{{ EDXAPP_FEATURES }}"
   ##############################################
-  # Dedenting FEATURES dict 
+  # Duplicating EDXAPP_FEATURES dict at config level 
   # For more information visit: https://2u-internal.atlassian.net/browse/BOMS-200
   # https://github.com/openedx/edx-platform/issues/37226
   AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_AUTH_USE_OPENID_PROVIDER }}"
