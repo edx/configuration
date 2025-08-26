@@ -2,7 +2,7 @@
 
 # function to create a virtual environment in a directory separate from
 # where it is called. Its name is predictable based on where the script
-# is called
+# is called and the args it was passed.
 #
 # . /edx/var/jenkins/jobvenvs/virtualenv_tools.sh
 # create_virtualenv --python=python3.8 --clear
@@ -36,7 +36,8 @@ function create_virtualenv () {
     fi
 
     # create a unique hash for the job based location of where job is run
-    venvname="$(pwd | md5sum | cut -d' ' -f1)"
+    # as well as the args for the virtualenv creation (includes python version)
+    venvname="$( (echo "$@"; pwd) | md5sum | cut -d' ' -f1 )"
 
     # create the virtualenv
     virtualenv "$@" "$JOBVENVDIR/$venvname"
