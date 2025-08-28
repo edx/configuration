@@ -590,7 +590,7 @@ EDXAPP_PRIVATE_REQUIREMENTS_TESTING: []
 # For more help, see:
 # https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
 EDXAPP_PRIVATE_NPM_REQUIREMENTS: []
-
+EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING: []
 # List of custom middlewares that should be used in edxapp to process
 # incoming HTTP resquests. Should be a list of plain strings that fully
 # qualify Python classes or functions that can be used as Django middleware.
@@ -1416,7 +1416,7 @@ generic_env_config:  &edxapp_generic_env
   AWS_SES_REGION_ENDPOINT: "{{ EDXAPP_AWS_SES_REGION_ENDPOINT }}"
   FEATURES: "{{ EDXAPP_FEATURES }}"
   ##############################################
-  # Duplicating EDXAPP_FEATURES dict at config level 
+  # Duplicating EDXAPP_FEATURES dict at config level
   # For more information visit: https://2u-internal.atlassian.net/browse/BOMS-200
   # https://github.com/openedx/edx-platform/issues/37226
   AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_AUTH_USE_OPENID_PROVIDER }}"
