@@ -66,6 +66,11 @@ if ! $(docker image inspect ${app_image_name} >/dev/null 2>&1 && echo true || ec
         cd /var/tmp/edx-platform-private
         docker build . --build-arg BASE_IMAGE=${app_repo} --build-arg BASE_TAG=base -t ${app_repo}:latest
     else
+        if [ ! -f "./Dockerfile" ]; then
+            export DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/${app_repo}.Dockerfile"
+            echo "Downloading Dockerfile from GitHub..."
+            curl -L "/$DOCKERFILE_URL" -o "Dockerfile"
+        fi
         docker build . -t ${app_repo}:latest
     fi
 fi
