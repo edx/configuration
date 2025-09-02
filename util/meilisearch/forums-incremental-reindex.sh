@@ -19,19 +19,22 @@ if [ "$SLEEP_TIME" -ge "$((WINDOW * 60))" ]; then
   exit 1
 fi
 
+AUTH_HEADER=()
+if [ -n "$API_KEY" ]; then
+  AUTH_HEADER=(-H "Authorization: Bearer $API_KEY")
+fi
+
 while : ; do
   echo "Fetching documents newer than $WINDOW minutes..."
 
-  # Replace this with your actual data fetch logic (DB query or API)
-  # Here, we assume you have a script `fetch_new_docs.rb` that prints JSON array
   NEW_DOCS=$(./fetch_new_docs.rb "$WINDOW" "$INDEX" "$BATCH_SIZE")
 
-  if [ -n "$NEW_DOCS" ]; then
+  if [ -n "$NEW_DOCS" ] && [ "$NEW_DOCS" != "[]" ]; then
     echo "$NEW_DOCS" | curl -s -X POST "$MEILI_URL/indexes/$INDEX/documents" \
       -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $API_KEY" \
+      "${AUTH_HEADER[@]}" \
       --data-binary @-
-    echo "Indexed batch into $INDEX"
+    echo "Indexed $(echo "$NEW_DOCS" | jq length) docs into $INDEX"
   else
     echo "No new docs."
   fi
