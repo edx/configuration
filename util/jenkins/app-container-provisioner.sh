@@ -69,7 +69,7 @@ if ! $(docker image inspect ${app_image_name} >/dev/null 2>&1 && echo true || ec
         if [ ! -f "./Dockerfile" ]; then
             export DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/${app_repo}.Dockerfile"
             echo "Downloading Dockerfile from GitHub..."
-            curl -L "/$DOCKERFILE_URL" -o "Dockerfile"
+            curl -L "\$DOCKERFILE_URL" -o "Dockerfile"
         fi
         docker build . -t ${app_repo}:latest
     fi
