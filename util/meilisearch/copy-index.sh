@@ -2,49 +2,57 @@
 set -euo pipefail
 
 # Usage:
-#   ./copy-index-meili.sh SOURCE_ES SERVER:PORT SOURCE_INDEX TARGET_MEILI_SERVER:PORT TARGET_INDEX
-#
-# Example:
-#   ./copy-index-meili.sh http://localhost:9200 source_index http://localhost:7700 target_index
+#   ./copy-index-meili.sh SOURCE_ES SOURCE_INDEX TARGET_MEILI TARGET_INDEX [API_KEY]
 
 SOURCE_ES=$1
 SOURCE_INDEX=$2
 TARGET_MEILI=$3
 TARGET_INDEX=$4
-API_KEY="${5:-}"   # Optional Meilisearch master key
+API_KEY="${5:-}"
 
-# Ensure target index exists
+AUTH_HEADER=()
+if [ -n "$API_KEY" ]; then
+  AUTH_HEADER=(-H "Authorization: Bearer $API_KEY")
+fi
+
+# Recreate target index (optional but safer for fresh import)
+curl -s -X DELETE "$TARGET_MEILI/indexes/$TARGET_INDEX" "${AUTH_HEADER[@]}" || true
 curl -s -X POST "$TARGET_MEILI/indexes" \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $API_KEY" \
-    -d "{ \"uid\": \"$TARGET_INDEX\" }" || true
+    "${AUTH_HEADER[@]}" \
+    -d "{ \"uid\": \"$TARGET_INDEX\" }"
 
-# Scroll through Elasticsearch index
+# Scroll through Elasticsearch
 SCROLL="1m"
-SIZE=1000
+SIZE=500
 SCROLL_ID=$(curl -s "$SOURCE_ES/$SOURCE_INDEX/_search?scroll=$SCROLL" \
     -H 'Content-Type: application/json' \
     -d "{ \"size\": $SIZE }" | jq -r '._scroll_id')
 
 while [ "$SCROLL_ID" != "null" ]; do
-    # Fetch batch from Elasticsearch
     RESPONSE=$(curl -s "$SOURCE_ES/_search/scroll" \
         -H 'Content-Type: application/json' \
         -d "{ \"scroll\": \"$SCROLL\", \"scroll_id\": \"$SCROLL_ID\" }")
 
     DOCS=$(echo "$RESPONSE" | jq '.hits.hits[]._source')
-    COUNT=$(echo "$DOCS" | jq length)
+    COUNT=$(echo "$DOCS" | jq -s 'length')
 
     if [ "$COUNT" -eq 0 ]; then
         break
     fi
 
-    # Push batch into Meilisearch
-    echo "$DOCS" | jq -s '.' | curl -s -X POST "$TARGET_MEILI/indexes/$TARGET_INDEX/documents" \
+    echo "$DOCS" | jq -s '.' | curl -s -X POST \
+        "$TARGET_MEILI/indexes/$TARGET_INDEX/documents" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $API_KEY" \
+        "${AUTH_HEADER[@]}" \
         --data-binary @-
 
-    # Next scroll id
     SCROLL_ID=$(echo "$RESPONSE" | jq -r '._scroll_id')
 done
+
+# Cleanup scroll context
+curl -s -X DELETE "$SOURCE_ES/_search/scroll" \
+    -H 'Content-Type: application/json' \
+    -d "{ \"scroll_id\": [\"$SCROLL_ID\"] }" > /dev/null || true
+
+echo "Copied index $SOURCE_INDEX from $SOURCE_ES to $TARGET_INDEX on $TARGET_MEILI"

@@ -2,5 +2,4 @@
   become: True
   roles:
     - common
-    - oraclejdk
     - meilisearch

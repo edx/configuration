@@ -1,0 +1,54 @@
+[Unit]
+Description=Meilisearch
+Documentation=https://www.meilisearch.com
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+RuntimeDirectory=meilisearch
+PrivateTmp=true
+Environment=MEILI_HOME=/usr/bin/meilisearch
+Environment=MEILI_PATH_CONF=/etc/meilisearch
+Environment=PID_DIR=/var/run/meilisearch
+EnvironmentFile=-/etc/default/meilisearch
+
+WorkingDirectory=/var/lib/meilisearch
+
+User={{ meilisearch_user }}
+Group={{ meilisearch_group }}
+
+ExecStart=/usr/bin/meilisearch \
+  --db-path {{ meilisearch_data_dir }} \
+  --http-addr {{ meilisearch_bind_host }}:{{ meilisearch_bind_port }} \
+  --env production \
+  --master-key {{ meilisearch_master_key | default('changeme') }} \
+  --log-level {{ meilisearch_log_level | default('INFO') }}
+
+StandardOutput=journal
+StandardError=inherit
+
+# Resource limits (similar to Elasticsearch service)
+LimitNOFILE=65535
+LimitNPROC=4096
+LimitAS=infinity
+LimitFSIZE=infinity
+
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=0
+
+# SIGTERM is used to gracefully stop Meilisearch
+KillSignal=SIGTERM
+KillMode=process
+SendSIGKILL=no
+
+# Meilisearch exits cleanly with code 0
+SuccessExitStatus=0
+
+# Allow some startup time before systemd marks it failed
+TimeoutStartSec={{ MEILISEARCH_START_TIMEOUT | default(30) }}
+
+[Install]
+WantedBy=multi-user.target
+
+# Built for Meilisearch {{ meilisearch_version | default('latest') }}

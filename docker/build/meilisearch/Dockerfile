@@ -11,4 +11,4 @@ RUN /edx/app/edx_ansible/venvs/edx_ansible/bin/ansible-playbook meilisearch.yml 
 
 WORKDIR /etc/meilisearch
 CMD service meilisearch start && sleep 5 && tail -f /edx/var/log/meilisearch/meilisearch.log
-EXPOSE 7700
+EXPOSE 7700 7701

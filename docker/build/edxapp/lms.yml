@@ -237,9 +237,9 @@ EDXNOTES_INTERNAL_API: http://edx.devstack.edx_notes_api:18120/api/v1
 EDXNOTES_PUBLIC_API: http://localhost:18120/api/v1
 EDX_API_KEY: PUT_YOUR_API_KEY_HERE
 EDX_PLATFORM_REVISION: master
-ELASTIC_SEARCH_CONFIG:
--   host: edx.devstack.elasticsearch710
-    port: 9200
+MEILI_SEARCH_CONFIG:
+-   host: edx.devstack.meilisearch184
+    port: 7700
     use_ssl: false
 EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST: localhost

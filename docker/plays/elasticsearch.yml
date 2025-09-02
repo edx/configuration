@@ -1,6 +1,6 @@
-- hosts: all
-  become: True
-  roles:
-    - common
-    - oraclejdk
-    - elasticsearch
+# - hosts: all
+#   become: True
+#   roles:
+#     - common
+#     - oraclejdk
+#     - elasticsearch
