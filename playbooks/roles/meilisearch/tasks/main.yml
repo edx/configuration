@@ -1,0 +1,94 @@
+---
+# meilisearch
+#
+# Dependencies:
+#
+#   * common
+#
+# Example play:
+#
+# This role installs and configures the Meilisearch service.
+# It can be used for single-server installs (default).
+#
+
+- name: create meilisearch group
+  group:
+    name: "{{ meilisearch_group }}"
+    state: present
+  tags:
+    - install
+    - install:base
+
+- name: create meilisearch user
+  user:
+    name: "{{ meilisearch_user }}"
+    group: "{{ meilisearch_group }}"
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+  tags:
+    - install
+    - install:base
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ meilisearch_user }}"
+    group: "{{ meilisearch_group }}"
+    mode: 0755
+  loop:
+    - "{{ meilisearch_data_dir }}"
+    - "{{ meilisearch_log_dir }}"
+    - "{{ meilisearch_cfg_dir }}"
+  tags:
+    - install
+    - install:base
+
+- name: download meilisearch binary
+  get_url:
+    url: "{{ meilisearch_download_url }}"
+    dest: "{{ meilisearch_app_dir }}/meilisearch"
+    mode: '0755'
+  tags:
+    - install
+    - install:base
+  register: meilisearch_download
+
+- name: drop the meilisearch config (env file)
+  template:
+    src: etc/default/meilisearch.j2
+    dest: /etc/default/meilisearch
+    mode: 0644
+  tags:
+    - install
+    - install:configuration
+
+- name: drop the meilisearch systemd service config
+  template:
+    src: lib/systemd/system/meilisearch.service.j2
+    dest: "/lib/systemd/system/meilisearch.service"
+    mode: 0644
+  tags:
+    - install
+    - install:configuration
+
+- name: Ensure meilisearch is enabled and started
+  service:
+    name: meilisearch
+    state: started
+    enabled: yes
+  tags:
+    - manage
+    - manage:start
+
+- name: Restart meilisearch when binary is updated
+  service:
+    name: meilisearch
+    state: restarted
+    enabled: yes
+  when: meilisearch_download.changed
+  tags:
+    - manage
+    - manage:restart
+    - install

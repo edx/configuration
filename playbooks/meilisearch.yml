@@ -31,7 +31,7 @@
     - common
     - role: aws
       when: COMMON_ENABLE_AWS_ROLE
-    - meilisearch   # <--- replace elasticsearch with meilisearch
+    - meilisearch   # add the roles for meilisearch
 
   post_tasks:
     - debug:
