@@ -128,15 +128,12 @@
     - install
     - install:app-requirements
 
-- name: Install pip and pip-tools requirements
-  command: "{{ edxapp_venv_dir }}/bin/pip install -r requirements/{{ item }}"
+- name: Pin pip to a specific version.
+  command: "{{ edxapp_venv_dir }}/bin/pip install pip=={{ COMMON_PIP_VERSION }}"
   args:
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ edxapp_user }}"
   environment: "{{ edxapp_environment }}"
-  with_items:
-    - pip.txt
-    - pip-tools.txt
   tags:
     - install
     - install:app-requirements
@@ -327,7 +324,7 @@
 
 - name: Pin pip to a specific version.
   # Pinning pip to latest version. Constraint will be removed later on.
-  command: "{{ edxapp_sandbox_venv_dir }}/bin/pip install pip==24.0"
+  command: "{{ edxapp_sandbox_venv_dir }}/bin/pip install pip==25.2"
   args:
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ edxapp_sandbox_user }}"

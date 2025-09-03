@@ -33,7 +33,7 @@ fi
 # Bootstrapping constants
 #
 VIRTUAL_ENV_VERSION="16.7.10"
-PIP_VERSION="21.2.1"
+PIP_VERSION="25.2"
 SETUPTOOLS_VERSION="44.1.0"
 VIRTUAL_ENV="/tmp/bootstrap"
 PYTHON_BIN="${VIRTUAL_ENV}/bin"
