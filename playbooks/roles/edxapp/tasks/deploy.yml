@@ -324,7 +324,7 @@
 
 - name: Pin pip to a specific version.
   # Pinning pip to latest version. Constraint will be removed later on.
-  command: "{{ edxapp_sandbox_venv_dir }}/bin/pip install pip==25.2"
+  command: "{{ edxapp_sandbox_venv_dir }}/bin/pip install pip==25.0.1"
   args:
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ edxapp_sandbox_user }}"
