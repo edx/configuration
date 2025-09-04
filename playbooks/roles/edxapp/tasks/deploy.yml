@@ -128,12 +128,15 @@
     - install
     - install:app-requirements
 
-- name: Pin pip to a specific version.
-  command: "{{ edxapp_venv_dir }}/bin/pip install pip=={{ COMMON_PIP_VERSION }}"
+- name: Install pip and pip-tools requirements
+  command: "{{ edxapp_venv_dir }}/bin/pip install -r requirements/{{ item }}"
   args:
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ edxapp_user }}"
   environment: "{{ edxapp_environment }}"
+  with_items:
+    - pip.txt
+    - pip-tools.txt
   tags:
     - install
     - install:app-requirements
