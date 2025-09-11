@@ -597,6 +597,9 @@ EDXAPP_PRIVATE_REQUIREMENTS_TESTING: []
 # https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
 EDXAPP_PRIVATE_NPM_REQUIREMENTS: []
 
+# Temporary/staging-only NPM dependencies used for testing in stage
+EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING: []
+
 # List of custom middlewares that should be used in edxapp to process
 # incoming HTTP resquests. Should be a list of plain strings that fully
 # qualify Python classes or functions that can be used as Django middleware.
