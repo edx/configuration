@@ -577,11 +577,9 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Other xblocks
     - name: openedx-scorm-xblock==19.0.0
 
-    # Date: 2025-08-20
-    # We had issues with an increase in CPU with the upgrade to 3.12.1. We can unpin this when we
-    # can verify that the upgrade will not cause issues with our deployments.
-    # See ticket: https://2u-internal.atlassian.net/browse/BOMS-201
-    - name: ddtrace==3.12.0
+    # This constraint was added to protect against auto-upgrading to a (future)
+    # major release with possible breaking changes.
+    - name: ddtrace<4.0.0
 
     # Plugins
     - name: edx-arch-experiments==6.1.0
