@@ -25,5 +25,7 @@ meilisearch_version: "v1.10.0"
 
 # Network and security settings
 meilisearch_host: "0.0.0.0"
+meilisearch_bind_host: "0.0.0.0"
 meilisearch_port: 7700
+meilisearch_bind_port: 7700
 meilisearch_master_key: ""   # Set if you want API key protection
