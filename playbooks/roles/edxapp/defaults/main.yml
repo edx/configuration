@@ -577,11 +577,9 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Other xblocks
     - name: openedx-scorm-xblock==19.0.0
 
-    # Date: 2025-08-20
-    # We had issues with an increase in CPU with the upgrade to 3.12.1. We can unpin this when we
-    # can verify that the upgrade will not cause issues with our deployments.
-    # See ticket: https://2u-internal.atlassian.net/browse/BOMS-201
-    - name: ddtrace==3.12.0
+    # This constraint was added to protect against auto-upgrading to a (future)
+    # major release with possible breaking changes.
+    - name: ddtrace<4.0.0
 
     # Plugins
     - name: edx-arch-experiments==6.1.0
@@ -596,6 +594,9 @@ EDXAPP_PRIVATE_REQUIREMENTS_TESTING: []
 # For more help, see:
 # https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
 EDXAPP_PRIVATE_NPM_REQUIREMENTS: []
+
+# Temporary/staging-only NPM dependencies used for testing in stage
+EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING: []
 
 # List of custom middlewares that should be used in edxapp to process
 # incoming HTTP resquests. Should be a list of plain strings that fully
@@ -1135,8 +1136,8 @@ edxapp_nodeenv_bin: "{{ edxapp_nodeenv_dir }}/bin"
 edxapp_npm_dir: "{{ edxapp_app_dir }}/.npm"
 edxapp_npm_bin: "{{ edxapp_npm_dir }}/bin"
 edxapp_settings: '{{ EDXAPP_SETTINGS }}'
-EDXAPP_NODE_VERSION: "20"
-EDXAPP_NPM_VERSION: "10.7.0"
+EDXAPP_NODE_VERSION: "24"
+EDXAPP_NPM_VERSION: "11.5.1"
 # This is where node installs modules, not node itself
 edxapp_node_bin: "{{ edxapp_code_dir }}/node_modules/.bin"
 edxapp_user: edxapp
