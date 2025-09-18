@@ -18,7 +18,7 @@ WorkingDirectory=/var/lib/meilisearch
 User={{ meilisearch_user }}
 Group={{ meilisearch_group }}
 
-ExecStart=/usr/bin/meilisearch \
+ExecStart={{ meilisearch_app_dir }} \
   --db-path {{ meilisearch_data_dir }} \
   --http-addr {{ meilisearch_bind_host }}:{{ meilisearch_bind_port }} \
   --env production \
