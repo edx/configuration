@@ -25,8 +25,8 @@ meilisearch_version: "v1.10.0"
 
 # Network and security settings
 meilisearch_host: "0.0.0.0"
-meilisearch_bind_host: "0.0.0.0"
 meilisearch_port: 7700
-meilisearch_bind_port: 7700
+MEILISEARCH_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
+MEILISEARCH_PUBLIC_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
 MEILISEARCH_MASTER_KEY: "{{ lookup('aws_secret', 'sandbox-secure/ansible/vars/developer-sandbox.MEILISEARCH_MASTER_KEY', nested=True, region='us-east-1') }}"
 MEILISEARCH_API_KEY: "{{ lookup('aws_secret', 'sandbox-secure/ansible/vars/developer-sandbox.MEILISEARCH_API_KEY', nested=True, region='us-east-1') }}"
