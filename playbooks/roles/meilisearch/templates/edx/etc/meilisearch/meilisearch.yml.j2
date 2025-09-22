@@ -19,7 +19,7 @@ MEILI_LOG_PATH={{ meilisearch_log_dir }}
 
 # ---------------------------------- Network ---------------------------------
 # The IP address Meilisearch binds to (0.0.0.0 for all interfaces)
-MEILI_HTTP_ADDR={{ meilisearch_bind_host | default("0.0.0.0") }}
+MEILI_HTTP_ADDR={{ meilisearch_host | default("0.0.0.0") }}
 
 # The port Meilisearch listens on
 MEILI_HTTP_PORT={{ meilisearch_port | default("7700") }}

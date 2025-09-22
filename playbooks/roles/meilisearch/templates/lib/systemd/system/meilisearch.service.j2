@@ -20,7 +20,7 @@ Group={{ meilisearch_group }}
 
 ExecStart={{ meilisearch_app_dir }} \
   --db-path {{ meilisearch_data_dir }} \
-  --http-addr {{ meilisearch_bind_host }}:{{ meilisearch_bind_port }} \
+  --http-addr {{ meilisearch_host }}:{{ meilisearch_port }} \
   --env {{ MEILISEARCH_ENV }} \
   --master-key {{ MEILISEARCH_MASTER_KEY }} \
   --log-level {{ meilisearch_log_level | default('INFO') }}
