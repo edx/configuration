@@ -57,7 +57,7 @@
 
 - name: drop the meilisearch config (env file)
   template:
-    src: edx/etc/meilisearch/meilisearch.j2
+    src: edx/etc/meilisearch/meilisearch.yml.j2
     dest: "{{ meilisearch_cfg_dir }}/meilisearch"
     mode: 0644
   tags:
