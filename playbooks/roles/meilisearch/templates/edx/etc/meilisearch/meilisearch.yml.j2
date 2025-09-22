@@ -27,7 +27,7 @@ MEILI_HTTP_PORT={{ meilisearch_port | default("7700") }}
 # ---------------------------------- Master Key -------------------------------
 # The master key is used to generate API keys. Comment out to disable auth.
 # !! Make sure to secure this in production !!
-MEILI_MASTER_KEY={{ meilisearch_master_key | default("") }}
+MEILISEARCH_MASTER_KEY={{ MEILISEARCH_MASTER_KEY }}
 
 # ---------------------------------- Snapshots & Dumps ------------------------
 # Directory to store snapshots
@@ -57,4 +57,4 @@ MEILI_NO_ANALYTICS={{ meilisearch_no_analytics | default("true") }}
 
 # ---------------------------------- Various ---------------------------------
 # Require explicit UID for created indexes (default: false)
-MEILI_ENV={{ meilisearch_env | default("production") }}
+MEILISEARCH_ENV={{ MEILISEARCH_ENV }}
