@@ -23,28 +23,35 @@ edx_ansible_debian_running_services:
   - fail2ban
 
 edx_ansible_debian_pkgs_default:
-  - python-apt
   - libmysqlclient-dev
   - git-core
   - build-essential
   - libxml2-dev
   - libxslt1-dev
   - curl
-  - python-yaml
   - python3-pip
   - python3-mysqldb
 
 edx_ansible_release_specific_debian_pkgs:
   xenial:
+    - python-apt
     - python-pip
     - python-mysqldb
     - python-dev
   bionic:
+    - python-apt
     - python-pip
     - python-mysqldb
     - python-dev
   focal:
+    - python-yaml
+    - python-apt
     - python3-dev
+  noble:
+    - python3-apt
+    - python3-yaml
+    - python3-virtualenv
+    - python3.12-dev
 
 edx_ansible_debian_pkgs: "{{ edx_ansible_debian_running_services + edx_ansible_debian_pkgs_default + edx_ansible_release_specific_debian_pkgs[ansible_distribution_release] }}"
 

@@ -149,6 +149,8 @@ common_release_specific_debian_pkgs:
     - python3.5-dev
   jammy:
     - python3.8
+  noble: 
+    - python3.12
 
 common_debian_pkgs: "{{ common_debian_pkgs_default + common_release_specific_debian_pkgs[ansible_distribution_release] }}"
 
@@ -160,7 +162,12 @@ old_python_debian_pkgs:
   - "python2.7=2.7.10-0+{{ ansible_distribution_release }}1"
 
 
-COMMON_PIP_VERSION: '21.2.1'
+COMMON_PIP_VERSION: "{{ common_release_specific_pip_version[ansible_distribution_release] }}"
+
+common_release_specific_pip_version:
+  bionic: "21.2.1"
+  focal: "21.2.1"
+  noble: "24.0"
 
 common_pip_pkgs:
   - pip=={{ COMMON_PIP_VERSION }}

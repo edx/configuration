@@ -36,14 +36,24 @@ aws_region: "us-east-1"
 aws_s3cmd: "/usr/bin/s3cmd"
 aws_cmd: "/usr/local/bin/aws"
 aws_requirements: "{{ vhost_dirs.home.path }}/requirements.txt"
+aws_venv_dir: "{{ vhost_dirs.home.path }}/venv"
 
 #
 # OS packages
 #
 
-aws_debian_pkgs:
-  - python-setuptools
+aws_debian_pkgs: "{{ aws_debian_pkgs_default + aws_release_specific_debian_pkgs[ansible_distribution_release] }}"
+
+aws_debian_pkgs_default:
   - s3cmd
+
+aws_release_specific_debian_pkgs:
+  bionic:
+    - python-setuptools
+  focal:
+    - python-setuptools
+  noble:
+    - python3-setuptools
 
 aws_redhat_pkgs: []
 

@@ -1014,10 +1014,10 @@ data structure is the following::
                 - ^name: reload
                 - allow:
                   - ^user: root
-        - include:
+        - import_tasks:
           - ^ignore_missing: "yes"
           - /etc/oddjobd.conf.d/*.conf
-        - include:
+        - import_tasks:
           - ^ignore_missing: "yes"
           - /etc/oddjobd-local.conf
 

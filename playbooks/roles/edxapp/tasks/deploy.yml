@@ -448,7 +448,7 @@
 # creates the supervisor jobs for the
 # service variants configured, runs
 # gather_assets and db migrations
-- include: service_variant_config.yml
+- import_tasks: service_variant_config.yml
   tags:
     - service_variant_config
     - deploy
@@ -513,9 +513,10 @@
     - install:configuration
     - install:code
 
-- include: tag_ec2.yml tags=deploy
+- import_tasks: tag_ec2.yml
   when: COMMON_TAG_EC2_INSTANCE
   tags:
+    - deploy
     - remove
     - aws
 

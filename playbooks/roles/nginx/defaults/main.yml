@@ -142,12 +142,11 @@ nginx_htpasswd_file: "{{ nginx_app_dir }}/nginx.htpasswd"
 nginx_default_sites: []
 
 nginx_release_specific_debian_pkgs:
-  xenial:
-    - python-passlib
-    - python3-passlib
   bionic:
     - python-passlib
   focal:
+    - python3-passlib
+  noble:
     - python3-passlib
 
 nginx_debian_pkgs: "{{ nginx_release_specific_debian_pkgs[ansible_distribution_release] }}"

@@ -12,7 +12,7 @@
     mode: "0600"
   become_user: "{{ common_web_user }}"
 
-- include: course_pull.yml
+- import_tasks: course_pull.yml
   when: GITRELOAD_COURSE_CHECKOUT|bool
   tags: course_pull
 

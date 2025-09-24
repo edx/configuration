@@ -131,7 +131,7 @@
     - jenkins-credentials
 
 - name: add credentials
-  include: execute_jenkins_cli.yaml
+  import_tasks: execute_jenkins_cli.yaml
   vars:
     jenkins_command_string: "groovy {{ jenkins_credentials_script }}"
   tags:
@@ -179,7 +179,7 @@
     - jenkins-seed-job
 
 - name: check if job is present
-  include: execute_jenkins_cli.yaml
+  import_tasks: execute_jenkins_cli.yaml
   vars:
     jenkins_command_string: "get-job {{ jenkins_seed_job.name }}"
     jenkins_ignore_cli_errors: yes
@@ -194,7 +194,7 @@
 # Upload seed job to Jenkins
 
 - name: Create seed job if absent
-  include: execute_jenkins_cli.yaml
+  import_tasks: execute_jenkins_cli.yaml
   vars:
     jenkins_command_string: "create-job {{ jenkins_seed_job.name }}"
     jenkins_command_prefix: "cat {{ jenkins_seed_job_xmlfile }} | "
@@ -203,7 +203,7 @@
     - jenkins-seed-job
 
 - name: update seed job
-  include: execute_jenkins_cli.yaml
+  import_tasks: execute_jenkins_cli.yaml
   vars:
     jenkins_command_string: "update-job {{ jenkins_seed_job.name }}"
     jenkins_command_prefix: "cat {{ jenkins_seed_job_xmlfile }} | "
@@ -214,7 +214,7 @@
 # Build the seed job
 
 - name: Build the seed job
-  include: execute_jenkins_cli.yaml
+  import_tasks: execute_jenkins_cli.yaml
   vars:
     jenkins_command_string: "build {{ jenkins_seed_job.name }} -s"
   tags:
