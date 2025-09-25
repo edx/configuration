@@ -13,8 +13,6 @@
     path: "/usr/sbin/update-ca-certificates"
   register: update_ca_certificates
 
-<<<<<<< HEAD
-=======
 # - name: Download digicert intermediate Certificate
 #   get_url:
 #     url: "{{ common_digicert_base_url }}/{{ common_digicert_name }}.pem"
@@ -23,15 +21,14 @@
 #   when: update_ca_certificates is defined and update_ca_certificates.results[0].stat.exists == True
 
 - name: Download digicert intermediate Certificate with curl
-  shell: >
-    curl -fsSL {{ common_digicert_base_url }}/{{ common_digicert_name }}.pem
-    -o /usr/local/share/ca-certificates/{{ common_digicert_name }}
+  shell: |
+    curl --tlsv1.2 -fsSL {{ common_digicert_base_url }}/{{ common_digicert_name }}.pem \
+      -o /usr/local/share/ca-certificates/{{ common_digicert_name }}
   args:
     warn: false
   when: update_ca_certificates is defined and update_ca_certificates.results[0].stat.exists == True
 
-
->>>>>>> 826d86bc3 (fix: change get_url with curl)
+  
 - name: Update CA Certificates
   shell: /usr/sbin/update-ca-certificates
   when: update_ca_certificates is defined and update_ca_certificates.stat.exists == True
