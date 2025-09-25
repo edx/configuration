@@ -81,15 +81,15 @@
     - "install:app-configuration"
 
 # Restart mongo service if configuration or packages changed
-- name: restart mongo service if we changed our configuration or upgraded mongo
-  service:
-    name: mongod
-    state: restarted
-  when: update_mongod_conf.changed or update_mongod_key.changed or install_mongo_package.changed
-  tags:
-    - "manage"
-    - "manage:start"
-    - "manage:db-replication"
+# - name: restart mongo service if we changed our configuration or upgraded mongo
+#   service:
+#     name: mongod
+#     state: restarted
+#   when: update_mongod_conf.changed or update_mongod_key.changed or install_mongo_package.changed
+#   tags:
+#     - "manage"
+#     - "manage:start"
+#     - "manage:db-replication"
 
 # --- NEW TASK: Wait for MongoDB to accept connections ---
 - name: wait for mongod to accept connections
