@@ -80,6 +80,29 @@
     - "install"
     - "install:app-configuration"
 
+# Restart mongo service if configuration or packages changed
+- name: restart mongo service if we changed our configuration or upgraded mongo
+  service:
+    name: mongod
+    state: restarted
+  when: update_mongod_conf.changed or update_mongod_key.changed or install_mongo_package.changed
+  tags:
+    - "manage"
+    - "manage:start"
+    - "manage:db-replication"
+
+# --- NEW TASK: Wait for MongoDB to accept connections ---
+- name: wait for mongod to accept connections
+  wait_for:
+    host: 127.0.0.1
+    port: 27017
+    delay: 5       # initial wait
+    timeout: 60    # total timeout
+  tags:
+    - "manage"
+    - "manage:start"
+    - "manage:db-replication"
+
 # This will error when run on a new replica set, so we ignore_errors
 # and connect anonymously next.
 - name: determine if there is a replica set already
