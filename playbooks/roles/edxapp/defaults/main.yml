@@ -165,10 +165,10 @@ EDXAPP_SEARCH_USE_SSL: false
 # list of dictionaries of the format
 # { 'host': 'hostname', 'port': 'portnumber', 'otherconfigsuchas use_ssl': 'True' }
 # http://elasticsearch-py.readthedocs.org/en/master/api.html#elasticsearch
-# EDXAPP_ELASTIC_SEARCH_CONFIG:
-#   - host: "{{ EDXAPP_SEARCH_HOST }}"
-#     port: "{{ EDXAPP_SEARCH_PORT }}"
-#     use_ssl: "{{ EDXAPP_SEARCH_USE_SSL }}"
+EDXAPP_ELASTIC_SEARCH_CONFIG:
+  - host: "{{ EDXAPP_SEARCH_HOST }}"
+    port: "{{ EDXAPP_SEARCH_PORT }}"
+    use_ssl: "{{ EDXAPP_SEARCH_USE_SSL }}"
 
 # list of dictionaries of the format
 # { 'url': 'http://hostname:port', 'api_key': 'masterKey' }
@@ -177,7 +177,7 @@ EDXAPP_MEILI_SEARCH_CONFIG:
   - host: "{{ EDXAPP_SEARCH_HOST }}"
     port: "{{ EDXAPP_SEARCH_PORT }}"
     use_ssl: "{{ EDXAPP_SEARCH_USE_SSL }}"
-    api_key: "{{ EDXAPP_SEARCH_API_KEY }}" # need to see how we can externalize this
+    api_key: "{{ EDXAPP_SEARCH_API_KEY }}"
 
 EDXAPP_SETTINGS: '{{ COMMON_EDXAPP_SETTINGS }}'
 
@@ -1590,7 +1590,7 @@ generic_env_config:  &edxapp_generic_env
     limits: "{{ EDXAPP_CODE_JAIL_LIMITS }}"
     user: '{{ edxapp_sandbox_user }}'
   AFFILIATE_COOKIE_NAME: "{{ EDXAPP_AFFILIATE_COOKIE_NAME }}"
-  # ELASTIC_SEARCH_CONFIG: "{{ EDXAPP_ELASTIC_SEARCH_CONFIG }}"
+  ELASTIC_SEARCH_CONFIG: "{{ EDXAPP_ELASTIC_SEARCH_CONFIG }}"
   MEILI_SEARCH_CONFIG: "{{ EDXAPP_MEILI_SEARCH_CONFIG }}"
   PLATFORM_TWITTER_ACCOUNT: "{{ EDXAPP_PLATFORM_TWITTER_ACCOUNT }}"
   PLATFORM_FACEBOOK_ACCOUNT: "{{ EDXAPP_PLATFORM_FACEBOOK_ACCOUNT }}"
