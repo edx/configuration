@@ -4,7 +4,7 @@
   gather_facts: True
   vars:
     ENABLE_DATADOG: False
-    ENABLE_NEWRELIC: True
+    ENABLE_NEWRELIC: False
   roles:
     - role: aws
       when: COMMON_ENABLE_AWS_ROLE
@@ -16,8 +16,6 @@
       when: COMMON_ENABLE_DATADOG
     - role: splunkforwarder
       when: COMMON_ENABLE_SPLUNKFORWARDER
-    - role: newrelic_infrastructure
-      when: COMMON_ENABLE_NEWRELIC_INFRASTRUCTURE
     - role: datadog-uninstall
       when: not COMMON_ENABLE_DATADOG
     - role: hermes

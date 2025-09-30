@@ -3,7 +3,7 @@
   become: True
   gather_facts: True
   vars:
-    ENABLE_NEWRELIC: False
+    ENABLE_NEWRELIC: False  # Already disabled
     CLUSTER_NAME: 'conductor'
     NGINX_OVERRIDE_DEFAULT_MAP_HASH_SIZE: True
     NGINX_MAP_HASH_MAX_SIZE: 4096

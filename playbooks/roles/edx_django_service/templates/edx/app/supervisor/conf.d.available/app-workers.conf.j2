@@ -3,7 +3,7 @@
 {% for count in range(1, 1 + w.concurrency) %}
 [program:{{ w.queue }}_{{ count }}]
 
-environment={% if COMMON_ENABLE_NEWRELIC_APP %}NEW_RELIC_APP_NAME={{ edx_django_service_newrelic_appname }}-workers,NEW_RELIC_DISTRIBUTED_TRACING_ENABLED={{ edx_django_service_enable_newrelic_distributed_tracing }},NEW_RELIC_LICENSE_KEY={{ NEWRELIC_LICENSE_KEY }},{% endif -%}CONCURRENCY=1,LOGLEVEL=info,DJANGO_SETTINGS_MODULE={{ worker_django_settings_module }},LANG={{ edx_django_service_lang }},PYTHONPATH={{ edx_django_service_code_dir }},BOTO_CONFIG="{{ edx_django_service_home }}/.boto",EDX_REST_API_CLIENT_NAME={{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-{{ edx_django_service_name }}-worker-{{ w.queue }},DOCKER_WORKER_QUEUE={{ w.queue }},DOCKER_WORKER_NUM={{ count }}
+environment=CONCURRENCY=1,LOGLEVEL=info,DJANGO_SETTINGS_MODULE={{ worker_django_settings_module }}
 
 user={{ common_web_user }}
 directory={{ edx_django_service_code_dir }}
@@ -23,7 +23,7 @@ programs={%- for w in edx_django_service_workers %}{%- for c in range(1, 1 + w.c
 {% for w in edx_django_service_workers %}
 [program:{{ w.queue }}_{{ w.concurrency }}]
 
-environment={% if COMMON_ENABLE_NEWRELIC_APP %}NEW_RELIC_APP_NAME={{ edx_django_service_newrelic_appname }}-workers,NEW_RELIC_DISTRIBUTED_TRACING_ENABLED={{ edx_django_service_enable_newrelic_distributed_tracing }},NEW_RELIC_LICENSE_KEY={{ NEWRELIC_LICENSE_KEY }},{% endif -%}CONCURRENCY={{ w.concurrency }},LOGLEVEL=info,DJANGO_SETTINGS_MODULE={{ worker_django_settings_module }},LANG={{ edx_django_service_lang }},PYTHONPATH={{ edx_django_service_code_dir }},BOTO_CONFIG="{{ edx_django_service_home }}/.boto",EDX_REST_API_CLIENT_NAME={{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-{{ edx_django_service_name }}-worker-{{ w.queue }}
+environment=CONCURRENCY={{ w.concurrency }},LOGLEVEL=info,DJANGO_SETTINGS_MODULE={{ worker_django_settings_module }},LANG={{ edx_django_service_lang }},PYTHONPATH={{ edx_django_service_code_dir }},BOTO_CONFIG="{{ edx_django_service_home }}/.boto",EDX_REST_API_CLIENT_NAME={{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-{{ edx_django_service_name }}-worker-{{ w.queue }}
 user={{ common_web_user }}
 directory={{ edx_django_service_code_dir }}
 stdout_logfile={{ supervisor_log_dir }}/%(program_name)s-stdout.log

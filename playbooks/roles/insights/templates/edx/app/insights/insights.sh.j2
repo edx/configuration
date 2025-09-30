@@ -6,14 +6,6 @@
 
 {% set executable = insights_venv_bin + '/gunicorn' %}
 
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-{% set executable = insights_venv_bin + '/newrelic-admin run-program ' + insights_venv_bin + '/gunicorn' %}
-
-export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED="{{ INSIGHTS_ENABLE_NEWRELIC_DISTRIBUTED_TRACING }}"
-export NEW_RELIC_APP_NAME="{{ INSIGHTS_NEWRELIC_APPNAME }}"
-export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
-{% endif -%}
-
 {% if INSIGHTS_DATADOG_ENABLE %}
 {% set executable = insights_venv_bin + '/ddtrace-run ' + executable %}
 export DD_TAGS="service:edx-{{ insights_service_name }} version:{{ app_version }}"
