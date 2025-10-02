@@ -142,8 +142,7 @@ common_release_specific_debian_pkgs:
   bionic:
     - python-pip
     - python3.5-dev
-  focal:
-    - python3.5-dev
+  focal: []
   jammy:
     - python3.8
 
