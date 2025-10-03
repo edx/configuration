@@ -1821,7 +1821,7 @@ edxapp_release_specific_debian_pkgs:
   focal:
     - ipython3
   jammy:
-    - python3-ipython3
+    - ipython3
 
 edxapp_debian_pkgs_default: "{{ edxapp_debian_pkgs + edxapp_release_specific_debian_pkgs[ansible_distribution_release] }}"
 
