@@ -15,6 +15,41 @@
 
 EDXAPP_PYTHON_VERSION: "python3.11"
 
+# Enable installing Python 3.11 on out-of-support Ubuntu. These packages are built
+# using the deadsnakes py3.11 repo and runbook and then uploaded to S3.
+use_vendored_py311: true
+# S3 bucket name -- set in edx-internal and edge-internal
+VENDORED_PYTHON_BUCKET: "SET ME"
+# Folder path in S3 bucket, containing deb files
+vendored_py311_folder: "python-debs/deadsnakes-3.11.13-15-g8adac492d4-1+focal1-build-20251003"
+# Build string that's present in the deb file names.
+vendored_py311_build: "3.11.13-15-g8adac492d4-1+focal1"
+# These must be kept topologically sorted, dependant packages last, as they
+# will be installed one at a time.
+#
+# The only packages we actually want are python3.11-dev and python3.11-distutils
+# but we need to include all of their dependencies first.
+vendored_py311_pkgs:
+- "libpython3.11-minimal_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-lib2to3_{{ vendored_py311_build }}_all.deb"
+- "python3.11-minimal_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-distutils_{{ vendored_py311_build }}_all.deb"
+- "libpython3.11-stdlib_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11_{{ vendored_py311_build }}_amd64.deb"
+- "libpython3.11_{{ vendored_py311_build }}_amd64.deb"
+- "libpython3.11-dev_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-dev_{{ vendored_py311_build }}_amd64.deb"
+# Packages that are needed for installing the above, but that can be found in
+# the regular Ubuntu repositories.
+py311_dependencies:
+- libssl1.1
+- libexpat1
+- libexpat1-dev
+- mime-support
+- tzdata
+- libreadline8
+- libsqlite3-0
+
 # Bucket used for xblock file storage
 EDXAPP_XBLOCK_FS_STORAGE_BUCKET: !!null
 EDXAPP_XBLOCK_FS_STORAGE_PREFIX: !!null

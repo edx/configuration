@@ -179,6 +179,7 @@
     - install:base
 
 - name: install python3.11
+  when: not use_vendored_py311
   apt:
     pkg:
       - python3.11-dev
@@ -188,6 +189,44 @@
   until: install_pkgs is success
   retries: 10
   delay: 5
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Directory for vendored Python 3.11 packages"
+  when: use_vendored_py311
+  file:
+    path: "/tmp/vendored_python_{{ vendored_py311_build }}"
+    state: directory
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Download vendored Python 3.11 packages"
+  when: use_vendored_py311
+  aws_s3:
+    mode: get
+    bucket: "{{ VENDORED_PYTHON_BUCKET }}"
+    object: "{{ vendored_py311_folder }}/{{ item }}"
+    dest: "/tmp/vendored_python_{{ vendored_py311_build }}/{{ item }}"
+  with_items: "{{ vendored_py311_pkgs }}"
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Install dependencies for Python 3.11"
+  when: use_vendored_py311
+  apt:
+    pkg: "{{ py311_dependencies }}"
+    update_cache: yes
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Install vendored Python 3.11 packages"
+  when: use_vendored_py311
+  command: dpkg -i "/tmp/vendored_python_{{ vendored_py311_build }}/{{ item }}"
+  with_items: "{{ vendored_py311_pkgs }}"
   tags:
     - install
     - install:system-requirements
