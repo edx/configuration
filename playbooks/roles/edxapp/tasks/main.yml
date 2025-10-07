@@ -204,11 +204,10 @@
 
 - name: "Download vendored Python 3.11 packages"
   when: use_vendored_py311
-  aws_s3:
-    mode: get
-    bucket: "{{ VENDORED_PYTHON_BUCKET }}"
-    object: "{{ vendored_py311_folder }}/{{ item }}"
+  get_url:
+    url: "{{ vendored_py311_url_base }}/{{ item|urlencode }}"
     dest: "/tmp/vendored_python_{{ vendored_py311_build }}/{{ item }}"
+    timeout: 60
   with_items: "{{ vendored_py311_pkgs }}"
   tags:
     - install
