@@ -156,16 +156,16 @@ old_python_debian_pkgs:
   - "python2.7=2.7.10-0+{{ ansible_distribution_release }}1"
 
 
-COMMON_PIP_VERSION: '21.2.1'
+COMMON_PIP_VERSION: '24.2'
 
 common_pip_pkgs:
   - pip=={{ COMMON_PIP_VERSION }}
-  - configparser==4.0.2
-  - setuptools==44.1.0
+  - configparser==7.0.0
+  - setuptools==75.0.0
   - virtualenv==20.27.0
-  - zipp==1.2.0
+  - zipp==3.20.2
   - boto3
-  - importlib-resources==3.2.1
+  - importlib-resources==6.4.5
 
 common_web_user: www-data
 common_web_group: www-data
