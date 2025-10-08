@@ -128,12 +128,15 @@
     - install
     - install:app-requirements
 
-- name: Pin pip to a specific version.
-  command: "{{ edxapp_venv_dir }}/bin/pip install pip=={{ COMMON_PIP_VERSION }}"
+- name: Install pip and pip-tools requirements
+  command: "{{ edxapp_venv_dir }}/bin/pip install -r requirements/{{ item }}"
   args:
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ edxapp_user }}"
   environment: "{{ edxapp_environment }}"
+  with_items:
+    - pip.txt
+    - pip-tools.txt
   tags:
     - install
     - install:app-requirements
@@ -166,7 +169,7 @@
   tags:
     - install
     - install:app-requirements
-  
+
 - name: Install local edxapp requirements
   command: "{{ edxapp_venv_dir }}/bin/pip install -e {{ edxapp_code_dir }}/."
   become_user: "{{ edxapp_user }}"
@@ -185,47 +188,13 @@
     chdir: "{{ edxapp_code_dir }}"
   with_items:
   - "{{ EDXAPP_PRIVATE_REQUIREMENTS }}"
+  - "{{ EDXAPP_PRIVATE_REQUIREMENTS_TESTING }}"
   become_user: "{{ edxapp_user }}"
   environment:
     GIT_SSH: "{{ edxapp_git_ssh }}"
-  when: EDXAPP_INSTALL_PRIVATE_REQUIREMENTS
+  when: EDXAPP_INSTALL_PRIVATE_REQUIREMENTS or EDXAPP_PRIVATE_REQUIREMENTS_TESTING
   register: edxapp_install_private_python_reqs
   until: edxapp_install_private_python_reqs is succeeded
-  retries: 5
-  delay: 15
-  tags:
-    - install
-    - install:app-requirements
-
-# Install any custom extra requirements if defined in EDXAPP_EXTRA_REQUIREMENTS.
-- name: install python extra requirements
-  pip:
-    name: "{{ item.name }}"
-    version: "{{ item.version|default(omit) }}"
-    extra_args: "--exists-action w {{ item.extra_args|default('') }}"
-    virtualenv: "{{ edxapp_venv_dir }}"
-    state: present
-  with_items: "{{ EDXAPP_EXTRA_REQUIREMENTS }}"
-  become_user: "{{ edxapp_user }}"
-  register: edxapp_install_extra_python_reqs
-  until: edxapp_install_extra_python_reqs is succeeded
-  retries: 5
-  delay: 15
-  tags:
-    - install
-    - install:app-requirements
-
-- name: "Install Datadog APM requirements"
-  when: EDXAPP_DATADOG_ENABLE
-  pip:
-    name:
-      - "{{ EDXAPP_DDTRACE_PIP_SPEC }}"  # e.g. "ddtrace==2.8.2"
-    extra_args: "--exists-action w {{ item.extra_args|default('') }}"
-    virtualenv: "{{ edxapp_venv_dir }}"
-    state: present
-  become_user: "{{ edxapp_user }}"
-  register: edxapp_install_datadog_reqs
-  until: edxapp_install_datadog_reqs is succeeded
   retries: 5
   delay: 15
   tags:
@@ -313,6 +282,31 @@
     chdir: "{{ edxapp_code_dir }}"
   environment: "{{ edxapp_environment | combine(git_ssh_environment_mixin) }}"
   become_user: "{{ edxapp_user }}"
+  tags:
+    - install
+    - install:app-requirements
+
+# --no-save is passed as a flag to npm install to avoid saving these dependencies to package.json. Otherwise,
+# running npm install without this flag causes modifications to the package.json and package-lock.json
+# files. In turn, these modified files cause issues with working with the edxapp repository because,
+# while doing the setup "checkout edx-platform repo into {{ edxapp_code_dir }}" fails.
+# This only fails in sandbox, prod and stg are fine without this change (--no-save)
+#
+# See https://github.com/edx/configuration/pull/256 for more details.
+
+- name: Install private node dependencies
+  shell: "easy_install --version && npm install --no-save {{ all_npm_packages | join(' ') }}"
+  vars:
+    all_npm_packages: >-
+      {{
+        (EDXAPP_PRIVATE_NPM_REQUIREMENTS + EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING)
+        | map(attribute='name')
+        | list
+      }}
+  args:
+    chdir: "{{ edxapp_code_dir }}"
+  become_user: "{{ edxapp_user }}"
+  when: EDXAPP_PRIVATE_NPM_REQUIREMENTS or EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING
   tags:
     - install
     - install:app-requirements

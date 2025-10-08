@@ -29,8 +29,6 @@ commerce_coordinator_venv_dir: "{{ commerce_coordinator_venvs_dir }}/commerce_co
 commerce_coordinator_celery_default_queue: 'commerce_coordinator.default'
 commerce_coordinator_hostname: "commerce-coordinator"
 
-COMMERCE_COORDINATOR_USE_PYTHON38: True
-
 COMMERCE_COORDINATOR_CELERY_ALWAYS_EAGER: false
 COMMERCE_COORDINATOR_CELERY_BROKER_TRANSPORT: ''
 COMMERCE_COORDINATOR_CELERY_BROKER_USER: ''

@@ -57,7 +57,7 @@
 
 #we need to do this so that npm can find a node install to use to build node-sass
 - name: prepend node path
-  shell: "{{ program_console_nodeenv_bin }}/npm config set scripts-prepend-node-path true"
+  shell: "export PATH={{ program_console_nodeenv_bin }}:$PATH"
   environment: "{{ program_console_env_vars }}"
   become_user: "{{ program_console_user }}"
   tags:

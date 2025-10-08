@@ -15,6 +15,43 @@
 
 EDXAPP_PYTHON_VERSION: "python3.11"
 
+# Enable installing Python 3.11 on out-of-support Ubuntu. These packages are built
+# using the deadsnakes py3.11 repo and runbook.
+use_vendored_py311: true
+# Base URL for deb packages.
+#
+# For repeatability, this is locked to a specific commit on the `vendored`
+# branch.
+vendored_py311_url_base: "https://raw.githubusercontent.com/edx/configuration/343b014de1577e02160a0dddce92da4078ae7a37/vendored/py3.11-focal"
+# Build string that's present in the deb file names. (Just used to make the
+# names below easier to read.)
+vendored_py311_build: "3.11.13-15-g8adac492d4-1+focal1"
+# These must be kept topologically sorted, dependant packages last, as they
+# will be installed one at a time.
+#
+# The only packages we actually want are python3.11-dev and python3.11-distutils
+# but we need to include all of their dependencies first.
+vendored_py311_pkgs:
+- "libpython3.11-minimal_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-lib2to3_{{ vendored_py311_build }}_all.deb"
+- "python3.11-minimal_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-distutils_{{ vendored_py311_build }}_all.deb"
+- "libpython3.11-stdlib_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11_{{ vendored_py311_build }}_amd64.deb"
+- "libpython3.11_{{ vendored_py311_build }}_amd64.deb"
+- "libpython3.11-dev_{{ vendored_py311_build }}_amd64.deb"
+- "python3.11-dev_{{ vendored_py311_build }}_amd64.deb"
+# Packages that are needed for installing the above, but that can be found in
+# the regular Ubuntu repositories.
+py311_dependencies:
+- libssl1.1
+- libexpat1
+- libexpat1-dev
+- mime-support
+- tzdata
+- libreadline8
+- libsqlite3-0
+
 # Bucket used for xblock file storage
 EDXAPP_XBLOCK_FS_STORAGE_BUCKET: !!null
 EDXAPP_XBLOCK_FS_STORAGE_PREFIX: !!null
@@ -34,6 +71,8 @@ EDXAPP_LMS_GUNICORN_TIMEOUT: 300
 EDXAPP_CMS_GUNICORN_EXTRA: ""
 EDXAPP_CMS_GUNICORN_EXTRA_CONF: ""
 EDXAPP_CMS_GUNICORN_TIMEOUT: 300
+
+EDXAPP_USE_GUNICORN_SEPARATE_LOG_FILE: False
 
 # Set this to the maximum number
 # of requests for gunicorn for the lms and cms
@@ -329,42 +368,6 @@ EDXAPP_X_FRAME_OPTIONS: "DENY"
 # Reset functionality for master's integration environments
 EDXAPP_ENABLE_ENROLLMENT_RESET: false
 
-EDXAPP_FEATURES_DEFAULT:
-  AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_AUTH_USE_OPENID_PROVIDER }}"
-  ENABLE_DISCUSSION_SERVICE: "{{ EDXAPP_ENABLE_DISCUSSION_SERVICE }}"
-  PREVIEW_LMS_BASE: "{{ EDXAPP_PREVIEW_LMS_BASE }}"
-  ENABLE_GRADE_DOWNLOADS: "{{ EDXAPP_ENABLE_GRADE_DOWNLOADS }}"
-  ENABLE_MKTG_SITE: "{{ EDXAPP_ENABLE_MKTG_SITE }}"
-  ENABLE_PUBLISHER: "{{ EDXAPP_ENABLE_PUBLISHER }}"
-  AUTOMATIC_AUTH_FOR_TESTING: "{{ EDXAPP_ENABLE_AUTO_AUTH }}"
-  ENABLE_THIRD_PARTY_AUTH: "{{ EDXAPP_ENABLE_THIRD_PARTY_AUTH }}"
-  ENABLE_BULK_ENROLLMENT_VIEW: "{{ EDXAPP_ENABLE_BULK_ENROLLMENT_VIEW }}"
-  ENABLE_VIDEO_UPLOAD_PIPELINE: "{{ EDXAPP_ENABLE_VIDEO_UPLOAD_PIPELINE }}"
-  ENABLE_DISCUSSION_HOME_PANEL: "{{ EDXAPP_ENABLE_DISCUSSION_HOME_PANEL }}"
-  ENABLE_COMBINED_LOGIN_REGISTRATION: "{{ EDXAPP_ENABLE_COMBINED_LOGIN_REGISTRATION }}"
-  ENABLE_CORS_HEADERS: "{{ EDXAPP_ENABLE_CORS_HEADERS }}"
-  ENABLE_CROSS_DOMAIN_CSRF_COOKIE: "{{ EDXAPP_ENABLE_CROSS_DOMAIN_CSRF_COOKIE }}"
-  ENABLE_COUNTRY_ACCESS: "{{ EDXAPP_ENABLE_COUNTRY_ACCESS }}"
-  ENABLE_EDXNOTES: "{{ EDXAPP_ENABLE_EDXNOTES }}"
-  ENABLE_CREDIT_API: "{{ EDXAPP_ENABLE_CREDIT_API }}"
-  ENABLE_CREDIT_ELIGIBILITY: "{{ EDXAPP_ENABLE_CREDIT_ELIGIBILITY }}"
-  ENABLE_LTI_PROVIDER: "{{ EDXAPP_ENABLE_LTI_PROVIDER }}"
-  ENABLE_SPECIAL_EXAMS: "{{ EDXAPP_ENABLE_SPECIAL_EXAMS }}"
-  ENABLE_OAUTH2_PROVIDER: "{{ EDXAPP_ENABLE_OAUTH2_PROVIDER }}"
-  ENABLE_SYSADMIN_DASHBOARD: "{{ EDXAPP_ENABLE_SYSADMIN_DASHBOARD }}"
-  ENABLE_MOBILE_REST_API: "{{ EDXAPP_ENABLE_MOBILE_REST_API }}"
-  CUSTOM_COURSES_EDX: "{{ EDXAPP_CUSTOM_COURSES_EDX }}"
-  ENABLE_CSMH_EXTENDED: "{{ EDXAPP_ENABLE_CSMH_EXTENDED }}"
-  ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES: "{{ EDXAPP_ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES }}"
-  SHOW_HEADER_LANGUAGE_SELECTOR: "{{ EDXAPP_SHOW_HEADER_LANGUAGE_SELECTOR }}"
-  SHOW_FOOTER_LANGUAGE_SELECTOR: "{{ EDXAPP_SHOW_FOOTER_LANGUAGE_SELECTOR }}"
-  ENABLE_ENROLLMENT_RESET: "{{ EDXAPP_ENABLE_ENROLLMENT_RESET }}"
-  ENABLE_EXPORT_GIT: "{{ EDXAPP_ENABLE_EXPORT_GIT }}"
-
-EDXAPP_FEATURES_EXTRA: {}
-
-EDXAPP_FEATURES: "{{ EDXAPP_FEATURES_DEFAULT | combine(EDXAPP_FEATURES_EXTRA) }}"
-
 # This needs to be set to localhost
 # if xqueue is run on the same server
 # as the lms (it's sent in the request)
@@ -487,9 +490,6 @@ EDXAPP_CMS_STATIC_URL_BASE: "{{ EDXAPP_STATIC_URL_BASE }}"
 # does not affect verified students
 EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY: ['usd', '$']
 
-# Configure paver tasks in edx-platform to skip Python/Ruby/Node installation
-EDXAPP_NO_PREREQ_INSTALL: 1
-
 # whether to setup the python codejail or not
 EDXAPP_PYTHON_SANDBOX: true
 # this next setting, if true, turns on actual sandbox enforcement.  If not true,
@@ -523,26 +523,16 @@ EDXAPP_UPDATE_STATIC_FILES_KEY: false
 
 EDXAPP_INSTALL_PRIVATE_REQUIREMENTS: false
 
-# List of additional python packages that should be installed into the
-# edxapp virtual environment.
-# `name` (required), `version` (optional), and `extra_args` (optional)
-# are supported and correspond to the options of ansible's pip module.
-# Example:
-# EDXAPP_EXTRA_REQUIREMENTS:
-#   - name: mypackage
-#     version: 1.0.1
-#   - name: git+https://git.myproject.org/MyProject#egg=MyProject
-EDXAPP_EXTRA_REQUIREMENTS: []
+# EDXAPP_EXTRA_REQUIREMENTS has been deprecated and removed. All dependencies
+# have been moved to EDXAPP_PRIVATE_REQUIREMENTS.
 
-# List of private requirements that should be installed into the
-# edxapp virtual environment.
-# `name` (required), 'extra_args' (optional)
-# Example:
-# EDXAPP_PRIVATE_REQUIREMENTS:
-#   - name: git+https://git.myproject.org/MyProject#egg=MyProject
-# Note: This list contains edx.org specific dependencies, even though this is
-#  a public repo. The plan is to phase this out along with the rest of this
-#  repo as part of the DEPR https://github.com/openedx/public-engineering/issues/51.
+# These defaults for EDXAPP_PRIVATE_REQUIREMENTS are used for Edge and
+# sandboxes in EC2. Post containerization, there will be a single
+# definition of the private requirements used across all environments.
+# TODO: Sync these settings with the containerized version. See:
+# - https://github.com/edx/edx-arch-experiments/issues/1006
+# For more help, see:
+# https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
 EDXAPP_PRIVATE_REQUIREMENTS:
     # For Harvard courses:
     - name: xblock-problem-builder==5.1.3
@@ -585,6 +575,29 @@ EDXAPP_PRIVATE_REQUIREMENTS:
       extra_args: -e
     # Caliper and xAPI event routing plugin
     - name: edx-event-routing-backends==5.5.6
+    # Other xblocks
+    - name: openedx-scorm-xblock==19.0.0
+
+    # This constraint was added to protect against auto-upgrading to a (future)
+    # major release with possible breaking changes.
+    - name: ddtrace<4.0.0
+
+    # Plugins
+    - name: edx-arch-experiments==6.1.0
+
+# This is an addendum to EDXAPP_PRIVATE_REQUIREMENTS for us in installing
+# requirements only in the stage environment. (It should only be set in stage.)
+# This allows us to keep a single list of requirements that is always shared
+# between stage, prod, and edge and keep a separate list of deltas for stage.
+EDXAPP_PRIVATE_REQUIREMENTS_TESTING: []
+
+# List of additional npm packages that should be installed into the edxapp virtual environment.
+# For more help, see:
+# https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
+EDXAPP_PRIVATE_NPM_REQUIREMENTS: []
+
+# Temporary/staging-only NPM dependencies used for testing in stage
+EDXAPP_PRIVATE_NPM_REQUIREMENTS_TESTING: []
 
 # List of custom middlewares that should be used in edxapp to process
 # incoming HTTP resquests. Should be a list of plain strings that fully
@@ -631,9 +644,11 @@ EDXAPP_XML_S3_BUCKET: !!null
 EDXAPP_XML_S3_KEY: !!null
 
 EDXAPP_DATADOG_ENABLE: "{{COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP}}"
-# ddtrace 2.7.9 contains a fix for a pymongo incompatibility.
-# (Same fix is present in 2.8.2 on the 2.8.x release line.)
-EDXAPP_DDTRACE_PIP_SPEC: 'ddtrace>=2.7.9'
+EDXAPP_DATADOG_PROFILING_ENABLE: "{{EDXAPP_DATADOG_ENABLE and COMMON_ENABLE_DATADOG_PROFILING}}"
+# Inferred Services allows for unification of service names for all
+# spans in the webapp and faceting metrics by service.
+# https://docs.datadoghq.com/tracing/guide/inferred-service-opt-in/?tab=python
+EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE: true
 
 EDXAPP_ORA2_FILE_PREFIX: '{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}/ora2'
 EDXAPP_FILE_UPLOAD_STORAGE_BUCKET_NAME: '{{ EDXAPP_AWS_STORAGE_BUCKET_NAME }}'
@@ -1111,6 +1126,9 @@ EDXAPP_COMPLETION_AGGREGATOR_URL: null
 edxapp_data_dir: "{{ COMMON_DATA_DIR }}/edxapp"
 edxapp_app_dir: "{{ COMMON_APP_DIR }}/edxapp"
 edxapp_log_dir: "{{ COMMON_LOG_DIR }}/edx"
+edxapp_gunicorn_log_dir:
+  - "{{ COMMON_LOG_DIR }}/gunicorn-lms"
+  - "{{ COMMON_LOG_DIR }}/gunicorn-cms"
 edxapp_venvs_dir: "{{ edxapp_app_dir }}/venvs"
 edxapp_venv_dir: "{{ edxapp_venvs_dir }}/edxapp"
 edxapp_venv_bin: "{{ edxapp_venv_dir }}/bin"
@@ -1119,8 +1137,8 @@ edxapp_nodeenv_bin: "{{ edxapp_nodeenv_dir }}/bin"
 edxapp_npm_dir: "{{ edxapp_app_dir }}/.npm"
 edxapp_npm_bin: "{{ edxapp_npm_dir }}/bin"
 edxapp_settings: '{{ EDXAPP_SETTINGS }}'
-EDXAPP_NODE_VERSION: "18"
-EDXAPP_NPM_VERSION: "10.5.1"
+EDXAPP_NODE_VERSION: "24"
+EDXAPP_NPM_VERSION: "11.5.1"
 # This is where node installs modules, not node itself
 edxapp_node_bin: "{{ edxapp_code_dir }}/node_modules/.bin"
 edxapp_user: edxapp
@@ -1171,7 +1189,6 @@ edxapp_helper_scripts:
 
 edxapp_environment_default:
   LANG: "{{ EDXAPP_LANG }}"
-  NO_PREREQ_INSTALL: "{{ EDXAPP_NO_PREREQ_INSTALL }}"
   SKIP_WS_MIGRATIONS: 1
   PATH: "{{ edxapp_deploy_path }}"
   # the settings module for edxapp, DJANGO_SETTINGS_MODULE
@@ -1188,6 +1205,8 @@ edxapp_environment_default:
   REVISION_CFG: "{{ edxapp_revision_cfg }}"
   NODE_PATH: "{{ edxapp_npm_dir }}/lib/modules:/usr/lib/node_modules"
   MANPATH: "{{ edxapp_npm_dir }}/share/man:$(manpath)"
+  CAPTIONS_CONTENT_TO_REPLACE: "{{ EDXAPP_CAPTIONS_CONTENT_TO_REPLACE }}"
+  CAPTIONS_CONTENT_REPLACEMENT: "{{ EDXAPP_CAPTIONS_CONTENT_REPLACEMENT }}"
 
 edxapp_environment_extra: {}
 
@@ -1398,7 +1417,36 @@ generic_env_config:  &edxapp_generic_env
   EMAIL_USE_TLS: "{{ EDXAPP_EMAIL_USE_TLS }}"
   AWS_SES_REGION_NAME: "{{ EDXAPP_AWS_SES_REGION_NAME }}"
   AWS_SES_REGION_ENDPOINT: "{{ EDXAPP_AWS_SES_REGION_ENDPOINT }}"
-  FEATURES: "{{ EDXAPP_FEATURES }}"
+  AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_AUTH_USE_OPENID_PROVIDER }}"
+  ENABLE_DISCUSSION_SERVICE: "{{ EDXAPP_ENABLE_DISCUSSION_SERVICE }}"
+  PREVIEW_LMS_BASE: "{{ EDXAPP_PREVIEW_LMS_BASE }}"
+  ENABLE_GRADE_DOWNLOADS: "{{ EDXAPP_ENABLE_GRADE_DOWNLOADS }}"
+  ENABLE_MKTG_SITE: "{{ EDXAPP_ENABLE_MKTG_SITE }}"
+  ENABLE_PUBLISHER: "{{ EDXAPP_ENABLE_PUBLISHER }}"
+  AUTOMATIC_AUTH_FOR_TESTING: "{{ EDXAPP_ENABLE_AUTO_AUTH }}"
+  ENABLE_THIRD_PARTY_AUTH: "{{ EDXAPP_ENABLE_THIRD_PARTY_AUTH }}"
+  ENABLE_BULK_ENROLLMENT_VIEW: "{{ EDXAPP_ENABLE_BULK_ENROLLMENT_VIEW }}"
+  ENABLE_VIDEO_UPLOAD_PIPELINE: "{{ EDXAPP_ENABLE_VIDEO_UPLOAD_PIPELINE }}"
+  ENABLE_DISCUSSION_HOME_PANEL: "{{ EDXAPP_ENABLE_DISCUSSION_HOME_PANEL }}"
+  ENABLE_COMBINED_LOGIN_REGISTRATION: "{{ EDXAPP_ENABLE_COMBINED_LOGIN_REGISTRATION }}"
+  ENABLE_CORS_HEADERS: "{{ EDXAPP_ENABLE_CORS_HEADERS }}"
+  ENABLE_CROSS_DOMAIN_CSRF_COOKIE: "{{ EDXAPP_ENABLE_CROSS_DOMAIN_CSRF_COOKIE }}"
+  ENABLE_COUNTRY_ACCESS: "{{ EDXAPP_ENABLE_COUNTRY_ACCESS }}"
+  ENABLE_EDXNOTES: "{{ EDXAPP_ENABLE_EDXNOTES }}"
+  ENABLE_CREDIT_API: "{{ EDXAPP_ENABLE_CREDIT_API }}"
+  ENABLE_CREDIT_ELIGIBILITY: "{{ EDXAPP_ENABLE_CREDIT_ELIGIBILITY }}"
+  ENABLE_LTI_PROVIDER: "{{ EDXAPP_ENABLE_LTI_PROVIDER }}"
+  ENABLE_SPECIAL_EXAMS: "{{ EDXAPP_ENABLE_SPECIAL_EXAMS }}"
+  ENABLE_OAUTH2_PROVIDER: "{{ EDXAPP_ENABLE_OAUTH2_PROVIDER }}"
+  ENABLE_SYSADMIN_DASHBOARD: "{{ EDXAPP_ENABLE_SYSADMIN_DASHBOARD }}"
+  ENABLE_MOBILE_REST_API: "{{ EDXAPP_ENABLE_MOBILE_REST_API }}"
+  CUSTOM_COURSES_EDX: "{{ EDXAPP_CUSTOM_COURSES_EDX }}"
+  ENABLE_CSMH_EXTENDED: "{{ EDXAPP_ENABLE_CSMH_EXTENDED }}"
+  ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES: "{{ EDXAPP_ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES }}"
+  SHOW_HEADER_LANGUAGE_SELECTOR: "{{ EDXAPP_SHOW_HEADER_LANGUAGE_SELECTOR }}"
+  SHOW_FOOTER_LANGUAGE_SELECTOR: "{{ EDXAPP_SHOW_FOOTER_LANGUAGE_SELECTOR }}"
+  ENABLE_ENROLLMENT_RESET: "{{ EDXAPP_ENABLE_ENROLLMENT_RESET }}"
+  ENABLE_EXPORT_GIT: "{{ EDXAPP_ENABLE_EXPORT_GIT }}"
   WIKI_ENABLED: true
   SYSLOG_SERVER:  "{{ EDXAPP_SYSLOG_SERVER }}"
   LOG_DIR:  "{{ edxapp_log_dir }}"
@@ -1759,8 +1807,9 @@ custom_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/custom.txt"
 base_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/base.txt"
 django_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/django.txt"
 openstack_requirements_file: "{{ edxapp_code_dir }}/requirements/edx/openstack.txt"
+assets_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/assets.txt"
 
-sandbox_base_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/py38.txt"
+sandbox_base_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/releases/quince.txt"
 
 # The Python requirements files in the order they should be installed.  This order should
 # match the order of PYTHON_REQ_FILES in edx-platform/pavelib/prereqs.py.
@@ -1768,6 +1817,7 @@ edxapp_requirements_files:
   - "{{ custom_requirements_file }}"
   - "{{ base_requirements_file }}"
   - "{{ django_requirements_file }}"
+  - "{{ assets_requirements_file }}"
 
 # All edxapp requirements files potentially containing Github URLs.  When using a custom
 # Github mirror, occurrences of "github.com" are replaced by the custom mirror in these
@@ -1806,6 +1856,8 @@ edxapp_release_specific_debian_pkgs:
     - ipython
     - python-dev
   focal:
+    - ipython3
+  jammy:
     - ipython3
 
 edxapp_debian_pkgs_default: "{{ edxapp_debian_pkgs + edxapp_release_specific_debian_pkgs[ansible_distribution_release] }}"

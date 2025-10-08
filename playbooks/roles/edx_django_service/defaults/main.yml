@@ -5,6 +5,7 @@ edx_django_service_home: '{{ COMMON_APP_DIR }}/{{ edx_django_service_name }}'
 edx_django_service_user: '{{ edx_django_service_name }}'
 edx_django_service_use_python3: true
 edx_django_service_use_python38: false
+edx_django_service_use_python311: false
 edx_django_service_use_python312: false
 
 # This should be overwritten at the time Ansible is run.

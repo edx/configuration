@@ -115,3 +115,129 @@
       when: RDS_BINLOG_RETENTION_HOURS is defined
       tags:
         - users
+
+    - name: Ensure Datadog user exists
+      mysql_user:
+        name: "{{ datadog_user }}"
+        host: '%'
+        password: "{{ datadog_user_password }}"
+        priv: "*.*:REPLICATION CLIENT,PROCESS"
+        append_privs: yes
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false) 
+
+    - name: Set max connections for Datadog user
+      mysql_query:
+        query: "ALTER USER '{{ datadog_user }}'@'%' WITH MAX_USER_CONNECTIONS {{ datadog_max_connections }};"
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+
+    - name: Grant SELECT on performance_schema to Datadog user
+      mysql_user:
+        name: "{{ datadog_user }}"
+        host: '%'
+        priv: "performance_schema.*:SELECT"
+        append_privs: yes
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+
+    - name: Create Datadog schema if it does not exist
+      mysql_db:
+        name: "{{ datadog_schema }}"
+        state: present
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+ 
+    - name: Grant EXECUTE on Datadog schema to Datadog user
+      mysql_user:
+        name: "{{ datadog_user }}"
+        host: '%'
+        priv: "{{ datadog_schema }}.*:EXECUTE,CREATE TEMPORARY TABLES"
+        append_privs: yes
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+
+    - name: Create the explain_statement procedure in datadog schema
+      mysql_query:
+        query: |
+         CREATE PROCEDURE {{ datadog_schema }}.explain_statement(IN query TEXT)
+             SQL SECURITY DEFINER
+         BEGIN
+             SET @explain := CONCAT('EXPLAIN FORMAT=json ', query);
+             PREPARE stmt FROM @explain;
+             EXECUTE stmt;
+             DEALLOCATE PREPARE stmt;
+         END
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+      ignore_errors: yes
+
+    - name: Grant EXECUTE on explain_statement procedure to Datadog user
+      mysql_query:
+        query: "GRANT EXECUTE ON PROCEDURE {{ datadog_procedure_schema }}.explain_statement TO {{ datadog_user }}@'%';"
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+
+    - name: Create Runtime setup consumer for datadog
+      mysql_query:
+        query: |
+         CREATE PROCEDURE {{ datadog_schema }}.enable_events_statements_consumers()
+             SQL SECURITY DEFINER
+         BEGIN
+             UPDATE performance_schema.setup_consumers SET enabled='YES' WHERE name LIKE 'events_statements_%';
+             UPDATE performance_schema.setup_consumers SET enabled='YES' WHERE name = 'events_waits_current';
+         END
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+      ignore_errors: yes
+
+    - name: Grant EXECUTE on enable_events_statements_consumers procedure to Datadog user
+      mysql_query:
+        query: "GRANT EXECUTE ON PROCEDURE {{ datadog_procedure_schema }}.enable_events_statements_consumers TO {{ datadog_user }}@'%';"
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      when: datadog_mysql_monitoring_enabled | default(false)
+
+    - name: Grant EXECUTE on explain_statement procedure in database {{ item }} to Datadog user
+      mysql_query:
+        query: |
+         CREATE PROCEDURE {{ item }}.explain_statement(IN query TEXT)
+             SQL SECURITY DEFINER
+         BEGIN
+             SET @explain := CONCAT('EXPLAIN FORMAT=json ', query);
+             PREPARE stmt FROM @explain;
+             EXECUTE stmt;
+             DEALLOCATE PREPARE stmt;
+         END
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      with_items: "{{ datadog_monitored_dbs }}" 
+      when: datadog_mysql_monitoring_enabled | default(false)
+      ignore_errors: yes
+
+    - name: Grant EXECUTE on explain_statement procedure in database {{ item }} to Datadog user
+      mysql_query:
+        query: "GRANT EXECUTE ON PROCEDURE {{ item }}.explain_statement TO {{ datadog_user }}@'%';"
+        login_host: "{{ database_connection.login_host }}"
+        login_user: "{{ database_connection.login_user }}"
+        login_password: "{{ database_connection.login_password }}"
+      with_items: "{{ datadog_monitored_dbs }}"
+      when: datadog_mysql_monitoring_enabled | default(false)

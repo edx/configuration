@@ -13,18 +13,35 @@ export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
 export DD_GIT_COMMIT_SHA="{{ app_version }}"
 export DD_GIT_REPOSITORY_URL="{{ EDXAPP_REPOSITORY_GIT_URL }}"
 export DD_LOGS_INJECTION=true
+export DD_SERVICE="edx-edxapp-lms"
 # Copied from edx_django_service playbook for consistency; Datadog
 # trace debug logging issue doesn't actually affect edxapp for some
 # reason.
 export DD_TRACE_LOG_STREAM_HANDLER=false
 
-# Temporary: We currently have a span (or several) for each Django middleware,
-# and Datadog Support has implied that it will be easier to debug our tracing
-# issues if we don't record those middleware. (They make up the bulk of traces,
-# at least visually.)
-# See https://github.com/edx/edx-arch-experiments/issues/692
+# Suppress middleware spans because there are about 100 for each request.
+# Remove (or set to true) for debugging.
 export DD_DJANGO_INSTRUMENT_MIDDLEWARE=false
 
+{% if COMMON_ENVIRONMENT == "stage" %}
+# Temporary 2025-01-09: Enable Celery distributed tracing to see if it
+# has an effect on the remaining orphaned spans.
+# https://github.com/edx/edx-arch-experiments/issues/822
+export DD_CELERY_DISTRIBUTED_TRACING=true
+{% endif %}
+
+{% endif -%}
+
+# We want to be able to toggle this on separately from DD in general.
+{% if EDXAPP_DATADOG_PROFILING_ENABLE %}
+export DD_PROFILING_ENABLED=true
+export DD_PROFILING_STACK_V2_ENABLED=true
+export DD_PROFILING_TIMELINE_ENABLED=true
+export DD_PROFILING_MEMORY_ENABLED=true
+{% endif -%}
+
+{% if EDXAPP_DATADOG_INFERRED_SERVICES_ENABLE %}
+export DD_TRACE_REMOVE_INTEGRATION_SERVICE_NAMES_ENABLED=true
 {% endif -%}
 
 export PORT="{{ edxapp_lms_gunicorn_port }}"
@@ -38,4 +55,8 @@ export EDX_REST_API_CLIENT_NAME="{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }
 
 source {{ edxapp_app_dir }}/edxapp_env
 # We exec so that gunicorn is the child of supervisor and can be managed properly
+{% if EDXAPP_USE_GUNICORN_SEPARATE_LOG_FILE %}
+exec {{ executable }} -c {{ edxapp_app_dir }}/lms_gunicorn.py lms.wsgi --log-file {{ edxapp_gunicorn_log_dir[0] }}/edx.log
+{% else %}
 exec {{ executable }} -c {{ edxapp_app_dir }}/lms_gunicorn.py lms.wsgi
+{% endif %}

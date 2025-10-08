@@ -2,6 +2,8 @@
 # Core dependencies for installing other packages
 
 pip
-setuptools
-wheel
+# pinning these versions because newer versions are not available for Python 3.8. 
+# They will be unpinned once we upgrade all our Jenkins jobs to Python 3.9 or a newer version:
+setuptools==75.3.0
+wheel==0.44.0
 

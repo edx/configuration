@@ -32,5 +32,7 @@ edxapp_common_release_specific_debian_pkgs:
     - libpng-dev
   focal:
     - libpng-dev
+  jammy:
+    - libpng-dev
 
 edxapp_common_debian_pkgs: "{{ edxapp_common_debian_pkgs_default + edxapp_common_release_specific_debian_pkgs[ansible_distribution_release] }}"

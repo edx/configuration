@@ -149,6 +149,8 @@ nginx_release_specific_debian_pkgs:
     - python-passlib
   focal:
     - python3-passlib
+  jammy:
+    - python3-passlib
 
 nginx_debian_pkgs: "{{ nginx_release_specific_debian_pkgs[ansible_distribution_release] }}"
 

@@ -6,3 +6,4 @@ boto3
 futures ; python_version == "2.7"   # via s3transfer
 s3cmd
 pyyaml==5.3.1
+urllib3==1.26.18

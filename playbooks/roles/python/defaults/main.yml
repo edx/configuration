@@ -1,4 +1,4 @@
 # Install python2.7 + the /usr/bin/python symlink.
 
 python_packages:
-  - python-minimal
+  - python2.7-minimal

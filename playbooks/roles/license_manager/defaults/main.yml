@@ -29,8 +29,6 @@ license_manager_venv_dir: "{{ license_manager_venvs_dir }}/license_manager"
 license_manager_celery_default_queue: 'license_manager.default'
 license_manager_hostname: "license-manager"
 
-LICENSE_MANAGER_USE_PYTHON38: True
-
 LICENSE_MANAGER_CELERY_ALWAYS_EAGER: false
 LICENSE_MANAGER_CELERY_BROKER_TRANSPORT: ''
 LICENSE_MANAGER_CELERY_BROKER_USER: ''

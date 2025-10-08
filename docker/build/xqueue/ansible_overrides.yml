@@ -5,4 +5,5 @@ XQUEUE_MYSQL_HOST: "edx.devstack.mysql57"
 XQUEUE_SETTINGS: "devstack"
 xqueue_gunicorn_port: 18040
 xqueue_gunicorn_host: 0.0.0.0
+xqueue_image_building: true
 devstack: true

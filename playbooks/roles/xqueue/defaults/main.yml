@@ -20,6 +20,9 @@ XQUEUE_QUEUES:
 XQUEUE_LOGGING_ENV: sandbox
 XQUEUE_SYSLOG_SERVER: 'localhost'
 
+XQUEUE_SECRET_KEY: !!null
+XQUEUE_SECRET_KEY_FALLBACKS: !!null
+
 XQUEUE_UPLOAD_BUCKET: 'sandbox-bucket'
 XQUEUE_UPLOAD_PATH_PREFIX: 'sandbox-xqueue'
 # You can set this to S3 or Swift, but it will
@@ -56,11 +59,14 @@ XQUEUE_MYSQL_PORT: '3306'
 XQUEUE_MYSQL_OPTIONS: {}
 XQUEUE_MYSQL_CONN_MAX_AGE: 0 # This is Django's default https://docs.djangoproject.com/en/1.11/ref/settings/#conn-max-age
 
+XQUEUE_OPENEDX_TELEMETRY: !!null
+
 XQUEUE_NEWRELIC_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-xqueue"
 XQUEUE_CONSUMER_NEWRELIC_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-xqueue_consumer"
 
 XQUEUE_CONSUMER_DATADOG_APPNAME: "edx-xqueue_consumer"
 XQUEUE_DATADOG_APPNAME: "edx-{{ xqueue_service_name }}"
+XQUEUE_DATADOG_ENABLE: "{{COMMON_ENABLE_DATADOG and COMMON_ENABLE_DATADOG_APP}}"
 
 # Set the number of gunicorn front end workers explicitely for xqueue
 XQUEUE_WORKERS: !!null
@@ -93,6 +99,8 @@ XQUEUE_CONFIG:
   LOG_DIR: "{{ COMMON_DATA_DIR }}/logs/xqueue"
   SESSION_ENGINE: "{{ XQUEUE_SESSION_ENGINE }}"
   CACHES: "{{ XQUEUE_CACHES }}"
+  SECRET_KEY: "{{ XQUEUE_SECRET_KEY }}"
+  SECRET_KEY_FALLBACKS: "{{ XQUEUE_SECRET_KEY_FALLBACKS }}"
   LOCAL_LOGLEVEL: "{{ XQUEUE_LOCAL_LOGLEVEL }}"
   UPLOAD_BUCKET: "{{ XQUEUE_UPLOAD_BUCKET }}"
   UPLOAD_PATH_PREFIX: "{{ XQUEUE_UPLOAD_PATH_PREFIX }}"
@@ -109,6 +117,7 @@ XQUEUE_CONFIG:
   SWIFT_AUTH_URL: "{{ XQUEUE_SWIFT_AUTH_URL }}"
   SWIFT_AUTH_VERSION: "{{ XQUEUE_SWIFT_AUTH_VERSION }}"
   SWIFT_REGION_NAME: "{{ XQUEUE_SWIFT_REGION_NAME }}"
+  OPENEDX_TELEMETRY: "{{ XQUEUE_OPENEDX_TELEMETRY }}"
   # This is used by the xqueue consumer in case it needs to send a password protected submission out for a push grader.
   REQUESTS_BASIC_AUTH: ["{{ XQUEUE_BASIC_AUTH_USER }}", "{{XQUEUE_BASIC_AUTH_PASSWORD}}"]
   USERS: "{{ XQUEUE_DJANGO_USERS }}"
@@ -196,5 +205,7 @@ xqueue_release_specific_debian_pkgs:
 
 # flag to run xqueue on python3
 xqueue_use_python3: false
-# flag to run xqueue on python3.8
-xqueue_use_python38: true
+# flag to run xqueue on python3.11
+xqueue_use_python311: true
+# flag for docker builds
+xqueue_image_building: false

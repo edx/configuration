@@ -45,6 +45,8 @@ edx_ansible_release_specific_debian_pkgs:
     - python-dev
   focal:
     - python3-dev
+  jammy:
+    - python3-dev
 
 edx_ansible_debian_pkgs: "{{ edx_ansible_debian_running_services + edx_ansible_debian_pkgs_default + edx_ansible_release_specific_debian_pkgs[ansible_distribution_release] }}"
 

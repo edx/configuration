@@ -3,6 +3,7 @@
 awscli
 boto
 boto3
+urllib3==1.26.18
 futures ; python_version == "2.7"   # via s3transfer
 s3cmd
 pyyaml
@@ -13,6 +14,5 @@ opsgenie-sdk==0.3.1
 PyMySQL==0.9.3
 python-gnupg
 redis==2.10.6
-splunk-sdk==1.6.16      # older versions have been yanked
 yq
 jq
