@@ -20,9 +20,9 @@ EDXAPP_PYTHON_VERSION: "python3.11"
 use_vendored_py311: true
 # Base URL for deb packages.
 #
-# For repeatability, this is locked to a specific commit on the `vendored`
-# branch.
-vendored_py311_url_base: "https://raw.githubusercontent.com/edx/configuration/343b014de1577e02160a0dddce92da4078ae7a37/vendored/py3.11-focal"
+# For repeatability, we hardcode a commit. (Normally this would be done using a
+# material, but this is intended as a quick hack.)
+vendored_py311_url_base: "https://raw.githubusercontent.com/edx/vendored/c4b7da52935dec033304b723de42ff4505f7d34f/deadsnakes-py3.11-focal"
 # Build string that's present in the deb file names. (Just used to make the
 # names below easier to read.)
 vendored_py311_build: "3.11.13-15-g8adac492d4-1+focal1"
