@@ -4,6 +4,9 @@
 All notable changes to this project will be documented in this file.
 Add any new changes to the top (right below this line).
 
+- 2025-09-26
+  - Moved `EDXAPP_FEATURES_DEFAULT` and `EDXAPP_FEATURES_EXTRA` into top-level settings.
+
 - 2024-03-20
   - Add `COMMON_ENABLE_DATADOG_APP` for APM instrumention, supported in LMS and CMS so far. Disabled by default.
 
