@@ -28,5 +28,5 @@ meilisearch_host: "0.0.0.0"
 meilisearch_port: 7700
 MEILISEARCH_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
 MEILISEARCH_PUBLIC_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
-MEILISEARCH_MASTER_KEY: "{{ MEILISEARCH_MASTER_KEY }}"
-MEILISEARCH_API_KEY: "{{ MEILISEARCH_API_KEY }}"
+MEILISEARCH_MASTER_KEY: "MEILISEARCH_MASTER_KEY"
+MEILISEARCH_API_KEY: "MEILISEARCH_API_KEY"
