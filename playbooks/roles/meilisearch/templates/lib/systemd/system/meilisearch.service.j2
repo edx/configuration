@@ -13,12 +13,13 @@ Environment=MEILI_PATH_CONF=/etc/meilisearch
 Environment=PID_DIR=/var/run/meilisearch
 EnvironmentFile=-/etc/default/meilisearch
 
-WorkingDirectory=/var/lib/meilisearch
+#WorkingDirectory=/var/lib/meilisearch
+WorkingDirectory={{ meilisearch_data_dir }}
 
 User={{ meilisearch_user }}
 Group={{ meilisearch_group }}
 
-ExecStart={{ meilisearch_app_dir }} \
+ExecStart={{ meilisearch_app_dir }}/meilisearch \
   --db-path {{ meilisearch_data_dir }} \
   --http-addr {{ meilisearch_host }}:{{ meilisearch_port }} \
   --env {{ MEILISEARCH_ENV }} \

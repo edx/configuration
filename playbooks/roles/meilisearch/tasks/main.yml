@@ -29,7 +29,6 @@
   tags:
     - install
     - install:base
-
 - name: create directories
   file:
     path: "{{ item }}"
@@ -41,6 +40,7 @@
     - "{{ meilisearch_data_dir }}"
     - "{{ meilisearch_log_dir }}"
     - "{{ meilisearch_cfg_dir }}"
+    - "{{ meilisearch_app_dir }}"
   tags:
     - install
     - install:base
@@ -48,12 +48,21 @@
 - name: download meilisearch binary
   get_url:
     url: "{{ meilisearch_download_url }}"
-    dest: "{{ meilisearch_app_dir }}"
+    dest: "{{ meilisearch_app_dir }}/meilisearch-linux-amd64"
     mode: '0755'
+  register: meilisearch_download
   tags:
     - install
     - install:base
-  register: meilisearch_download
+
+- name: rename meilisearch binary to meilisearch
+  command: sudo mv "{{ meilisearch_app_dir }}/meilisearch-linux-amd64" "{{ meilisearch_app_dir }}/meilisearch"
+  args:
+    creates: "{{ meilisearch_app_dir }}/meilisearch"
+  when: meilisearch_download.changed
+  tags:
+    - install
+    - install:base
 
 - name: drop the meilisearch config (env file)
   template:
