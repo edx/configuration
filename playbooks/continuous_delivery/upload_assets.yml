@@ -28,9 +28,9 @@
     SUB_APPLICATION_NAME: "lms"
     COMMAND_PREFIX: " . {{ APPLICATION_PATH }}/{{ APPLICATION_NAME }}_env; {{ APPLICATION_PATH }}/venvs/{{ APPLICATION_NAME }}/bin/python /edx/bin/manage.{{ APPLICATION_NAME }}"
     STATIC_ROOT: >-
-      $({{ COMMAND_PREFIX }} print_setting STATIC_ROOT | tail -n1)
+      $({{ COMMAND_PREFIX }} shell --command "from django.conf import settings; print(getattr(settings, 'STATIC_ROOT', ''))" | tail -n1)
     STATIC_ROOT_EDXAPP: >-
-      $({{ COMMAND_PREFIX }} {{ SUB_APPLICATION_NAME }} print_setting STATIC_ROOT --settings="{{ EDX_PLATFORM_SETTINGS }}" | tail -n1)
+      $({{ COMMAND_PREFIX }} {{ SUB_APPLICATION_NAME }} shell --settings "{{ EDX_PLATFORM_SETTINGS }}" --command "from django.conf import settings; print(getattr(settings, 'STATIC_ROOT', ''))" | tail -n1)
   gather_facts: False
   become: True
   tasks:
