@@ -8,7 +8,7 @@
 
 {% if EDXAPP_DATADOG_ENABLE %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
-export DD_TAGS="service:edx-edxapp-lms version:{{ app_version }}"
+export DD_TAGS="service:edx-edxapp-lms version:ec2-{{ app_version }}"
 export DD_DJANGO_USE_HANDLER_RESOURCE_FORMAT=true
 export DD_GIT_COMMIT_SHA="{{ app_version }}"
 export DD_GIT_REPOSITORY_URL="{{ EDXAPP_REPOSITORY_GIT_URL }}"

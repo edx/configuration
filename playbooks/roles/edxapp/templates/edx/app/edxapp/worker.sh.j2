@@ -8,7 +8,7 @@ source {{ edxapp_app_dir }}/edxapp_env
 
 {% if EDXAPP_DATADOG_ENABLE %}
 {% set executable = edxapp_venv_bin + '/ddtrace-run ' + executable %}
-export DD_TAGS="service:edx-edxapp-${SERVICE_VARIANT}-workers queue:${QUEUE_NAME} version:{{ app_version }}"
+export DD_TAGS="service:edx-edxapp-${SERVICE_VARIANT}-workers queue:${QUEUE_NAME} version:ec2-{{ app_version }}"
 export DD_DJANGO_USE_LEGACY_RESOURCE_FORMAT=true
 export DD_GIT_COMMIT_SHA="{{ app_version }}"
 export DD_GIT_REPOSITORY_URL="{{ EDXAPP_REPOSITORY_GIT_URL }}"
