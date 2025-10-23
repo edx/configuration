@@ -13,10 +13,6 @@
 
 ANALYTICS_API_GIT_IDENTITY: !!null
 
-# Upgrading to python 3.12, let's leave 3.11 out of the image as it's preventing the image from building.
-edx_django_service_use_python311: false
-edx_django_service_use_python312: true
-
 #
 # vars are namespace with the module name
 #

@@ -76,6 +76,43 @@
     - install
     - install:system-requirements
 
+- name: "Directory for vendored Python 3.11 packages"
+  file:
+    path: "/tmp/vendored_python_{{ vendored_py311_build }}"
+    state: directory
+  when: edx_django_service_use_vendored_py311 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Download vendored Python 3.11 packages"
+  get_url:
+    url: "{{ vendored_py311_url_base }}/{{ item|urlencode }}"
+    dest: "/tmp/vendored_python_{{ vendored_py311_build }}/{{ item }}"
+    timeout: 60
+  with_items: "{{ vendored_py311_pkgs }}"
+  when: edx_django_service_use_vendored_py311 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Install dependencies for vendored Python 3.11"
+  apt:
+    pkg: "{{ py311_dependencies }}"
+    update_cache: yes
+  when: edx_django_service_use_vendored_py311 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
+- name: "Install vendored Python 3.11 packages"
+  command: dpkg -i "/tmp/vendored_python_{{ vendored_py311_build }}/{{ item }}"
+  with_items: "{{ vendored_py311_pkgs }}"
+  when: edx_django_service_use_vendored_py311 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
 - name: install python3.12
   apt:
     pkg:
@@ -128,6 +165,16 @@
     creates: "{{ edx_django_service_venv_dir }}/bin/pip"
   become_user: "{{ edx_django_service_user }}"
   when: edx_django_service_use_python311 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
+- name: build virtualenv with vendored python3.11
+  command: "virtualenv --python=python3.11 {{ edx_django_service_venv_dir }}"
+  args:
+    creates: "{{ edx_django_service_venv_dir }}/bin/pip"
+  become_user: "{{ edx_django_service_user }}"
+  when: edx_django_service_use_vendored_py311 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
     - install:system-requirements
