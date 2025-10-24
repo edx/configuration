@@ -577,6 +577,8 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     - name: edx-event-routing-backends==5.5.6
     # Other xblocks
     - name: openedx-scorm-xblock==19.0.2
+    # Release-Notes
+    - name: edx-release-notes==0.1.1
 
     # This constraint was added to protect against auto-upgrading to a (future)
     # major release with possible breaking changes.
