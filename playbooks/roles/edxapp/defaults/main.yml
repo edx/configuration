@@ -170,6 +170,15 @@ EDXAPP_ELASTIC_SEARCH_CONFIG:
     port: "{{ EDXAPP_SEARCH_PORT }}"
     use_ssl: "{{ EDXAPP_SEARCH_USE_SSL }}"
 
+# list of dictionaries of the format
+# { 'url': 'http://hostname:port', 'api_key': 'masterKey' }
+# https://github.com/meilisearch/meilisearch-python
+EDXAPP_MEILI_SEARCH_CONFIG:
+  - host: "{{ EDXAPP_SEARCH_HOST }}"
+    port: "{{ EDXAPP_SEARCH_PORT }}"
+    use_ssl: "{{ EDXAPP_SEARCH_USE_SSL }}"
+    api_key: "{{ EDXAPP_SEARCH_API_KEY }}"
+
 EDXAPP_SETTINGS: '{{ COMMON_EDXAPP_SETTINGS }}'
 
 EDXAPP_LMS_ENV: 'lms.envs.{{ EDXAPP_SETTINGS }}'
@@ -1582,6 +1591,7 @@ generic_env_config:  &edxapp_generic_env
     user: '{{ edxapp_sandbox_user }}'
   AFFILIATE_COOKIE_NAME: "{{ EDXAPP_AFFILIATE_COOKIE_NAME }}"
   ELASTIC_SEARCH_CONFIG: "{{ EDXAPP_ELASTIC_SEARCH_CONFIG }}"
+  MEILI_SEARCH_CONFIG: "{{ EDXAPP_MEILI_SEARCH_CONFIG }}"
   PLATFORM_TWITTER_ACCOUNT: "{{ EDXAPP_PLATFORM_TWITTER_ACCOUNT }}"
   PLATFORM_FACEBOOK_ACCOUNT: "{{ EDXAPP_PLATFORM_FACEBOOK_ACCOUNT }}"
   HELP_TOKENS_BOOKS: "{{ EDXAPP_HELP_TOKENS_BOOKS }}"
