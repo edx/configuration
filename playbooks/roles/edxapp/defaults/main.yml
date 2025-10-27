@@ -576,7 +576,7 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Caliper and xAPI event routing plugin
     - name: edx-event-routing-backends==5.5.6
     # Other xblocks
-    - name: openedx-scorm-xblock==19.0.2
+    - name: openedx-scorm-xblock==19.0.3
     # Release-Notes
     - name: edx-release-notes==0.1.1
 
