@@ -40,6 +40,13 @@ RUN apt-get update && apt-get install -y docker-ce
 # See: https://docs.docker.com/engine/installation/linux/ubuntulinux/
 RUN usermod -aG docker actions-runner
 
+# Install Node.js 20.x
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install global Playwright CLI and pre-download required browser binaries
+RUN npm install -g playwright && npx playwright install --with-deps
+
 # copy over the actions-runner.sh script
 ADD docker/build/github-actions-runner/actions-runner.sh /actions-runner.sh
 
