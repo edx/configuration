@@ -26,7 +26,7 @@
     name: "{{ item }}"
     update_cache: yes
   register: install_pkgs
-  until: install_pkgs|success
+  until: install_pkgs is success
   retries: 10
   delay: 5
   with_items:
