@@ -82,7 +82,7 @@
     - { regexp: 'MaxRetentionSec=', line: 'MaxRetentionSec=1month' }
     - { regexp: 'MaxFileSec=', line: 'MaxFileSec=1week' }
   register: journald_config_line
-  when: ansible_distribution_release == 'bionic' or ansible_distribution_release == 'focal'
+  when: ansible_distribution_release in ['bionic', 'focal']
 
 - name: Restart systemd-journald (ubuntu/debian)
   service:
