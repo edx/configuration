@@ -17,7 +17,7 @@ MEILISEARCH_ENV: "development"
 # Service management
 MEILISEARCH_START_TIMEOUT: "300"
 # Version of Meilisearch to install
-meilisearch_version: "v1.10.0"
+meilisearch_version: "v1.11.0"
 
 # Network and security settings
 meilisearch_host: "0.0.0.0"
