@@ -56,7 +56,7 @@
     - install:base
 
 - name: rename meilisearch binary to meilisearch
-  command: sudo mv "{{ meilisearch_app_dir }}/meilisearch-linux-amd64" "{{ meilisearch_app_dir }}/meilisearch"
+  command: mv "{{ meilisearch_app_dir }}/meilisearch-linux-amd64" "{{ meilisearch_app_dir }}/meilisearch"
   args:
     creates: "{{ meilisearch_app_dir }}/meilisearch"
   when: meilisearch_download.changed
