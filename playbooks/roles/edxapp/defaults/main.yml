@@ -577,7 +577,7 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     # Other xblocks
     - name: openedx-scorm-xblock==19.0.3
     # Release-Notes
-    - name: edx-release-notes==0.1.1
+    - name: edx-release-notes==0.1.2
 
     # This constraint was added to protect against auto-upgrading to a (future)
     # major release with possible breaking changes.
