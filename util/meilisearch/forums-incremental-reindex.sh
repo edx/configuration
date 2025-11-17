@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # Usage:
-#   ./incremental-reindex-meili.sh INDEX [WINDOW] [SLEEP_TIME] [BATCH_SIZE]
+#   ./forums-incremental-reindex.sh INDEX [WINDOW] [SLEEP_TIME] [BATCH_SIZE]
 #
 # Example:
-#   ./incremental-reindex-meili.sh content 30
+#   ./forums-incremental-reindex.sh content 30
 
 INDEX="$1"
 WINDOW="${2:-5}"
@@ -27,7 +27,11 @@ fi
 while : ; do
   echo "Fetching documents newer than $WINDOW minutes..."
 
-  NEW_DOCS=$(./fetch_new_docs.rb "$WINDOW" "$INDEX" "$BATCH_SIZE")
+  # Fetch documents newer than $WINDOW minutes using Meilisearch API
+  SINCE_TIMESTAMP=$(date -u -d "$WINDOW minutes ago" +"%Y-%m-%dT%H:%M:%SZ")
+  NEW_DOCS=$(curl -s "${AUTH_HEADER[@]}" \
+    "$MEILI_URL/indexes/$INDEX/documents?limit=$BATCH_SIZE" \
+    | jq --arg since "$SINCE_TIMESTAMP" '[.[] | select(.updated_at >= $since)]')
 
   if [ -n "$NEW_DOCS" ] && [ "$NEW_DOCS" != "[]" ]; then
     echo "$NEW_DOCS" | curl -s -X POST "$MEILI_URL/indexes/$INDEX/documents" \

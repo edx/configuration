@@ -1,6 +1,6 @@
 # docker build -f docker/build/meilisearch-devstack/Dockerfile . -t edxops/meilisearch:devstack
 
-FROM getmeili/meilisearch:v1.10.0
+FROM getmeili/meilisearch:v1.11.0
 LABEL maintainer="edxops"
 
 # Default working directory

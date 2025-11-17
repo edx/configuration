@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Usage:
-#   ./copy-index-meili.sh SOURCE_ES SOURCE_INDEX TARGET_MEILI TARGET_INDEX [API_KEY]
+#   ./copy-index.sh SOURCE_ES SOURCE_INDEX TARGET_MEILI TARGET_INDEX [API_KEY]
 
 SOURCE_ES=$1
 SOURCE_INDEX=$2
