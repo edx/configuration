@@ -4,6 +4,9 @@
 All notable changes to this project will be documented in this file.
 Add any new changes to the top (right below this line).
 
+- 2025-12-05
+  - Set `NGINX_ROBOT_RULES` to a default of block everything.
+
 - 2025-09-26
   - Moved `EDXAPP_FEATURES_DEFAULT` and `EDXAPP_FEATURES_EXTRA` into top-level settings.
 
