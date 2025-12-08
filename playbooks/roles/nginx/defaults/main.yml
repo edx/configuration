@@ -190,7 +190,10 @@ nginx_ecommerce_gunicorn_hosts:
 nginx_credentails_gunicorn_hosts:
   - 127.0.0.1
 
-NGINX_ROBOT_RULES: [ ]
+# Block all crawlers by default
+NGINX_ROBOT_RULES:
+  - agent: "*"
+    disallow: "/"
 NGINX_EDXAPP_EMBARGO_CIDRS: []
 NGINX_P3P_MESSAGE: 'CP="Open edX does not have a P3P policy."'
 
