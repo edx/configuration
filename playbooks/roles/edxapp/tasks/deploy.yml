@@ -207,6 +207,7 @@
 - name: "Pull translations using Atlas"
   shell: |
     source "{{ edxapp_venv_dir }}/bin/activate"
+    export ATLAS_OPTIONS="--repository=edx/openedx-translations --revision=main"
     make pull_translations
   args:
     executable: /usr/bin/bash
