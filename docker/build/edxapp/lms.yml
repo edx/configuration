@@ -451,7 +451,7 @@ PROFILE_IMAGE_BACKEND:
     options:
         base_url: /media/profile-images/
         location: /edx/var/edxapp/media/profile-images/
-PROFILE_IMAGE_MAX_BYTES: 1048576
+PROFILE_IMAGE_MAX_BYTES: 2097152
 PROFILE_IMAGE_MIN_BYTES: 100
 PROFILE_IMAGE_SECRET_KEY: placeholder_secret_key
 PROFILE_IMAGE_SIZES_MAP:
