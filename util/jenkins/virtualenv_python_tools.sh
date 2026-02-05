@@ -6,8 +6,12 @@
 #
 # Usage:
 # . /edx/var/jenkins/jobvenvs/virtualenv_python_tools.sh
-# create_virtualenv_python --python=python3.12 --clear
+# create_virtualenv_python python3.12 --clear
 # . "$venvpath/bin/activate"
+#
+# Arguments:
+#   python_bin - Path to or name of the python executable (mandatory)
+#   additional args - Any additional arguments to pass to venv module
 #
 # Optional Environmental Variables:
 # 
@@ -26,48 +30,28 @@
 # parse.
 
 function create_virtualenv_python () {
-if [ -z "${JOBVENVDIR:-}" ]
-then
-    echo "No JOBVENVDIR found. Using default value." >&2
-    JOBVENVDIR="/edx/var/jenkins/jobvenvs"
-fi
+    if [ -z "${JOBVENVDIR:-}" ]
+    then
+        echo "No JOBVENVDIR found. Using default value." >&2
+        JOBVENVDIR="/edx/var/jenkins/jobvenvs"
+    fi
 
-# Parse arguments
-local python_bin=""
-local clear_flag=""
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --python=*)
-            python_bin="${1#*=}"
-            shift
-            ;;
-        --clear)
-            clear_flag="--clear"
-            shift
-            ;;
-        *)
-            echo "Unknown argument: $1" >&2
-            return 1
-            ;;
-    esac
-done
+    # First argument is the python executable
+    local python_bin="$1"
+    shift
 
-# Default to python3 if no python binary specified
-if [ -z "$python_bin" ]; then
-    python_bin="python3"
-fi
+    # create a unique hash for the job based location of where job is run
+    # and the python binary used
+    venvname="$( (echo "$python_bin"; pwd) | md5sum | cut -d' ' -f1 )"
+    venvpath="$JOBVENVDIR/$venvname"
 
-# create a unique hash for the job based location of where job is run
-# and the python binary used
-venvname="$( (echo "$python_bin"; pwd) | md5sum | cut -d' ' -f1 )"
-venvpath="$JOBVENVDIR/$venvname"
+    # create the virtualenv using python's venv module
+    # Pass any additional arguments directly to venv
+    "$python_bin" -m venv "$venvpath" "$@"
 
-# create the virtualenv using python's venv module
-"$python_bin" -m venv $clear_flag "$venvpath"
+    # Upgrade pip to avoid distutils issues with Python 3.12+
+    "$venvpath/bin/python" -m pip install --upgrade pip setuptools wheel
 
-# Upgrade pip to avoid distutils issues with Python 3.12+
-"$venvpath/bin/python" -m pip install --upgrade pip setuptools wheel
-
-# This variable is created in global scope if function is sourced
-# so we can access it after running this function.
+    # This variable is created in global scope if function is sourced
+    # so we can access it after running this function.
 }
