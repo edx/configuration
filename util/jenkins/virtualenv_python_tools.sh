@@ -41,8 +41,8 @@ function create_virtualenv_python () {
     shift
 
     # create a unique hash for the job based location of where job is run
-    # and the python binary used
-    venvname="$( (echo "$python_bin"; pwd) | md5sum | cut -d' ' -f1 )"
+    # and the python binary used.
+    venvname="$( (echo "$python_bin $@"; pwd) | md5sum | cut -d' ' -f1 )"
     venvpath="$JOBVENVDIR/$venvname"
 
     # create the virtualenv using python's venv module
