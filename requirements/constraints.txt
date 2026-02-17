@@ -1,3 +1,4 @@
 -c common_constraints.txt
 
 bcrypt<3.2.0 # 3.2.0 dropped support for python 2.7
+ansible<9.0.0 # Ansible 9+ removed support for deprecated 'include' syntax used in playbooks
