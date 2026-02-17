@@ -24,7 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         pip install demjson3
-        pip install -r requirements.txt
+        pip install -r requirements3_12.txt
     - name: Run Make test.syntax
       run: |
         timeout 90m make --keep-going test.syntax
