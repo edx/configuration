@@ -69,7 +69,7 @@
   # Because the ownership on the dir is different from the user performing the
   # action, we need to let git know that this dir doesn't have malicious
   # configs.
-  shell: cd {{ edxapp_code_dir }} && git clean -c safe.directory='{{ edxapp_code_dir }}' -xdf
+  shell: cd {{ edxapp_code_dir }} && git -c safe.directory='{{ edxapp_code_dir }}' clean -xdf
   tags:
     - install
     - install:code
