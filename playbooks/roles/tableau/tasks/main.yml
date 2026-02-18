@@ -57,6 +57,32 @@
     - install
     - install:base
 
+# Ensure correct ownership and mark as safe for Git operations
+# This mitigates Git's safe.directory / "dubious ownership" protections (Git 2.35+)
+- name: Ensure tableau code directory ownership is correct for git
+  become: yes
+  file:
+    path: "{{ tableau_code_dir }}"
+    owner: "{{ tableau_user }}"
+    group: "{{ tableau_user_group }}"
+    recurse: yes
+  when: tableau_code_dir is defined
+  tags:
+    - install
+    - install:code
+
+- name: Mark tableau code directory as safe for git
+  become: yes
+  become_user: "{{ tableau_user }}"
+  shell: >
+    git config --global --get-all safe.directory | grep -qx "{{ tableau_code_dir }}" ||
+    git config --global --add safe.directory "{{ tableau_code_dir }}"
+  changed_when: false
+  when: tableau_code_dir is defined
+  tags:
+    - install
+    - install:code
+
 # Clone tableau repo containing install scripts.
 - name: checkout tableau repo into {{ tableau_code_dir }}
   git:

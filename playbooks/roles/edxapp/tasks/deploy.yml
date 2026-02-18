@@ -45,6 +45,32 @@
     - install
     - install:base
 
+# Ensure correct ownership and mark as safe for Git operations
+# This mitigates Git's safe.directory / "dubious ownership" protections (Git 2.35+)
+- name: Ensure edxapp code directory ownership is correct for git
+  become: yes
+  file:
+    path: "{{ edxapp_code_dir }}"
+    owner: "{{ edxapp_user }}"
+    group: "{{ edxapp_user }}"
+    recurse: yes
+  when: edxapp_code_dir is defined
+  tags:
+    - install
+    - install:code
+
+- name: Mark edxapp code directory as safe for git
+  become: yes
+  become_user: "{{ edxapp_user }}"
+  shell: >
+    git config --global --get-all safe.directory | grep -qx "{{ edxapp_code_dir }}" ||
+    git config --global --add safe.directory "{{ edxapp_code_dir }}"
+  changed_when: false
+  when: edxapp_code_dir is defined
+  tags:
+    - install
+    - install:code
+
 # Do A Checkout
 - name: checkout edx-platform repo into {{ edxapp_code_dir }}
   git:
