@@ -59,17 +59,9 @@
     - install
     - install:code
 
-# This sometimes sees stale theme-related files that {{edxapp_user}} can't
-# delete, so we're running as root rather than becoming that user. (It's not
-# clear under what conditions this happens -- we thought it was just re-runs but
-# it seems like consecutive builds with the same edx-platform version might
-# sometimes cause it? Unclear, but deleting as root should take care of it in
-# any case.)
 - name: git clean after checking out edx-platform
-  # Because the ownership on the dir is different from the user performing the
-  # action, we need to let git know that this dir doesn't have malicious
-  # configs.
-  shell: cd {{ edxapp_code_dir }} && git -c safe.directory='{{ edxapp_code_dir }}' clean -xdf
+  shell: cd {{ edxapp_code_dir }} && git clean -xdf
+  become_user: "{{ edxapp_user }}"
   tags:
     - install
     - install:code
