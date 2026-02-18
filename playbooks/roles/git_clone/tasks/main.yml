@@ -124,9 +124,30 @@
     - install
     - install:code
 
+# Ensure correct ownership and mark as safe for Git operations
+# This mitigates Git's safe.directory / "dubious ownership" protections (Git 2.35+)
+- name: Ensure code directory ownership is correct for git
+  become: yes
+  file:
+    path: "{{ item.DESTINATION }}"
+    owner: "{{ repo_owner }}"
+    group: "{{ repo_group }}"
+    recurse: yes
+  when: GIT_REPOS is defined
+  with_items: "{{ GIT_REPOS }}"
+  no_log: "{{ GIT_CLONE_NO_LOGGING }}"
+  tags:
+    - install
+    - install:code
+
 - name: Run git safe.directory
-  shell: git config --global --add safe.directory {{ item.DESTINATION }}
-  become: true
+  shell: >
+    git config --global --get-all safe.directory | grep -qx "{{ item.DESTINATION }}" ||
+    git config --global --add safe.directory "{{ item.DESTINATION }}"
+  become: yes
+  become_user: "{{ repo_owner }}"
+  changed_when: false
+  when: GIT_REPOS is defined
   with_items: "{{ GIT_REPOS }}"
   no_log: "{{ GIT_CLONE_NO_LOGGING }}"
   tags:
@@ -134,8 +155,11 @@
     - install:code
 
 - name: Run git clean after checking out code
-  shell: cd {{ item.DESTINATION }} && git clean -xdf
-  become: true
+  shell: cd "{{ item.DESTINATION }}" && git clean -xdf
+  become: yes
+  become_user: "{{ repo_owner }}"
+  changed_when: false
+  when: GIT_REPOS is defined
   with_items: "{{ GIT_REPOS }}"
   no_log: "{{ GIT_CLONE_NO_LOGGING }}"
   tags:

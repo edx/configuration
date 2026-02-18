@@ -38,6 +38,32 @@
     - install
     - install:configuration
 
+# Ensure correct ownership and mark as safe for Git operations
+# This mitigates Git's safe.directory / "dubious ownership" protections (Git 2.35+)
+- name: Ensure forum code directory ownership is correct for git
+  become: yes
+  file:
+    path: "{{ forum_code_dir }}"
+    owner: "{{ forum_user }}"
+    group: "{{ forum_user }}"
+    recurse: yes
+  when: forum_code_dir is defined
+  tags:
+    - install
+    - install:code
+
+- name: Mark forum code directory as safe for git
+  become: yes
+  become_user: "{{ forum_user }}"
+  shell: >
+    git config --global --get-all safe.directory | grep -qx "{{ forum_code_dir }}" ||
+    git config --global --add safe.directory "{{ forum_code_dir }}"
+  changed_when: false
+  when: forum_code_dir is defined
+  tags:
+    - install
+    - install:code
+
 - name: git checkout forum repo into {{ forum_code_dir }}
   git:
     dest: "{{ forum_code_dir }}"
