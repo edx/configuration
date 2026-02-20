@@ -3,9 +3,9 @@
 bcrypt<3.2.0 # 3.2.0 dropped support for python 2.7
 
 # Python 3.9 reached EOL in October 2025 and was removed from GitHub Actions runners
-# GitHub Actions workflows now require Python 3.10+ (minimum available version: 3.10.19)
-# Ansible 9+ supports Python 3.10+ but removed the deprecated 'include' syntax causing playbook failures
-# Ansible 8.7.0 is the latest version that supports both Python 3.10+ AND the deprecated 'include' syntax
+# GitHub Actions workflows now use Python 3.11
+# Ansible 9+ supports Python 3.11+ but removed the deprecated 'include' syntax causing playbook failures
+# Ansible 8.7.0 is the latest version that supports both Python 3.11 AND the deprecated 'include' syntax
 # The constraint can be removed once all 63 instances of 'include' are migrated to 'include_tasks' or 'import_tasks'
 # Tracking: Configuration playbooks need migration before upgrading to Ansible 9+
 ansible<9.0.0
