@@ -36,8 +36,6 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)
 	pip install -qr requirements/pip.txt
 	pip install -qr requirements/pip-tools.txt
 	pip-compile --upgrade -o requirements.txt requirements/base.in
-	pip-compile --upgrade -o requirements3_11.txt requirements/base3_11.in
-	pip-compile --upgrade -o requirements3_12.txt requirements/base3_12.in 
 	pip-compile --upgrade -o playbooks/roles/aws/templates/requirements.txt.j2 requirements/aws.in
 	pip-compile --upgrade -o util/elasticsearch/requirements.txt requirements/elasticsearch.in
 	pip-compile --upgrade -o util/jenkins/requirements-cloudflare.txt requirements/cloudflare.in
@@ -48,8 +46,6 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)
 	util/post-pip-compile.sh \
 	    requirements/pip-tools.txt \
 	    requirements.txt \
-	    requirements3_11.txt \
-	    requirements3_12.txt \
 	    playbooks/roles/aws/templates/requirements.txt.j2 \
 	    util/elasticsearch/requirements.txt \
 	    util/jenkins/requirements-cloudflare.txt \
