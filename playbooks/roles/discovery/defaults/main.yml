@@ -63,7 +63,7 @@ DISCOVERY_OPENSEARCH_USE_SSL: false
 
 DISCOVERY_MEMCACHE: [ 'memcache' ]
 
-DISCOVERY_VERSION: "master"
+DISCOVERY_VERSION: "ktyagi/requirement"
 DISCOVERY_DJANGO_SETTINGS_MODULE: "course_discovery.settings.production"
 DISCOVERY_URL_ROOT: 'http://discovery:{{ DISCOVERY_NGINX_PORT }}'
 DISCOVERY_LOGOUT_URL: '{{ DISCOVERY_URL_ROOT }}/logout/'
