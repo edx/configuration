@@ -7,8 +7,7 @@
 
 # depends upon Newrelic being enabled via COMMON_ENABLE_NEWRELIC
 # and a key being provided via NEWRELIC_LICENSE_KEY
-{{ role_name|upper }}_NEWRELIC_APPNAME: "{{ '{{ COMMON_ENVIRONMENT }}' }}-{{ '{{ COMMON_DEPLOYMENT }}' }}-{{ '{{' }} {{ role_name }}_service_name }}"
-{{ role_name|upper }}_PIP_EXTRA_ARGS: "-i {{ '{{ COMMON_PYPI_MIRROR_URL }}' }}"
+# {{ role_name|upper }}_PIP_EXTRA_ARGS: "-i {{ '{{ COMMON_PYPI_MIRROR_URL }}' }}"
 {{ role_name|upper }}_NGINX_PORT: 18{{ port_suffix }}
 {{ role_name|upper }}_SSL_NGINX_PORT: 48{{ port_suffix }}
 
