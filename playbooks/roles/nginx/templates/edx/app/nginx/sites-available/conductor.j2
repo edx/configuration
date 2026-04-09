@@ -36,7 +36,7 @@ server {
 
   {% if CONDUCTOR_REDIRECT_ROOT %}
     location = / {
-      return 302 {{ CONDUCTOR_ROOT_REDIRECT_PATH }};
+      return 302 https://$host{{ CONDUCTOR_ROOT_REDIRECT_PATH }};
     }
   {% endif %}
 
