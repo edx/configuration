@@ -1,0 +1,7 @@
+- name: Validate conductor root redirect hostname
+	assert:
+		that:
+			- not CONDUCTOR_REDIRECT_ROOT or (CONDUCTOR_ROOT_REDIRECT_URL | length > 0)
+		fail_msg: >-
+			CONDUCTOR_ROOT_REDIRECT_URL must be set when CONDUCTOR_REDIRECT_ROOT is true.
+
