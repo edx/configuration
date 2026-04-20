@@ -38,6 +38,7 @@
     - oraclejdk
     - elasticsearch
     - opensearch
+    - meilisearch
     - forum
     - { role: "xqueue", update_users: True }
     - edx_ansible
