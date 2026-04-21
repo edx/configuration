@@ -59,8 +59,8 @@ def get_db_connection(db_host, db_user, db_password, db_name):
 
 
 def fetch_certificates_to_delete(connection):
+    cursor = connection.cursor()
     try:
-        cursor = connection.cursor()
         logging.info("Running query on database...")
         cursor.execute("""
             SELECT 
@@ -84,17 +84,17 @@ def fetch_certificates_to_delete(connection):
                 LMS_USER_ID,
                 COURSE_RUN_ID;
         """)
-        result = cursor.fetchall()
-        cursor.close()
-        return result
+        return cursor.fetchall()
     except Exception as ex:
         logging.error(f"Database query failed with error: {ex}")
         sys.exit(1)
+    finally:
+        cursor.close()
 
 
 def mark_certificate_deleted(connection, certificate_id, user_id):
+    cursor = connection.cursor()
     try:
-        cursor = connection.cursor()
         cursor.execute(
             """
             UPDATE certificates_generatedcertificate
@@ -104,15 +104,19 @@ def mark_certificate_deleted(connection, certificate_id, user_id):
             (certificate_id,)
         )
         connection.commit()
-        cursor.close()
         logging.info(f"Marked certificate {certificate_id} (user {user_id}) as deleted in database")
     except Exception as ex:
+        connection.rollback()
         logging.error(f"Failed to update certificate {certificate_id} (user {user_id}) in database: {ex}")
+        raise
+    finally:
+        cursor.close()
 
 
 def delete_certificates_from_s3(certificates, connection, dry_run):
     s3_client = S3BotoWrapper()
     logging.info(f"Found {len(certificates)} certificate(s) to process")
+    failed = False
     for cert in certificates:
         user_id = cert[0]           # LMS_USER_ID
         certificate_id = cert[2]    # CERTIFICATE_ID
@@ -132,8 +136,11 @@ def delete_certificates_from_s3(certificates, connection, dry_run):
                 logging.info(f"Deleting {download_key} from S3 (user {user_id})...")
                 s3_client.delete_object("verify.edx.org", download_key)
                 mark_certificate_deleted(connection, certificate_id, user_id)
-        except ClientError as e:
-            logging.error(f"Error deleting {verify_key} or {download_key} (user {user_id}): {e}")
+        except (ClientError, Exception) as e:
+            logging.error(f"Error processing certificate {certificate_id} (user {user_id}): {e}")
+            failed = True
+    if failed:
+        sys.exit(1)
 
 
 @click.command()
@@ -144,9 +151,11 @@ def delete_certificates_from_s3(certificates, connection, dry_run):
 @click.option('--dry-run', is_flag=True, help='Run the script in dry-run mode without making any changes')
 def controller(db_host, db_user, db_password, db_name, dry_run):
     connection = get_db_connection(db_host, db_user, db_password, db_name)
-    certificates = fetch_certificates_to_delete(connection)
-    delete_certificates_from_s3(certificates, connection, dry_run)
-    connection.close()
+    try:
+        certificates = fetch_certificates_to_delete(connection)
+        delete_certificates_from_s3(certificates, connection, dry_run)
+    finally:
+        connection.close()
 
 
 if __name__ == '__main__':
