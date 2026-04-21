@@ -77,7 +77,7 @@ def fetch_certificates_to_delete(connection):
             ON 
                 gc.user_id = au.id
             WHERE 
-                au.is_active = 0
+                au.username LIKE 'retired__user_%'
                 AND gc.download_url LIKE '%%https://%%'
                 AND gc.status = 'downloadable'
             ORDER BY 
