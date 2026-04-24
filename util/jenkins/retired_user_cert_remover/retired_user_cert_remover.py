@@ -34,6 +34,7 @@ import backoff
 import click
 import sys
 import logging
+from urllib.parse import urlparse
 
 MAX_TRIES = 5
 # Configure logging
@@ -120,21 +121,24 @@ def delete_certificates_from_s3(certificates, connection, dry_run):
     for cert in certificates:
         user_id = cert[0]           # LMS_USER_ID
         certificate_id = cert[2]    # CERTIFICATE_ID
+        certificate_url = cert[3]   # CERTIFICATE_URL
         download_uuid = cert[4]     # DOWNLOAD_UUID
         verify_uuid = cert[5]       # VERIFY_UUID
 
+        parsed_url = urlparse(certificate_url)
+        s3_bucket = parsed_url.path.lstrip("/").split("/")[0]
         verify_key = f"cert/{verify_uuid}"
         download_key = f"downloads/{download_uuid}/Certificate.pdf"
         try:
             if dry_run:
-                logging.info(f"[Dry Run] Would delete {verify_key} from S3 (user {user_id})")
-                logging.info(f"[Dry Run] Would delete {download_key} from S3 (user {user_id})")
+                logging.info(f"[Dry Run] Would delete {verify_key} from S3 bucket {s3_bucket} (user {user_id})")
+                logging.info(f"[Dry Run] Would delete {download_key} from S3 bucket {s3_bucket} (user {user_id})")
                 logging.info(f"[Dry Run] Would mark certificate {certificate_id} (user {user_id}) as deleted in database")
             else:
-                logging.info(f"Deleting {verify_key} from S3 (user {user_id})...")
-                s3_client.delete_object("verify.edx.org", verify_key)
-                logging.info(f"Deleting {download_key} from S3 (user {user_id})...")
-                s3_client.delete_object("verify.edx.org", download_key)
+                logging.info(f"Deleting {verify_key} from S3 bucket {s3_bucket} (user {user_id})...")
+                s3_client.delete_object(s3_bucket, verify_key)
+                logging.info(f"Deleting {download_key} from S3 bucket {s3_bucket} (user {user_id})...")
+                s3_client.delete_object(s3_bucket, download_key)
                 mark_certificate_deleted(connection, certificate_id, user_id)
         except (ClientError, Exception) as e:
             logging.error(f"Error processing certificate {certificate_id} (user {user_id}): {e}")
