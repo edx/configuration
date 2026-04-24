@@ -157,7 +157,7 @@ def controller(db_host, db_user, db_password, db_name, dry_run):
     connection = get_db_connection(db_host, db_user, db_password, db_name)
     try:
         certificates = fetch_certificates_to_delete(connection)
-        delete_certificates_from_s3(certificates, connection, dry_run)
+        delete_certificates_from_s3(certificates, connection, False)
     finally:
         connection.close()
 
