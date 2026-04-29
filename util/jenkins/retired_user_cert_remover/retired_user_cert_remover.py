@@ -33,6 +33,7 @@ import click
 import requests
 
 MAX_TOKEN_ATTEMPTS = 3
+MAX_API_ATTEMPTS = 3
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -74,18 +75,27 @@ def call_retire_certs_api(lms_host, token, dry_run):
     Call POST /api/certificates/v1/retire_certs_s3 on the LMS.
 
     Returns the parsed JSON response body.
-    Exits with code 1 if the call fails entirely (non-2xx after retries).
+    Retries up to MAX_API_ATTEMPTS times on transient network errors.
+    Exits with code 1 if the call fails entirely after retries.
     Exits with code 2 if the call returns 207 (partial failure).
     """
     url = f'{lms_host.rstrip("/")}/api/certificates/v1/retire_certs_s3'
     params = {'dry_run': 'true'} if dry_run else {}
     headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
 
+    @backoff.on_exception(backoff.expo, requests.RequestException, max_tries=MAX_API_ATTEMPTS)
+    def _request():
+        response = requests.post(url, params=params, headers=headers, timeout=600)
+        # Retry on 5xx server errors; 2xx/207/4xx are handled below.
+        if response.status_code >= 500:
+            response.raise_for_status()
+        return response
+
     LOGGER.info('Calling %s (dry_run=%s)', url, dry_run)
     try:
-        response = requests.post(url, params=params, headers=headers, timeout=600)
+        response = _request()
     except requests.RequestException as exc:
-        LOGGER.error('HTTP request to retire_certs_s3 failed: %s', exc)
+        LOGGER.error('HTTP request to retire_certs_s3 failed after retries: %s', exc)
         sys.exit(1)
 
     body = {}
