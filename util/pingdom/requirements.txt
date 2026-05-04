@@ -4,19 +4,19 @@
 #
 #    make upgrade
 #
-certifi==2025.1.31
+certifi==2026.4.22
     # via requests
-charset-normalizer==3.4.1
+charset-normalizer==3.4.7
     # via requests
 click==6.7
     # via -r requirements/pingdom.in
-idna==3.10
+idna==3.13
     # via requests
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via -r requirements/pingdom.in
-requests==2.32.3
+requests==2.33.1
     # via -r requirements/pingdom.in
 six==1.14.0
     # via -r requirements/pingdom.in
-urllib3==2.3.0
+urllib3==2.6.3
     # via requests
