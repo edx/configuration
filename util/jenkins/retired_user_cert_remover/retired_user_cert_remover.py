@@ -41,7 +41,10 @@ LOGGER = logging.getLogger(__name__)
 
 def get_oauth_token(lms_host, client_id, client_secret):
     """
-    Exchange client credentials for a bearer token via LMS DOT.
+    Exchange client credentials for a JWT via LMS DOT.
+
+    Requests token_type=jwt so that the LMS returns a JWT token accepted by
+    JwtAuthentication (which requires Authorization: JWT <token>).
 
     Returns the access token string, or exits on failure.
     """
@@ -55,6 +58,7 @@ def get_oauth_token(lms_host, client_id, client_secret):
                 'grant_type': 'client_credentials',
                 'client_id': client_id,
                 'client_secret': client_secret,
+                'token_type': 'jwt',
             },
             timeout=30,
         )
@@ -63,10 +67,10 @@ def get_oauth_token(lms_host, client_id, client_secret):
 
     try:
         token = _request()
-        LOGGER.info('Successfully obtained OAuth token from %s', token_url)
+        LOGGER.info('Successfully obtained JWT token from %s', token_url)
         return token
     except Exception as exc:
-        LOGGER.error('Failed to obtain OAuth token: %s', exc)
+        LOGGER.error('Failed to obtain JWT token: %s', exc)
         sys.exit(1)
 
 
@@ -81,7 +85,7 @@ def call_retire_certs_api(lms_host, token, dry_run):
     """
     url = f'{lms_host.rstrip("/")}/api/certificates/v1/retire_certs_s3'
     params = {'dry_run': 'true'} if dry_run else {}
-    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+    headers = {'Authorization': f'JWT {token}', 'Content-Type': 'application/json'}
 
     @backoff.on_exception(backoff.expo, requests.RequestException, max_tries=MAX_API_ATTEMPTS)
     def _request():
