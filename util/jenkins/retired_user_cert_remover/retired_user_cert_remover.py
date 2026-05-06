@@ -6,8 +6,12 @@ This script no longer connects directly to RDS. All certificate discovery, S3
 deletion, and database updates are handled by the LMS API endpoint:
     POST /api/certificates/v1/retire_certs_s3
 
-The LMS endpoint requires an OAuth token obtained by exchanging client_id /
-client_secret (stored in AWS Secrets Manager) for a bearer token.
+Authentication flow:
+    1. Exchange client_id / client_secret (stored in AWS Secrets Manager) for a
+       JWT by POSTing to /oauth2/access_token/ with token_type=jwt.
+    2. Pass the JWT in the Authorization header as:
+           Authorization: JWT <token>
+    The LMS uses JwtAuthentication, which requires the JWT prefix (not Bearer).
 
 Usage:
     python retired_user_cert_remover.py \
@@ -39,9 +43,12 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 LOGGER = logging.getLogger(__name__)
 
 
-def get_oauth_token(lms_host, client_id, client_secret):
+def get_jwt_token(lms_host, client_id, client_secret):
     """
-    Exchange client credentials for a bearer token via LMS DOT.
+    Exchange client credentials for a JWT via LMS DOT.
+
+    Requests token_type=jwt so that the LMS returns a JWT token accepted by
+    JwtAuthentication (which requires Authorization: JWT <token>).
 
     Returns the access token string, or exits on failure.
     """
@@ -55,6 +62,7 @@ def get_oauth_token(lms_host, client_id, client_secret):
                 'grant_type': 'client_credentials',
                 'client_id': client_id,
                 'client_secret': client_secret,
+                'token_type': 'jwt',
             },
             timeout=30,
         )
@@ -63,10 +71,10 @@ def get_oauth_token(lms_host, client_id, client_secret):
 
     try:
         token = _request()
-        LOGGER.info('Successfully obtained OAuth token from %s', token_url)
+        LOGGER.info('Successfully obtained JWT token from %s', token_url)
         return token
     except Exception as exc:
-        LOGGER.error('Failed to obtain OAuth token: %s', exc)
+        LOGGER.error('Failed to obtain JWT token: %s', exc)
         sys.exit(1)
 
 
@@ -81,7 +89,7 @@ def call_retire_certs_api(lms_host, token, dry_run):
     """
     url = f'{lms_host.rstrip("/")}/api/certificates/v1/retire_certs_s3'
     params = {'dry_run': 'true'} if dry_run else {}
-    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+    headers = {'Authorization': f'JWT {token}', 'Content-Type': 'application/json'}
 
     @backoff.on_exception(backoff.expo, requests.RequestException, max_tries=MAX_API_ATTEMPTS)
     def _request():
@@ -128,8 +136,8 @@ def call_retire_certs_api(lms_host, token, dry_run):
 @click.option('--client-secret', envvar='LMS_CLIENT_SECRET', required=True, help='OAuth DOT client secret')
 @click.option('--dry-run', is_flag=True, help='Run in dry-run mode without making any changes')
 def controller(lms_host, client_id, client_secret, dry_run):
-    token = get_oauth_token(lms_host, client_id, client_secret)
-    call_retire_certs_api(lms_host, token, dry_run)
+    jwt_token = get_jwt_token(lms_host, client_id, client_secret)
+    call_retire_certs_api(lms_host, jwt_token, dry_run)
 
 
 if __name__ == '__main__':
