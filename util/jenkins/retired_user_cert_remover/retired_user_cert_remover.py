@@ -6,8 +6,12 @@ This script no longer connects directly to RDS. All certificate discovery, S3
 deletion, and database updates are handled by the LMS API endpoint:
     POST /api/certificates/v1/retire_certs_s3
 
-The LMS endpoint requires an OAuth token obtained by exchanging client_id /
-client_secret (stored in AWS Secrets Manager) for a bearer token.
+Authentication flow:
+    1. Exchange client_id / client_secret (stored in AWS Secrets Manager) for a
+       JWT by POSTing to /oauth2/access_token/ with token_type=jwt.
+    2. Pass the JWT in the Authorization header as:
+           Authorization: JWT <token>
+    The LMS uses JwtAuthentication, which requires the JWT prefix (not Bearer).
 
 Usage:
     python retired_user_cert_remover.py \
@@ -39,7 +43,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 LOGGER = logging.getLogger(__name__)
 
 
-def get_oauth_token(lms_host, client_id, client_secret):
+def get_jwt_token(lms_host, client_id, client_secret):
     """
     Exchange client credentials for a JWT via LMS DOT.
 
@@ -132,8 +136,8 @@ def call_retire_certs_api(lms_host, token, dry_run):
 @click.option('--client-secret', envvar='LMS_CLIENT_SECRET', required=True, help='OAuth DOT client secret')
 @click.option('--dry-run', is_flag=True, help='Run in dry-run mode without making any changes')
 def controller(lms_host, client_id, client_secret, dry_run):
-    token = get_oauth_token(lms_host, client_id, client_secret)
-    call_retire_certs_api(lms_host, token, dry_run)
+    jwt_token = get_jwt_token(lms_host, client_id, client_secret)
+    call_retire_certs_api(lms_host, jwt_token, dry_run)
 
 
 if __name__ == '__main__':
