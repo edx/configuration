@@ -91,7 +91,7 @@ def call_retire_certs_api(lms_host, token, dry_run, batch_size=0):
     params = {}
     if dry_run:
         params['dry_run'] = 'true'
-    if batch_size:
+    if batch_size > 0:
         params['batch_size'] = batch_size
     headers = {'Authorization': f'JWT {token}', 'Content-Type': 'application/json'}
 
@@ -138,10 +138,9 @@ def call_retire_certs_api(lms_host, token, dry_run, batch_size=0):
 @click.option('--lms-host', required=True, help='Base URL of the LMS (e.g. https://lms.edx.org)')
 @click.option('--client-id', envvar='LMS_CLIENT_ID', required=True, help='OAuth DOT client id')
 @click.option('--client-secret', envvar='LMS_CLIENT_SECRET', required=True, help='OAuth DOT client secret')
-@click.option('--dry-run', default='true', help='Run in dry-run mode without making any changes (true/false)')
+@click.option('--dry-run', default=True, type=click.BOOL, help='Run in dry-run mode without making any changes (true/false)')
 @click.option('--batch-size', default=0, type=int, help='Max certificates to process per run (0 = no limit)')
 def controller(lms_host, client_id, client_secret, dry_run, batch_size):
-    dry_run = dry_run.lower() != 'false'
     jwt_token = get_jwt_token(lms_host, client_id, client_secret)
     call_retire_certs_api(lms_host, jwt_token, dry_run, batch_size)
 
