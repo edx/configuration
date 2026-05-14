@@ -78,7 +78,7 @@ def get_jwt_token(lms_host, client_id, client_secret):
         sys.exit(1)
 
 
-def call_retire_certs_api(lms_host, token, dry_run):
+def call_retire_certs_api(lms_host, token, dry_run, batch_size=0):
     """
     Call POST /api/certificates/v1/retire_certs_s3 on the LMS.
 
@@ -88,7 +88,11 @@ def call_retire_certs_api(lms_host, token, dry_run):
     Exits with code 2 if the call returns 207 (partial failure).
     """
     url = f'{lms_host.rstrip("/")}/api/certificates/v1/retire_certs_s3'
-    params = {'dry_run': 'true'} if dry_run else {}
+    params = {}
+    if dry_run:
+        params['dry_run'] = 'true'
+    if batch_size > 0:
+        params['batch_size'] = batch_size
     headers = {'Authorization': f'JWT {token}', 'Content-Type': 'application/json'}
 
     @backoff.on_exception(backoff.expo, requests.RequestException, max_tries=MAX_API_ATTEMPTS)
@@ -134,10 +138,11 @@ def call_retire_certs_api(lms_host, token, dry_run):
 @click.option('--lms-host', required=True, help='Base URL of the LMS (e.g. https://lms.edx.org)')
 @click.option('--client-id', envvar='LMS_CLIENT_ID', required=True, help='OAuth DOT client id')
 @click.option('--client-secret', envvar='LMS_CLIENT_SECRET', required=True, help='OAuth DOT client secret')
-@click.option('--dry-run', is_flag=True, help='Run in dry-run mode without making any changes')
-def controller(lms_host, client_id, client_secret, dry_run):
+@click.option('--dry-run', default=True, type=click.BOOL, help='Run in dry-run mode without making any changes (true/false)')
+@click.option('--batch-size', default=0, type=int, help='Max certificates to process per run (0 = no limit)')
+def controller(lms_host, client_id, client_secret, dry_run, batch_size):
     jwt_token = get_jwt_token(lms_host, client_id, client_secret)
-    call_retire_certs_api(lms_host, jwt_token, dry_run)
+    call_retire_certs_api(lms_host, jwt_token, dry_run, batch_size)
 
 
 if __name__ == '__main__':
