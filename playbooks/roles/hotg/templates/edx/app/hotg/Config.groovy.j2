@@ -395,9 +395,3 @@ email {
         errorSubjectStart = 'Hammer Error: '
 }
 
-{% if NEWRELIC_API_KEY is defined and NEWRELIC_ACCOUNT_ID is defined %}
-newrelic {
-        apiKey = '{{ NEWRELIC_API_KEY }}'
-        accountId = '{{ NEWRELIC_ACCOUNT_ID }}'
-}
-{% endif %}

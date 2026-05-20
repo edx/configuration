@@ -3,7 +3,7 @@
   become: True
   gather_facts: True
   vars:
-    ENABLE_NEWRELIC: True
+    ENABLE_NEWRELIC: False
     CLUSTER_NAME: 'commerce_coordinator'
     REGISTRAR_ENABLED: True
   roles:
@@ -15,8 +15,6 @@
     - commerce_coordinator
     - role: splunkforwarder
       when: COMMON_ENABLE_SPLUNKFORWARDER
-    - role: newrelic_infrastructure
-      when: COMMON_ENABLE_NEWRELIC_INFRASTRUCTURE
     - role: hermes
       HERMES_TARGET_SERVICE: 'commerce_coordinator'
       when: COMMERCE_COORDINATOR__HERMES_ENABLED

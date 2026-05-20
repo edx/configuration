@@ -3,7 +3,7 @@
   become: True
   gather_facts: True
   vars:
-    ENABLE_NEWRELIC: True
+    ENABLE_NEWRELIC: False
     CLUSTER_NAME: 'blockstore'
   roles:
     - role: aws
@@ -14,8 +14,6 @@
     - blockstore 
     - role: splunkforwarder
       when: COMMON_ENABLE_SPLUNKFORWARDER
-    - role: newrelic_infrastructure
-      when: COMMON_ENABLE_NEWRELIC_INFRASTRUCTURE
     - role: hermes
       HERMES_TARGET_SERVICE: 'blockstore'
       when: BLOCKSTORE_HERMES_ENABLED

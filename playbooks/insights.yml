@@ -4,7 +4,7 @@
   gather_facts: True
   vars:
     ENABLE_DATADOG: False
-    ENABLE_NEWRELIC: True
+    ENABLE_NEWRELIC: False
     CLUSTER_NAME: 'insights'
   roles:
     - role: aws
