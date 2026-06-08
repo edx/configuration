@@ -1,7 +1,7 @@
 {% include "edxapp_common.j2" %}
 
 if [[ -z "${NO_EDXAPP_SUDO:-}" ]]; then
-    SUDO='sudo -E -u {{ edxapp_user }} env "PATH=$PATH"'
+    SUDO='sudo -E -u {{ edxapp_user }} env "PATH=$PATH" HOME=/edx/app/edxapp'
 fi
 
 remove_unwanted_args () {

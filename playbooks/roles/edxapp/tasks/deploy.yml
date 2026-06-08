@@ -45,39 +45,18 @@
     - install
     - install:base
 
-# Do A Checkout
-# Ensure correct ownership of edx-platform directory before git operations
-# to avoid Git's "dubious ownership" protection (introduced in Git 2.35.2+)
-- name: ensure edx-platform directory is owned by {{ edxapp_user }}
+# Ensure all files in code dir are owned by the edxapp user. For unknown
+# reasons, we sometimes get stale files here that are owned by root or some
+# other user. (From successive builds of the same edx-platform commit sharing a
+# builder instance, perhaps?) This then causes `git clean` to fail with
+# "Permission denied" on various static-asset paths.
+- name: ensure edx-platform repo files are owned by {{ edxapp_user }}
   file:
     path: "{{ edxapp_code_dir }}"
     state: directory
     owner: "{{ edxapp_user }}"
     group: "{{ edxapp_user }}"
-    # Do not recurse - git module will handle file ownership within the repo
-    recurse: no
-  tags:
-    - install
-    - install:code
-
-# Configure Git safe.directory for edxapp user to prevent "dubious ownership" errors
-# when running git commands on the edx-platform repository. Uses --global scope
-# (not --local) because the configuration is needed before the repository is cloned.
-- name: check if edx-platform is already in git safe.directory
-  command: git config --global --get-all safe.directory
-  become_user: "{{ edxapp_user }}"
-  register: safe_directory_check
-  changed_when: false
-  # Git config returns exit code 1 when no entries exist, which is expected
-  failed_when: false
-  tags:
-    - install
-    - install:code
-
-- name: add edx-platform to git safe.directory
-  command: git config --global --add safe.directory '{{ edxapp_code_dir }}'
-  become_user: "{{ edxapp_user }}"
-  when: edxapp_code_dir not in (safe_directory_check.stdout_lines | default([]))
+    recurse: yes
   tags:
     - install
     - install:code
