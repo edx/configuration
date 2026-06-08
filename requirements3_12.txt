@@ -4,20 +4,20 @@
 #
 #    make upgrade
 #
-ansible==2.10.7
-    # via -r requirements/base.in
-ansible-base==2.10.17
+ansible==9.13.0
+    # via -r requirements/base3_12.in
+ansible-core==2.16.14
     # via ansible
 awscli==1.38.8
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 bcrypt==3.1.7
     # via
     #   -c requirements/constraints.txt
     #   paramiko
 boto==2.49.0
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 boto3==1.37.8
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 botocore==1.37.8
     # via
     #   awscli
@@ -36,46 +36,46 @@ colorama==0.4.6
     # via awscli
 cryptography==44.0.2
     # via
-    #   ansible-base
+    #   ansible-core
     #   paramiko
 datadog==0.8.0
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 decorator==5.2.1
     # via
     #   datadog
     #   networkx
 docopt==0.6.2
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 docutils==0.16
     # via awscli
 ecdsa==0.13.3
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 idna==3.10
     # via requests
-jinja2==2.8
+jinja2==3.1.2
     # via
-    #   -r requirements/base.in
-    #   ansible-base
+    #   -r requirements/base3_12.in
+    #   ansible-core
 jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-markupsafe==2.0.1
+markupsafe==2.1.1
     # via
-    #   -r requirements/base.in
+    #   -r requirements/base3_12.in
     #   jinja2
 mysqlclient==1.4.6
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 networkx==1.11
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 packaging==24.2
-    # via ansible-base
+    # via ansible-core
 paramiko==2.4.2
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 pathlib2==2.3.0
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 prettytable==0.7.2
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 pyasn1==0.6.1
     # via
     #   paramiko
@@ -83,22 +83,24 @@ pyasn1==0.6.1
 pycparser==2.22
     # via cffi
 pycryptodome==3.21.0
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 pymongo==3.9.0
-    # via -r requirements/base.in
+    # via -r requirements/base3_12.in
 pynacl==1.5.0
     # via paramiko
 python-dateutil==2.9.0.post0
     # via botocore
 pyyaml==6.0.2
     # via
-    #   -r requirements/base.in
-    #   ansible-base
+    #   -r requirements/base3_12.in
+    #   ansible-core
     #   awscli
 requests==2.32.3
     # via
-    #   -r requirements/base.in
+    #   -r requirements/base3_12.in
     #   datadog
+resolvelib==1.0.1
+    # via ansible-core
 rsa==4.7.2
     # via awscli
 s3transfer==0.11.4
@@ -113,6 +115,6 @@ six==1.17.0
 urllib3==1.26.18
     # via
     #   -c requirements/common_constraints.txt
-    #   -r requirements/base.in
+    #   -r requirements/base3_12.in
     #   botocore
     #   requests
