@@ -587,7 +587,7 @@ EDXAPP_PRIVATE_REQUIREMENTS:
     - name: ddtrace<4.0.0
 
     # Plugins
-    - name: edx-arch-experiments==6.1.0
+    - name: edx-arch-experiments==7.3.0
 
 # This is an addendum to EDXAPP_PRIVATE_REQUIREMENTS for us in installing
 # requirements only in the stage environment. (It should only be set in stage.)
