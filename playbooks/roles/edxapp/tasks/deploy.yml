@@ -503,6 +503,10 @@
     supervisorctl_path: "{{ supervisor_ctl }}"
     config: "{{ supervisor_cfg }}"
     state: started
+  register: edxapp_workers_start
+  failed_when: >
+    edxapp_workers_start.failed and
+    'already started' not in (edxapp_workers_start.msg | default(''))
   when: celery_worker is defined and not disable_edx_services
   become_user: "{{ supervisor_service_user }}"
   tags:
