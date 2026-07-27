@@ -521,6 +521,7 @@ EOF_AUTH
 fi
 
 if [[ $mongo_version == "5.0" ]]; then
+    mongo_playbook="mongo_5_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: True
 MONGO_6_0_ENABLED: False
@@ -528,6 +529,7 @@ MONGO_7_0_ENABLED: False
 MONGO_VERSION
 fi
 if [[ $mongo_version == "6.0" ]]; then
+    mongo_playbook="mongo_6_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: False
 MONGO_6_0_ENABLED: True
@@ -535,6 +537,7 @@ MONGO_7_0_ENABLED: False
 MONGO_VERSION
 fi
 if [[ $mongo_version == "7.0" ]]; then
+    mongo_playbook="mongo_7_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: False
 MONGO_6_0_ENABLED: False
@@ -733,7 +736,7 @@ edxapp_containerized: true
 CAN_GENERATE_NEW_JWT_SIGNATURE: false
 EOF
       ansible -i "${deploy_host}," $deploy_host -m include_role -a "name=memcache" -u ubuntu -b
-      for playbook in redis $mongo_version; do
+      for playbook in redis $mongo_playbook; do
           run_ansible $playbook.yml -i "${deploy_host}," $extra_var_arg --user ubuntu
       done
       run_ansible edx_continuous_integration.yml -i "${deploy_host}," $extra_var_arg --user ubuntu --tags "edxlocal"
