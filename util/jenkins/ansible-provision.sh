@@ -783,7 +783,7 @@ EOF
 
       set +x
 
-      app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+      app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
 
       # specify variable names
       app_hostname="courses"
@@ -961,7 +961,7 @@ fi
 if [[ $edx_exams == 'true' ]]; then
     set +x
     
-    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
 
     app_hostname="edx-exams"
     app_service_name="edx_exams"
@@ -985,7 +985,7 @@ fi
 if [[ $subscriptions == 'true' ]]; then
     set +x
     
-    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
     
     app_hostname="subscriptions"
     app_service_name="subscriptions"
