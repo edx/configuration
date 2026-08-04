@@ -65,8 +65,6 @@ jenkins_base_environment_variables:
   - NAME: 'PAGER_NOTIFY'
     VALUE: '{{ PAGER_NOTIFY }}'
 
-JENKINS_DATA_ENGINEERING_NODE_VERSION: '24'
-
 JENKINS_DATA_ENGINEERING_EXTRA_PKGS:
   - gettext
   - pkg-config
