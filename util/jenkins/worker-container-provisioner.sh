@@ -66,10 +66,20 @@ if [ ! -d "/edx/app/${LC_WORKER_OF}/${LC_WORKER_SERVICE_REPO}" ]; then
   cd /edx/app/${LC_WORKER_OF}/${LC_WORKER_SERVICE_REPO} && git checkout ${LC_WORKER_SERVICE_REPO_VERSION}
 fi
 
-# Check if docker image already exists. If it doesn't, build it.
-if ! $(docker image inspect ${LC_WORKER_IMAGE_NAME}:latest >/dev/null 2>&1 && echo true || echo false) ; then
-  cd /edx/app/${LC_WORKER_OF}/${LC_WORKER_SERVICE_REPO}
-  time DOCKER_BUILDKIT=1 docker build . -t ${LC_WORKER_IMAGE_NAME}:latest --target base
+# Reuse the edx-platform image built during LMS provisioning when available.
+# edx-platform no longer ships an in-repo Dockerfile (moved to public-dockerfiles).
+if docker image inspect edx-platform:latest >/dev/null 2>&1; then
+  docker tag edx-platform:latest ${LC_WORKER_IMAGE_NAME}:latest
+elif ! docker image inspect ${LC_WORKER_IMAGE_NAME}:latest >/dev/null 2>&1; then
+  PUBLIC_DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/edx-platform.Dockerfile"
+  curl -fsSL "${PUBLIC_DOCKERFILE_URL}" -o /tmp/edx-platform.Dockerfile
+  time DOCKER_BUILDKIT=1 docker build \
+    -f /tmp/edx-platform.Dockerfile \
+    --target base \
+    --build-arg EDX_PLATFORM_REPO=edx/edx-platform \
+    --build-arg EDX_PLATFORM_VERSION="${LC_WORKER_SERVICE_REPO_VERSION}" \
+    -t ${LC_WORKER_IMAGE_NAME}:latest \
+    /tmp
 fi
 
 # Render a docker-compose file for workers
