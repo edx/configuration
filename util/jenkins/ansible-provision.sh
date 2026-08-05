@@ -783,7 +783,11 @@ EOF
 
       set +x
 
-      app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
+      configuration_secure_json=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text)
+      app_git_ssh_key=$(echo "$configuration_secure_json" | jq -r '._local_git_identity // empty')
+      # Required by internal edx-platform-private Dockerfile (BuildKit GIT_AUTH_TOKEN) to fetch
+      # private repos such as edx-internal and edx-themes over HTTPS.
+      app_github_token=$(echo "$configuration_secure_json" | jq -r '.GITHUB_TOKEN // .github_access_token // .github_token // empty')
 
       # specify variable names
       app_hostname="courses"
@@ -791,6 +795,7 @@ EOF
       app_name="edxapp"
       app_repo="edx-platform"
       app_version=$edxapp_version
+      app_image_name="${app_repo}:lms"
       app_gunicorn_port=8000
       app_cfg=LMS_CFG
       app_admin_password=SANDBOX_ADMIN_PASSWORD
@@ -819,6 +824,7 @@ EOF
       app_name="edxapp"
       app_repo="edx-platform"
       app_version=$edxapp_version
+      app_image_name="${app_repo}:cms"
       app_gunicorn_port=8010
       app_cfg=CMS_CFG
 
