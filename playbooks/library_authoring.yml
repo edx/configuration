@@ -12,5 +12,3 @@
       MFE_NAME: library-authoring
     - role: splunkforwarder
       when: COMMON_ENABLE_SPLUNKFORWARDER
-    - role: newrelic_infrastructure
-      when: COMMON_ENABLE_NEWRELICE_INFRASTRUCTURE

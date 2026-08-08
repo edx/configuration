@@ -14,9 +14,6 @@
     {% endif %}
 {% endif %}
 
-    # newrelic-specific header records the time when nginx handles a request.
-    proxy_set_header X-Queue-Start "t=${msec}";
-
     proxy_set_header Host $http_host;
 
     proxy_redirect off;

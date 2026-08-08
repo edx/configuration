@@ -3,17 +3,7 @@
 # {{ ansible_managed }}
 
 {% set edx_notes_api_venv_bin = edx_notes_api_home + '/venvs/' + edx_notes_api_service_name + '/bin' %}
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-{% set executable = edx_notes_api_venv_bin + '/newrelic-admin run-program ' + edx_notes_api_venv_bin + '/gunicorn' %}
-{% else %}
 {% set executable = edx_notes_api_venv_bin + '/gunicorn' %}
-{% endif %}
-
-{% if COMMON_ENABLE_NEWRELIC_APP %}
-export NEW_RELIC_DISTRIBUTED_TRACING_ENABLED="{{ EDX_NOTES_API_ENABLE_NEWRELIC_DISTRIBUTED_TRACING }}"
-export NEW_RELIC_APP_NAME="{{ EDX_NOTES_API_NEWRELIC_APPNAME }}"
-export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
-{% endif -%}
 
 source {{ edx_notes_api_home }}/edx_notes_api_env
 

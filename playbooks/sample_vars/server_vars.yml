@@ -10,6 +10,7 @@
 #    github: true
 #    type: admin
 #USER_CMD_PROMPT: '[$name_tag] '
+# REMOVED NEW RELIC SETTINGS
 #COMMON_ENABLE_NEWRELIC_APP: $enable_newrelic
 #COMMON_ENABLE_DATADOG: $enable_datadog
 #FORUM_NEW_RELIC_ENABLE: $enable_newrelic

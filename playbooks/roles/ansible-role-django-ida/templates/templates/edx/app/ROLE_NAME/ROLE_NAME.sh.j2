@@ -2,18 +2,11 @@
 
 # {{ '{{' }} ansible_managed }}
 
-{{ '{%' }} set {{ role_name }}_venv_bin = {{ role_name }}_home + "/venvs/" + {{ role_name }}_service_name + "/bin" %}
-{{ '{%' }} if COMMON_ENABLE_NEWRELIC_APP %}
-{{ '{%' }} set executable = {{ role_name }}_venv_bin + '/newrelic-admin run-program ' + {{ role_name }}_venv_bin + '/gunicorn' %}
-{{ '{%' }} else %}
-{{ '{%' }} set executable = {{ role_name }}_venv_bin + '/gunicorn' %}
-{{ '{%' }} endif %}
+{% set role_venv_bin = role_home + "/venvs/" + role_service_name + "/bin" %}
 
-{{ '{%' }} if COMMON_ENABLE_NEWRELIC_APP %}
-export NEW_RELIC_APP_NAME="{{ '{{' }} {{ role_name|upper }}_NEWRELIC_APPNAME }}"
-export NEW_RELIC_LICENSE_KEY="{{ '{{' }} NEWRELIC_LICENSE_KEY }}"
-{{ '{%' }} endif -%}
+{% set executable = role_venv_bin + '/gunicorn' %}
 
-source {{ '{{' }} {{ role_name }}_home }}/{{ role_name }}_env
+source {{ role_home }}/{{ role_name }}_env
+
 # We exec so that gunicorn is the child of supervisor and can be managed properly
-exec {{ '{{' }} executable }} -c {{ '{{' }} {{ role_name }}_home }}/{{ role_name }}_gunicorn.py {{ '{{' }} {{ role_name|upper }}_GUNICORN_EXTRA }} {{ role_name }}.wsgi:application
+exec {{ executable }} -c {{ role_home }}/{{ role_name }}_gunicorn.py {{ (role_name|upper ~ '_GUNICORN_EXTRA') }} {{ role_name }}.wsgi:application

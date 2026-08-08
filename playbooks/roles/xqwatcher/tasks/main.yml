@@ -33,7 +33,6 @@
 #     - aws
 #     - datadog
 #     - splunkforwarder
-#     - newrelic
 #     - xqwatcher
 #
 # You would use a commone like the following to run the play.
