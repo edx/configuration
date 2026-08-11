@@ -68,7 +68,7 @@ if ! $(docker image inspect ${app_image_name} >/dev/null 2>&1 && echo true || ec
         curl -fsSL "\$PUBLIC_DOCKERFILE_URL" -o /tmp/edx-platform.Dockerfile
 
         set +x
-        export GITHUB_TOKEN='${app_github_token}'
+        export GITHUB_TOKEN='${app_git_pat_token}'
         set -x
 
         # Public Dockerfile fetches code from GitHub via EDX_PLATFORM_* build args.
