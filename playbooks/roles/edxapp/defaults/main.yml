@@ -525,69 +525,8 @@ EDXAPP_INSTALL_PRIVATE_REQUIREMENTS: false
 # EDXAPP_EXTRA_REQUIREMENTS has been deprecated and removed. All dependencies
 # have been moved to EDXAPP_PRIVATE_REQUIREMENTS.
 
-# These defaults for EDXAPP_PRIVATE_REQUIREMENTS are used for Edge and
-# sandboxes in EC2. Post containerization, there will be a single
-# definition of the private requirements used across all environments.
-# TODO: Sync these settings with the containerized version. See:
-# - https://github.com/edx/edx-arch-experiments/issues/1006
-# For more help, see:
-# https://2u-internal.atlassian.net/wiki/spaces/AT/pages/396034066/How+to+add+private+requirements+to+edx-platform
-EDXAPP_PRIVATE_REQUIREMENTS:
-    # For Harvard courses:
-    - name: xblock-problem-builder==5.1.3
-    # Oppia XBlock
-    - name: git+https://github.com/oppia/xblock.git@1030adb3590ad2d32c93443cc8690db0985d76b6#egg=oppia-xblock
-      extra_args: -e
-    # This repository contains schoolyourself-xblock, which is used in
-    # edX's "AlgebraX" and "GeometryX" courses.
-    - name: git+https://github.com/openedx/schoolyourself-xblock.git@2093048720cfb36cc05b3143cd6f2585c7c64d85#egg=schoolyourself-xblock
-      extra_args: -e
-    # Prototype XBlocks from edX learning sciences limited roll-outs and user testing.
-    # Concept XBlock, in particular, is nowhere near finished and an early prototype.
-    # Profile XBlock is there so we can play with XBlock arguments in the platform, but isn't ready for use outside of
-    # edX.
-    - name: git+https://github.com/openedx/ConceptXBlock.git@75dd86e5fa4c54ab2f04c95c4fd3389ac1f56174#egg=concept-xblock
-      extra_args: -e
-    - name: git+https://github.com/openedx/AudioXBlock.git@20538c6e9bb704801a71ecbb6981f794556dfc45#egg=audio-xblock
-      extra_args: -e
-    - name: git+https://github.com/openedx/AnimationXBlock.git@c950ffdda2f69effda93bf03df8646f61d3ffada#egg=animation-xblock
-      extra_args: -e
-    # Peer instruction XBlock
-    - name: git+https://github.com/ubc/ubcpi.git@1.0.0#egg=ubcpi-xblock
-      extra_args: -e
-    # Vector Drawing and ActiveTable XBlocks (Davidson)
-    - name: git+https://github.com/open-craft/xblock-vectordraw.git@0b931ae5d6314dbda5b58ab6c865aea1bc121267#egg=vectordraw-xblock==0.3.0
-      extra_args: -e
-    - name: git+https://github.com/open-craft/xblock-activetable.git@d3fb772435c382b59293e4e688a6a3096c4f6fd7#egg=activetable-xblock
-      extra_args: -e
-    # Stanford-developed XBlocks (technically unsupported, but here to ease migration of courses from Lagunita)
-    - name: xblock-qualtrics-survey==1.3.0
-    - name: git+https://github.com/openedx/xblock-in-video-quiz.git@a703acd9ef82434fc7ca2bc230496f45a584bb9a#egg=invideoquiz-xblock
-      extra_args: -e
-    - name: git+https://github.com/openedx/xblock-free-text-response@83a389e0a4b0a464e5d1e4a4a201678aed5eee9a#egg=xblock-free-text-response
-      extra_args: -e
-    - name: xblock-submit-and-compare==1.2.0
-    - name: xblock-sql-grader==0.4.0
-    - name: openedx-xblock-image-modal==3.1.0
-    # XBlocks associated with the LabXchange project
-    - name: git+https://github.com/open-craft/labxchange-xblocks.git@a0a8a8dad13199014d4bb29cee416289880bde0b#egg=labxchange-xblocks
-      extra_args: -e
-    # forum - currently pointing to ulmo but needs an upgrade when in verawood
-    - name: git+https://github.com/edx/forum.git@release-ulmo#egg=openedx-forum
-      extra_args: -e
-    # Caliper and xAPI event routing plugin
-    - name: edx-event-routing-backends==5.5.6
-    # Other xblocks
-    - name: openedx-scorm-xblock==19.0.3
-    # Release-Notes
-    - name: edx-release-notes==0.1.2
-
-    # This constraint was added to protect against auto-upgrading to a (future)
-    # major release with possible breaking changes.
-    - name: ddtrace<4.0.0
-
-    # Plugins
-    - name: edx-arch-experiments==7.7.1
+# Defaults for EDXAPP_PRIVATE_REQUIREMENTS are used for sandboxes in EC2.
+EDXAPP_PRIVATE_REQUIREMENTS: []
 
 # This is an addendum to EDXAPP_PRIVATE_REQUIREMENTS for us in installing
 # requirements only in the stage environment. (It should only be set in stage.)
