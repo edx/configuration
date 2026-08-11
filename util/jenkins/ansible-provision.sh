@@ -785,9 +785,7 @@ EOF
 
       configuration_secure_json=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text)
       app_git_ssh_key=$(echo "$configuration_secure_json" | jq -r '._local_git_identity // empty')
-      # Required by internal edx-platform-private Dockerfile (BuildKit GIT_AUTH_TOKEN) to fetch
-      # private repos such as edx-internal and edx-themes over HTTPS.
-      app_github_token=$(echo "$configuration_secure_json" | jq -r '.GITHUB_TOKEN // .github_access_token // .github_token // empty')
+      app_git_pat_token=$(echo "$configuration_secure_json" | jq -r '.LOCAL_GIT_PAT_TOKEN // empty')
 
       # specify variable names
       app_hostname="courses"
