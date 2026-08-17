@@ -150,7 +150,7 @@
   become_user: "{{ edxapp_user }}"
   environment: "{{ edxapp_environment }}"
   with_items:
-    - pip.txt
+  # - pip.txt
     - pip-tools.txt
   tags:
     - install
