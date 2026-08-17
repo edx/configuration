@@ -38,7 +38,8 @@
     - oraclejdk
     - elasticsearch
     - opensearch
-    - forum
+    - role: forum
+      when: FORUM_USE_CS_COMMENTS_SERVICE | default(false)
     - { role: "xqueue", update_users: True }
     - edx_ansible
     - analytics_api
@@ -82,6 +83,9 @@
     - role: mfe
       MFE_NAME: learner-dashboard
       when: LEARNER_DASHBOARD_MFE_ENABLED
+    - role: mfe
+      MFE_NAME: discussions
+      when: DISCUSSIONS_MFE_ENABLED | default(false)
     - { role: oauth_client_setup, when: edxapp_containerized is defined and not edxapp_containerized }
     - role: datadog
       when: COMMON_ENABLE_DATADOG
