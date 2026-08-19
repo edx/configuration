@@ -84,6 +84,9 @@
         login_user: "{{ item.login_user }}"
         login_password: "{{ item.login_password }}"
         append_privs: yes
+        plugin: "{{ item.plugin | default(omit) }}"
+        plugin_hash_string: "{{ item.plugin_hash_string | default(omit) }}"
+        plugin_auth_string: "{{ item.plugin_auth_string | default(omit) }}"
       when: item.mysql_plugin is not defined
       with_items: "{{ database_users }}"
       tags:
