@@ -521,6 +521,7 @@ EOF_AUTH
 fi
 
 if [[ $mongo_version == "5.0" ]]; then
+    mongo_playbook="mongo_5_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: True
 MONGO_6_0_ENABLED: False
@@ -528,6 +529,7 @@ MONGO_7_0_ENABLED: False
 MONGO_VERSION
 fi
 if [[ $mongo_version == "6.0" ]]; then
+    mongo_playbook="mongo_6_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: False
 MONGO_6_0_ENABLED: True
@@ -535,6 +537,7 @@ MONGO_7_0_ENABLED: False
 MONGO_VERSION
 fi
 if [[ $mongo_version == "7.0" ]]; then
+    mongo_playbook="mongo_7_0"
     cat << MONGO_VERSION >> $extra_vars_file
 MONGO_5_0_ENABLED: False
 MONGO_6_0_ENABLED: False
@@ -733,7 +736,7 @@ edxapp_containerized: true
 CAN_GENERATE_NEW_JWT_SIGNATURE: false
 EOF
       ansible -i "${deploy_host}," $deploy_host -m include_role -a "name=memcache" -u ubuntu -b
-      for playbook in redis $mongo_version; do
+      for playbook in redis $mongo_playbook; do
           run_ansible $playbook.yml -i "${deploy_host}," $extra_var_arg --user ubuntu
       done
       run_ansible edx_continuous_integration.yml -i "${deploy_host}," $extra_var_arg --user ubuntu --tags "edxlocal"
@@ -780,7 +783,9 @@ EOF
 
       set +x
 
-      app_git_ssh_key=$(aws secretsmanager get-secret-value --secret-id  $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+      configuration_secure_json=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text)
+      app_git_ssh_key=$(echo "$configuration_secure_json" | jq -r '._local_git_identity // empty')
+      app_git_pat_token=$(echo "$configuration_secure_json" | jq -r '.LOCAL_GIT_PAT_TOKEN // empty')
 
       # specify variable names
       app_hostname="courses"
@@ -788,6 +793,7 @@ EOF
       app_name="edxapp"
       app_repo="edx-platform"
       app_version=$edxapp_version
+      app_image_name="${app_repo}:lms"
       app_gunicorn_port=8000
       app_cfg=LMS_CFG
       app_admin_password=SANDBOX_ADMIN_PASSWORD
@@ -816,6 +822,7 @@ EOF
       app_name="edxapp"
       app_repo="edx-platform"
       app_version=$edxapp_version
+      app_image_name="${app_repo}:cms"
       app_gunicorn_port=8010
       app_cfg=CMS_CFG
 
@@ -958,7 +965,7 @@ fi
 if [[ $edx_exams == 'true' ]]; then
     set +x
     
-    app_git_ssh_key=$(aws secretsmanager get-secret-value --secret-id  $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
 
     app_hostname="edx-exams"
     app_service_name="edx_exams"
@@ -982,7 +989,7 @@ fi
 if [[ $subscriptions == 'true' ]]; then
     set +x
     
-    app_git_ssh_key=$(aws secretsmanager get-secret-value --secret-id  $configuration_secure_secret --query SecretString --output text | jq -r '._local_git_identity')
+    app_git_ssh_key=$(aws secretsmanager get-secret-value --region "${region}" --secret-id "${configuration_secure_secret}" --query SecretString --output text | jq -r '._local_git_identity')
     
     app_hostname="subscriptions"
     app_service_name="subscriptions"

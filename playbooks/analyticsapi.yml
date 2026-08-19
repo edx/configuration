@@ -6,6 +6,16 @@
     ENABLE_DATADOG: False
     ENABLE_NEWRELIC: False
     CLUSTER_NAME: 'analytics-api'
+    # 2026-07-20: [TEMP] Disable unattended upgrades in all environments as a stop-gap to
+    # fix an issue with the security role forcing an interactive prompt while invoking
+    # `unattended-upgrades`.  Unattended upgrades are already disabled in prod-edge which
+    # is how I know this solution works, so this just does the same in stage-edx and
+    # prod-edx as well.
+    #
+    # Analytics API is the **LAST SERVICE USING ANSIBLE** and it's running an
+    # **UNSUPPORTED UBUNTU 20.04**, so any near-term investment should be focused on
+    # migrating this to k8s, not fixing unattended upgrades.
+    SECURITY_UNATTENDED_UPGRADES: False
   roles:
     - role: aws
       when: COMMON_ENABLE_AWS_ROLE
