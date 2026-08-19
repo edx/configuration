@@ -87,18 +87,19 @@
         plugin: "{{ item.plugin | default(omit) }}"
         plugin_hash_string: "{{ item.plugin_hash_string | default(omit) }}"
         plugin_auth_string: "{{ item.plugin_auth_string | default(omit) }}"
-      when: item.mysql_plugin is not defined
+      when: (item.mysql_plugin | default('')) != 'AWSAuthenticationPlugin' and (item.plugin | default('')) != 'AWSAuthenticationPlugin'
       with_items: "{{ database_users }}"
       tags:
         - users
 
     # If plugin is AWSAuthenticationPlugin, then we can’t create mysql user using the mysql_user module
     # to create user for AWS RDS IAM authentication as it does not support plugin as parameter
+    # (mysql_plugin and plugin are both accepted here so either key routes to this path)
 
     - name: create mysql users for AWS RDS IAM authentication
       shell: |
          mysql -u"{{ item.login_user }}" -p"{{ item.login_password }}" -h"{{ item.login_host }}" -e "SET @sql := CASE WHEN (SELECT count(*) FROM mysql.user WHERE User='{{ item.name }}') = 0 THEN 'CREATE USER {{ item.name }} IDENTIFIED WITH AWSAuthenticationPlugin as \'RDS\'' ELSE 'Select 0' END;PREPARE stmt FROM @sql;EXECUTE stmt;DEALLOCATE PREPARE stmt"
-      when: item.mysql_plugin is defined and item.state == 'present' and item.mysql_plugin == 'AWSAuthenticationPlugin'
+      when: item.state == 'present' and ((item.mysql_plugin | default('')) == 'AWSAuthenticationPlugin' or (item.plugin | default('')) == 'AWSAuthenticationPlugin')
       with_items: "{{ database_users }}"
       tags:
         - users
@@ -106,7 +107,7 @@
     - name: assign privileges to AWS RDS IAM users
       shell: |
          mysql -u"{{ item.login_user }}" -p"{{ item.login_password }}" -h"{{ item.login_host }}" -e "GRANT {{ item.privileges }} to '{{ item.name }}'@'{{ item.host }}'"
-      when: item.mysql_plugin is defined and item.state == 'present' and item.mysql_plugin == 'AWSAuthenticationPlugin'
+      when: item.state == 'present' and ((item.mysql_plugin | default('')) == 'AWSAuthenticationPlugin' or (item.plugin | default('')) == 'AWSAuthenticationPlugin')
       with_items: "{{ database_users }}"
       tags:
         - users
