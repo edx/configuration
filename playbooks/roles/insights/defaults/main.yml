@@ -272,3 +272,4 @@ insights_release_specific_debian_pkgs:
     - openjdk-8-jdk
   focal:
     - openjdk-8-jdk
+  jammy: []
