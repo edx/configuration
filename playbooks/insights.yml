@@ -6,6 +6,7 @@
     ENABLE_DATADOG: False
     ENABLE_NEWRELIC: True
     CLUSTER_NAME: 'insights'
+    SECURITY_UPGRADE_ON_ANSIBLE: False
   roles:
     - role: aws
       when: COMMON_ENABLE_AWS_ROLE
