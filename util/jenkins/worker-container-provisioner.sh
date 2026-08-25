@@ -73,6 +73,13 @@ if docker image inspect edx-platform:latest >/dev/null 2>&1; then
 elif ! docker image inspect ${LC_WORKER_IMAGE_NAME}:latest >/dev/null 2>&1; then
   PUBLIC_DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/edx-platform.Dockerfile"
   curl -fsSL "${PUBLIC_DOCKERFILE_URL}" -o /tmp/edx-platform.Dockerfile
+  # Strip k8s tracking-log path from this copy only; keep later syslog_format.
+  sed -i '/RUN mkdir -p \/edx\/var\/log\/tracking && chown -R app:app \/edx\/var\/log/d' /tmp/edx-platform.Dockerfile
+  sed -i '/_tracking_log_dir = os.path.join(/,/^[[:space:]]*}[[:space:]]*$/d' /tmp/edx-platform.Dockerfile
+  if grep -q '_tracking_log_dir' /tmp/edx-platform.Dockerfile; then
+    echo "ERROR: k8s tracking-log override still present in edx-platform.Dockerfile after strip" >&2
+    exit 1
+  fi
   time DOCKER_BUILDKIT=1 docker build \
     -f /tmp/edx-platform.Dockerfile \
     --target base \
