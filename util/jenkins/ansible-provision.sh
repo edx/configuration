@@ -283,6 +283,14 @@ if [[ -z $learning_version ]]; then
   LEARNING_MFE_VERSION="master"
 fi
 
+if [[ -z $discussions ]]; then
+  discussions="${forum:-false}"
+fi
+
+if [[ -z $discussions_version ]]; then
+  DISCUSSIONS_MFE_VERSION="master"
+fi
+
 if [[ -z $ora_grading ]]; then
   ora_grading="false"
 fi
@@ -465,6 +473,12 @@ LEARNING_MFE_VERSION: $learning_version
 LEARNING_MFE_ENABLED: $learning
 LEARNING_SANDBOX_BUILD: True
 
+DISCUSSIONS_NGINX_PORT: 80
+DISCUSSIONS_SSL_NGINX_PORT: 443
+DISCUSSIONS_MFE_VERSION: $discussions_version
+DISCUSSIONS_MFE_ENABLED: $discussions
+DISCUSSIONS_SANDBOX_BUILD: True
+
 ORA_GRADING_NGINX_PORT: 80
 ORA_GRADING_SSL_NGINX_PORT: 443
 ORA_GRADING_MFE_VERSION: $ora_grading_version
@@ -589,6 +603,7 @@ EDXAPP_ECOMMERCE_PUBLIC_URL_ROOT: "https://ecommerce-${deploy_host}"
 EDXAPP_ECOMMERCE_API_URL: "https://ecommerce-${deploy_host}/api/v2"
 EDXAPP_DISCOVERY_API_URL: "https://discovery-${deploy_host}/api/v1"
 EDXAPP_COURSE_CATALOG_API_URL: "{{ EDXAPP_DISCOVERY_API_URL }}"
+EDXAPP_DISCUSSIONS_MICROFRONTEND_URL: "https://discussions-${deploy_host}"
 
 ANALYTICS_API_LMS_BASE_URL: "https://{{ EDXAPP_LMS_BASE }}/"
 
@@ -720,7 +735,7 @@ EOF
 fi
 
 declare -A deploy
-plays="prospectus edxapp forum ecommerce credentials discovery enterprise_catalog analyticsapi xqueue certs demo testcourses registrar program_console learner_portal"
+plays="prospectus edxapp ecommerce credentials discovery enterprise_catalog analyticsapi xqueue certs demo testcourses registrar program_console learner_portal"
 
 for play in $plays; do
     deploy[$play]=${!play}

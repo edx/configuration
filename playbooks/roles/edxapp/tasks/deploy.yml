@@ -622,3 +622,18 @@
   tags:
     - manage
     - manage:db
+  
+- name: create forum v2 waffle flags
+  shell: >
+    . /edx/app/edxapp/edxapp_env &&
+    /edx/app/edxapp/venvs/edxapp/bin/python ./manage.py lms --settings=production
+    waffle_flag --create --everyone {{ item }}
+  args:
+    chdir: /edx/app/edxapp/edx-platform
+  loop:
+    - discussions.enable_forum_v2
+    - forum_v2.enable_mysql_backend
+    - discussions.enable_discussions_mfe
+    - discussions.override_discussion_legacy_settings
+    - discussions.pages_and_resources_mfe
+    - discussions.enable_new_structure_discussions
