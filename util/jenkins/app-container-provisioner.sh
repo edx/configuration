@@ -66,10 +66,10 @@ if ! $(docker image inspect ${app_image_name} >/dev/null 2>&1 && echo true || ec
         PUBLIC_DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/edx-platform.Dockerfile"
         echo "Downloading public edx-platform Dockerfile from GitHub..."
         curl -fsSL "\$PUBLIC_DOCKERFILE_URL" -o /tmp/edx-platform.Dockerfile
-        # Undo GSRE-3740 (k8s EFS tracking path) on this copy only; keep later syslog_format.
-        # https://github.com/edx/public-dockerfiles/commit/5a51c0034be4f4c3bdbf0fb45945559b2b2555b5
+        # Strip k8s tracking-log path from this copy only; keep later syslog_format.
         sed -i '/RUN mkdir -p \/edx\/var\/log\/tracking && chown -R app:app \/edx\/var\/log/d' /tmp/edx-platform.Dockerfile
-        sed -i '/_tracking_log_dir = os.path.join(/,/^}$/d' /tmp/edx-platform.Dockerfile
+        sed -i '/_tracking_log_dir = os.path.join(/,/^[[:space:]]*}[[:space:]]*$/d' /tmp/edx-platform.Dockerfile
+        grep -q "_tracking_log_dir = os.path.join" /tmp/edx-platform.Dockerfile && { echo "Failed to strip k8s tracking log dir logic from edx-platform.Dockerfile"; exit 1; }
 
         set +x
         export GITHUB_TOKEN='${app_git_pat_token}'
