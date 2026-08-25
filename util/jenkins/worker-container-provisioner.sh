@@ -73,6 +73,8 @@ if docker image inspect edx-platform:latest >/dev/null 2>&1; then
 elif ! docker image inspect ${LC_WORKER_IMAGE_NAME}:latest >/dev/null 2>&1; then
   PUBLIC_DOCKERFILE_URL="https://raw.githubusercontent.com/edx/public-dockerfiles/main/dockerfiles/edx-platform.Dockerfile"
   curl -fsSL "${PUBLIC_DOCKERFILE_URL}" -o /tmp/edx-platform.Dockerfile
+  sed -i '/RUN mkdir -p \/edx\/var\/log\/tracking && chown -R app:app \/edx\/var\/log/d' /tmp/edx-platform.Dockerfile
+  sed -i '/_tracking_log_dir = os.path.join(/,/^}$/d' /tmp/edx-platform.Dockerfile
   time DOCKER_BUILDKIT=1 docker build \
     -f /tmp/edx-platform.Dockerfile \
     --target base \
