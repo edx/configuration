@@ -34,8 +34,6 @@ analytics_api_code_dir: "{{ analytics_api_home }}/{{ analytics_api_service_name 
 analytics_api_wsgi_name: "analyticsdataserver"
 analytics_api_hostname: "analytics-api"
 
-analytics_api_newrelic_appname: 'analytics-api'
-
 #
 # OS packages
 #
@@ -181,8 +179,6 @@ analytics_api_service_config_overrides:
 # Default dummy user, override this!!
 ANALYTICS_API_USERS:
   "dummy-api-user": "changeme"
-
-ANALYTICS_API_ENABLE_NEWRELIC_DISTRIBUTED_TRACING: false
 
 # Remote config
 ANALYTICS_API_HERMES_ENABLED: "{{ COMMON_HERMES_ENABLED }}"
