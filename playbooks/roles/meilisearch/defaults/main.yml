@@ -1,0 +1,30 @@
+---
+meilisearch_app_dir: "{{ COMMON_APP_DIR }}/meilisearch"
+meilisearch_data_dir: "{{ COMMON_DATA_DIR }}/meilisearch"
+meilisearch_log_dir: "{{ COMMON_LOG_DIR }}/meilisearch"
+meilisearch_cfg_dir: "{{ COMMON_CFG_DIR }}/meilisearch"
+
+# Meilisearch doesn’t come from apt repo (like Elasticsearch),
+# we fetch the binary directly from GitHub releases.
+meilisearch_download_url: "https://github.com/meilisearch/meilisearch/releases/download/{{ meilisearch_version }}/meilisearch-linux-amd64"
+
+meilisearch_user: "meilisearch"
+meilisearch_group: "meilisearch"
+
+# Defaults for a single server installation.
+MEILISEARCH_CLUSTER_MEMBERS: []   # Not typically needed, but kept for parity
+MEILISEARCH_ENV: "development"
+# Service management
+MEILISEARCH_START_TIMEOUT: "300"
+# Version of Meilisearch to install
+meilisearch_version: "v1.11.0"
+
+# Network and security settings
+meilisearch_host: "0.0.0.0"
+meilisearch_port: 7700
+MEILISEARCH_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
+MEILISEARCH_PUBLIC_URL: "http://{{ meilisearch_host }}:{{ meilisearch_port }}"
+
+# These are placeholders – actual secrets come from sandbox repo
+MEILISEARCH_MASTER_KEY: "{{ lookup('env', 'MEILISEARCH_MASTER_KEY') | default('changeme', true) }}"
+MEILISEARCH_API_KEY: "{{ lookup('env', 'MEILISEARCH_API_KEY') | default('changeme', true) }}"
