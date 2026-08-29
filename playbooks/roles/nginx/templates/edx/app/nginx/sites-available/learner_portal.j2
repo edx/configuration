@@ -24,7 +24,7 @@ server {
   server_name ~^((stage|prod)-)?learner-portal.*;
   ssl_certificate /etc/ssl/certs/wildcard.sandbox.edx.org.pem;
   ssl_certificate_key /etc/ssl/private/wildcard.sandbox.edx.org.key;
-  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+  add_header Strict-Transport-Security "max-age={{ NGINX_HSTS_MAX_AGE }}; includeSubDomains; preload";
   location / {
     root /edx/app/learner_portal/learner_portal/dist;
     index index.html;
