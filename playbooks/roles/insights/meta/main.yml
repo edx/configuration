@@ -13,6 +13,9 @@
 dependencies:
   - common
   - role: supervisor
+    supervisor_pip_pkgs:
+      - boto=={{COMMON_BOTO_VERSION}}
+      - backoff==1.11.1
     supervisor_spec:
       - service: "{{ insights_service_name }}"
         migration_check_services: "{{ insights_service_name }}"
