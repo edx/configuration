@@ -31,12 +31,15 @@
     - install:system-requirements
 
 # Install newer versions of python for testing, but do not set them
-# as the default version
+# as the default version. Versions listed in
+# jenkins_common_vendored_python_versions are not available from the PPA
+# and are installed from vendored debs further below.
 - name: Install specific versions of python
   apt:
     name: '{{ item }}'
     state: present
     update_cache: yes
+  when: item not in (jenkins_common_vendored_python_versions | map(attribute='version') | list)
   with_items: '{{ jenkins_common_python_versions }}'
   tags:
     - jenkins
@@ -49,6 +52,7 @@
     name: '{{ item }}-dev'
     state: present
     update_cache: yes
+  when: item not in (jenkins_common_vendored_python_versions | map(attribute='version') | list)
   with_items: '{{ jenkins_common_python_versions }}'
   tags:
     - jenkins
@@ -68,6 +72,63 @@
     - jenkins
     - install
     - install:system-requirements
+
+# Python versions that deadsnakes no longer publishes for this Ubuntu release
+# are installed from the debs listed in jenkins_common_vendored_python_versions.
+# Only the versions that are also in jenkins_common_python_versions are installed.
+- name: Create directories for vendored python packages
+  file:
+    path: '/tmp/vendored_{{ item.version }}'
+    state: directory
+  when: item.version in jenkins_common_python_versions
+  with_items: '{{ jenkins_common_vendored_python_versions }}'
+  tags:
+    - jenkins
+    - install
+    - install:system-requirements
+    - install:vendored-python
+
+- name: Download vendored python packages
+  get_url:
+    url: '{{ item.0.url_base }}/{{ item.1.file | urlencode }}'
+    dest: '/tmp/vendored_{{ item.0.version }}/{{ item.1.file }}'
+    checksum: 'sha256:{{ item.1.sha256 }}'
+    timeout: 60
+  when: item.0.version in jenkins_common_python_versions
+  with_subelements:
+    - '{{ jenkins_common_vendored_python_versions }}'
+    - pkgs
+  tags:
+    - jenkins
+    - install
+    - install:system-requirements
+    - install:vendored-python
+
+- name: Install dependencies for vendored python packages
+  apt:
+    name: '{{ item.dependencies }}'
+    state: present
+    update_cache: yes
+  when: item.version in jenkins_common_python_versions
+  with_items: '{{ jenkins_common_vendored_python_versions }}'
+  tags:
+    - jenkins
+    - install
+    - install:system-requirements
+    - install:vendored-python
+
+- name: Install vendored python packages
+  apt:
+    deb: '/tmp/vendored_{{ item.0.version }}/{{ item.1.file }}'
+  when: item.0.version in jenkins_common_python_versions
+  with_subelements:
+    - '{{ jenkins_common_vendored_python_versions }}'
+    - pkgs
+  tags:
+    - jenkins
+    - install
+    - install:system-requirements
+    - install:vendored-python
 
 - name: Create jenkins group with specified gid
   group:
