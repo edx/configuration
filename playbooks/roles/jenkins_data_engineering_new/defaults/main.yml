@@ -40,40 +40,8 @@ de_jenkins_python_versions:
   - python3.7
   - python3.8
   - python3.9
-
-# Python 3.12 is not in the list above: deadsnakes dropped Ubuntu 20.04 (focal),
-# so apt can no longer find it. It is installed from debs built with the
-# deadsnakes py3.12 repo and runbook and stored in https://github.com/edx/vendored.
-# Pinned to a commit for repeatability.
-de_jenkins_vendored_py312_url_base: "https://raw.githubusercontent.com/edx/vendored/35b1ada7111d308f6b2c9413fc4e64f2a129f708/deadsnakes-py3.12-focal"
-# Build string that's present in the deb file names.
-de_jenkins_vendored_py312_build: "3.12.11-16-gade85bc5f4-1+focal1"
-# These must be kept topologically sorted, dependent packages last, as they
-# are installed one at a time. python3.12-venv provides `python3.12 -m venv`
-# and python3.12-dev provides the headers to build C extensions.
-de_jenkins_vendored_py312_pkgs:
-  - file: "libpython3.12-stdlib_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "584dc48c58ae0a54139140a9be837b8a066f69ed7753ab019a22992f60e5df09"
-  - file: "python3.12_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "1d43b489989c21247dc368ccbe58a2224e4654588e494a7ce297ac1b7177f2f9"
-  - file: "python3.12-venv_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "2c72883c37489e337d11e908e5f85c4b6540c096b71334607c2fba88f018507d"
-  - file: "libpython3.12_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "096f59b23162904c4460e297610277be1fae3479de14b21467c36b418aa00282"
-  - file: "libpython3.12-dev_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "ea3b926bc673e94de5a0137e791d82e1aacda30cd83efbfec5bfef542e823875"
-  - file: "python3.12-dev_{{ de_jenkins_vendored_py312_build }}_amd64.deb"
-    sha256: "cb03e5f9e73282807f59c31fc3b88873f6347123877f080df261cff35fb64806"
-# Packages that are needed for installing the above, but that can be found in
-# the regular Ubuntu repositories.
-de_jenkins_py312_dependencies:
-  - libssl1.1
-  - libexpat1
-  - libexpat1-dev
-  - mime-support
-  - tzdata
-  - libreadline8
-  - libsqlite3-0
+  # Installed from vendored debs, see jenkins_common_vendored_python_versions.
+  - python3.12
 
 # Jenkins aliases to installed Python binaries
 de_jenkins_python_installations:

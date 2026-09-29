@@ -30,6 +30,41 @@ jenkins_common_snap_pkgs: []
 
 jenkins_common_python_versions: []
 
+# Python versions that the deadsnakes PPA no longer publishes for Ubuntu 20.04
+# (focal). Any entry of jenkins_common_python_versions listed here is installed
+# from debs stored in https://github.com/edx/vendored (built with the deadsnakes
+# repo and runbook) instead of from the PPA. Versions not listed here keep using
+# the PPA. url_base is pinned to a commit for repeatability; pkgs must be kept
+# topologically sorted, dependent packages last, as they are installed one at a
+# time; dependencies are the packages the debs need from the regular Ubuntu
+# repositories.
+jenkins_common_vendored_python_versions:
+  - version: python3.12
+    url_base: 'https://raw.githubusercontent.com/edx/vendored/35b1ada7111d308f6b2c9413fc4e64f2a129f708/deadsnakes-py3.12-focal'
+    dependencies:
+      - libssl1.1
+      - libexpat1
+      - libexpat1-dev
+      - mime-support
+      - tzdata
+      - libreadline8
+      - libsqlite3-0
+    # python3.12-venv provides `python3.12 -m venv`, python3.12-dev the headers
+    # to build C extensions.
+    pkgs:
+      - file: 'libpython3.12-stdlib_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: '584dc48c58ae0a54139140a9be837b8a066f69ed7753ab019a22992f60e5df09'
+      - file: 'python3.12_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: '1d43b489989c21247dc368ccbe58a2224e4654588e494a7ce297ac1b7177f2f9'
+      - file: 'python3.12-venv_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: '2c72883c37489e337d11e908e5f85c4b6540c096b71334607c2fba88f018507d'
+      - file: 'libpython3.12_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: '096f59b23162904c4460e297610277be1fae3479de14b21467c36b418aa00282'
+      - file: 'libpython3.12-dev_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: 'ea3b926bc673e94de5a0137e791d82e1aacda30cd83efbfec5bfef542e823875'
+      - file: 'python3.12-dev_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb'
+        sha256: 'cb03e5f9e73282807f59c31fc3b88873f6347123877f080df261cff35fb64806'
+
 jenkins_common_configuration_git_url: https://github.com/edx/jenkins-configuration.git
 jenkins_common_jenkins_configuration_branch: master
 jenkins_common_configuration_src_path: src/main/groovy

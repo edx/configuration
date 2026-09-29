@@ -16,43 +16,6 @@
   tags:
   - jenkins
 
-# Python 3.12 comes from vendored debs, see de_jenkins_vendored_py312_url_base.
-- name: Create directory for vendored Python 3.12 packages
-  file:
-    path: "/tmp/vendored_python_{{ de_jenkins_vendored_py312_build }}"
-    state: directory
-  tags:
-    - jenkins
-    - jenkins-python312
-
-- name: Download vendored Python 3.12 packages
-  get_url:
-    url: "{{ de_jenkins_vendored_py312_url_base }}/{{ item.file | urlencode }}"
-    dest: "/tmp/vendored_python_{{ de_jenkins_vendored_py312_build }}/{{ item.file }}"
-    checksum: "sha256:{{ item.sha256 }}"
-    timeout: 60
-  with_items: "{{ de_jenkins_vendored_py312_pkgs }}"
-  tags:
-    - jenkins
-    - jenkins-python312
-
-- name: Install dependencies for vendored Python 3.12
-  apt:
-    pkg: "{{ de_jenkins_py312_dependencies }}"
-    state: present
-    update_cache: yes
-  tags:
-    - jenkins
-    - jenkins-python312
-
-- name: Install vendored Python 3.12 packages
-  apt:
-    deb: "/tmp/vendored_python_{{ de_jenkins_vendored_py312_build }}/{{ item.file }}"
-  with_items: "{{ de_jenkins_vendored_py312_pkgs }}"
-  tags:
-    - jenkins
-    - jenkins-python312
-
 # Download and install the Hashicorp Vault CLI:
 - name: download vault CLI zip archive
   get_url:
