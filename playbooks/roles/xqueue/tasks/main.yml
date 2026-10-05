@@ -28,6 +28,27 @@
     - install
     - install:system-requirements
 
+# The "creates" guard below would keep a venv built with an older Python
+# (e.g. 3.11) on hosts that were already provisioned, so remove it first.
+- name: check python version of existing xqueue venv
+  command: "{{ xqueue_venv_dir }}/bin/python -c 'import sys; print(\"%d.%d\" % sys.version_info[:2])'"
+  register: xqueue_venv_python_version
+  changed_when: false
+  failed_when: false
+  when: xqueue_use_python312
+  tags:
+    - install
+    - install:system-requirements
+
+- name: remove xqueue venv built with a different python version
+  file:
+    path: "{{ xqueue_venv_dir }}"
+    state: absent
+  when: xqueue_use_python312 and xqueue_venv_python_version.stdout | default('') != '3.12'
+  tags:
+    - install
+    - install:system-requirements
+
 - name: build venv with python3.12
   command: "python3.12 -m venv {{ xqueue_venv_dir }}"
   args:
