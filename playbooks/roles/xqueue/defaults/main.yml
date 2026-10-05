@@ -202,10 +202,12 @@ xqueue_release_specific_debian_pkgs:
     - python-mysqldb
   focal:
     - python3-mysqldb
+  jammy:
+    - python3-mysqldb
 
 # flag to run xqueue on python3
 xqueue_use_python3: false
-# flag to run xqueue on python3.11
-xqueue_use_python311: true
+# flag to run xqueue on python3.12
+xqueue_use_python312: true
 # flag for docker builds
 xqueue_image_building: false
