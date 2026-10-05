@@ -12,24 +12,7 @@
   when: xqueue_use_python312
   with_items:
     - python3.12-dev
-  tags:
-    - install
-    - install:system-requirements
-
-# following task is only needed for docker builds 
-- name: install pip for python3.12 for docker image
-  shell: |
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
-  when: xqueue_use_python312 and xqueue_image_building
-  tags:
-    - install
-    - install:system-requirements
-
-# following task is only needed for docker builds
-- name: install virtualenv for docker image
-  shell: |
-    python3.12 -m pip install virtualenv
-  when: xqueue_use_python312 and xqueue_image_building
+    - python3.12-venv
   tags:
     - install
     - install:system-requirements
@@ -45,8 +28,8 @@
     - install
     - install:system-requirements
 
-- name: build virtualenv with python3.12
-  command: "virtualenv --python=python3.12 {{ xqueue_venv_dir }}"
+- name: build venv with python3.12
+  command: "python3.12 -m venv {{ xqueue_venv_dir }}"
   args:
     creates: "{{ xqueue_venv_dir }}/bin/pip"
   become_user: "{{ xqueue_user }}"
@@ -69,7 +52,7 @@
   pip:
     requirements: "{{ xqueue_requirements_file }}"
     virtualenv: "{{ xqueue_venv_dir }}"
-    virtualenv_python: 'python3.12'
+    virtualenv_command: 'python3.12 -m venv'
     state: present
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
   become_user: "{{ xqueue_user }}"
