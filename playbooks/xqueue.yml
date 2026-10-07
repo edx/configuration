@@ -1,6 +1,8 @@
 - name: Deploy xqueue
   hosts: all
   become: True
+  vars:
+    SECURITY_UPGRADE_ON_ANSIBLE: False
   pre_tasks:
     # Recover from an interrupted dpkg run or broken dependencies so that
     # unattended-upgrade in the security role doesn't fail on a bad apt state.
@@ -24,8 +26,7 @@
     - xqueue
     - role: datadog
       when: COMMON_ENABLE_DATADOG
-    - role: datadog-uninstall
-      when: not COMMON_ENABLE_DATADOG
-    - role: hermes
-      HERMES_TARGET_SERVICE: 'xqueue'
-      when: XQUEUE_HERMES_ENABLED
+    - role: splunkforwarder
+      when: COMMON_ENABLE_SPLUNKFORWARDER
+    - role: newrelic
+      when: COMMON_ENABLE_NEWRELIC
