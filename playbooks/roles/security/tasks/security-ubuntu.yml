@@ -86,4 +86,5 @@
   register: ubuntu_security
   retries: 10
   delay: 30
-  until: ubuntu_security is succeeded
+  # A conffile prompt won't clear on retry, so stop retrying and fail fast.
+  until: ubuntu_security is succeeded or 'conffile prompt' in (ubuntu_security.stdout | default(''))
