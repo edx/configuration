@@ -62,20 +62,6 @@
     state: absent
   when: SECURITY_UPDATE_ALL_PACKAGES or not SECURITY_UNATTENDED_UPGRADES
 
-# On a freshly launched instance apt-daily/apt-daily-upgrade (enabled via
-# SECURITY_UNATTENDED_UPGRADES) may be running unattended-upgrade in the
-# background. Wait for it to release the dpkg lock and finish any interrupted
-# dpkg work, otherwise the run below fails with a non-zero return code.
-- name: "Wait for background apt/dpkg to release the dpkg lock"
-  shell: |
-    set -e
-    timeout 1800 bash -c 'while fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 5; done'
-    dpkg --configure -a
-  args:
-    executable: /bin/bash
-  changed_when: false
-  when: SECURITY_UPGRADE_ON_ANSIBLE
-
 # We dry-run because unattended-upgrade is quiet, and only had -d (debug) not -v (verbose)
 - name: "Take security updates during ansible runs"
   command: "{{ item }}"
@@ -85,6 +71,5 @@
     - unattended-upgrade
   register: ubuntu_security
   retries: 10
-  delay: 30
   # A conffile prompt won't clear on retry, so stop retrying and fail fast.
   until: ubuntu_security is succeeded or 'conffile prompt' in (ubuntu_security.stdout | default(''))

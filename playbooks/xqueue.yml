@@ -1,18 +1,6 @@
 - name: Deploy xqueue
   hosts: all
   become: True
-  pre_tasks:
-    # Recover from an interrupted dpkg run or broken dependencies so that
-    # unattended-upgrade in the security role doesn't fail on a bad apt state.
-    - name: Ensure apt cache and broken packages are repaired
-      shell: |
-        dpkg --configure -a
-        apt-get -f install -y
-        apt-get update
-      environment:
-        DEBIAN_FRONTEND: noninteractive
-      changed_when: false
-      failed_when: false
   roles:
     - role: aws
       when: COMMON_ENABLE_AWS_ROLE
