@@ -3,3 +3,12 @@ Unattended-Upgrade::Package-Blacklist{
 	  {{ blacklisted_item }};
 	{% endfor %}
 }
+
+// Without a --force-conf* option unattended-upgrade refuses to upgrade any
+// package whose conffile was modified locally ("has conffile prompt and needs
+// to be upgraded manually"). Keep the local conffile and take the package
+// maintainer's default where there is no local change.
+Dpkg::Options {
+	"--force-confdef";
+	"--force-confold";
+};
