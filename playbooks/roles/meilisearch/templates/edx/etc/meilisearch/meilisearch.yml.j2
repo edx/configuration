@@ -1,0 +1,60 @@
+# {{ ansible_managed }}
+
+# ======================== Meilisearch Configuration =========================
+#
+# NOTE: Meilisearch comes with safe defaults for most settings.
+#       Only override what you need for your deployment.
+#       See official docs:
+#       https://www.meilisearch.com/docs/learn/configuration/instance_options
+#
+# This template generates a .env file that Meilisearch will load at startup.
+# ----------------------------------------------------------------------------
+
+# ---------------------------------- Paths -----------------------------------
+# Path to store Meilisearch data (indexes, snapshots, dumps)
+MEILI_DB_PATH={{ meilisearch_data_dir }}
+
+# Path to store Meilisearch logs (stdout/stderr are default if unset)
+MEILI_LOG_PATH={{ meilisearch_log_dir }}
+
+# ---------------------------------- Network ---------------------------------
+# The IP address Meilisearch binds to (0.0.0.0 for all interfaces)
+MEILI_HTTP_ADDR={{ meilisearch_host | default("0.0.0.0") }}
+
+# The port Meilisearch listens on
+MEILI_HTTP_PORT={{ meilisearch_port | default("7700") }}
+
+# ---------------------------------- Master Key -------------------------------
+# The master key is used to generate API keys. Comment out to disable auth.
+# !! Make sure to secure this in production !!
+MEILISEARCH_MASTER_KEY={{ MEILISEARCH_MASTER_KEY }}
+
+# ---------------------------------- Snapshots & Dumps ------------------------
+# Directory to store snapshots
+MEILI_SNAPSHOT_DIR={{ meilisearch_snapshot_dir | default(meilisearch_data_dir + "/snapshots") }}
+
+# Directory to store dumps
+MEILI_DUMP_DIR={{ meilisearch_dump_dir | default(meilisearch_data_dir + "/dumps") }}
+
+# Enable scheduled snapshots (true/false)
+MEILI_SCHEDULE_SNAPSHOT={{ meilisearch_schedule_snapshot | default("false") }}
+
+# ---------------------------------- Clustering -------------------------------
+# Meilisearch does not support clustering (like Elasticsearch).
+# Scaling is typically handled with sharding at the app level or proxies.
+# This section is informational only.
+
+# ---------------------------------- Experimental -----------------------------
+# Maximum index size (bytes) before compaction
+MEILI_MAX_INDEX_SIZE={{ meilisearch_max_index_size | default("10000000000") }}  # 10GB default
+
+# Number of threads used by Meilisearch
+MEILI_MAX_THREADS={{ meilisearch_max_threads | default(ansible_processor_vcpus | default("4")) }}
+
+# ---------------------------------- Security --------------------------------
+# Whether to disable analytics sent to Meilisearch (default: false)
+MEILI_NO_ANALYTICS={{ meilisearch_no_analytics | default("true") }}
+
+# ---------------------------------- Various ---------------------------------
+# Require explicit UID for created indexes (default: false)
+MEILISEARCH_ENV={{ MEILISEARCH_ENV }}
