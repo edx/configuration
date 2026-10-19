@@ -90,7 +90,11 @@ xqwatcher_code_dir: "{{ xqwatcher_app_dir }}/src"
 
 xqwatcher_repo_name: xqueue-watcher.git
 
-xqwatcher_python_version: "python3.8"
+xqwatcher_python_version: "python3.12"
+
+# flag to install python3.12 via the deadsnakes PPA (needed on Jammy, which
+# does not ship python3.12 by default)
+xqwatcher_use_python312: true
 
 #TODO: change this to /edx/etc after pulling xqwatcher.json out
 xqwatcher_conf_dir: "{{ xqwatcher_app_dir }}"

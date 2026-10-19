@@ -112,6 +112,25 @@
     - install
     - install:base
 
+- name: add deadsnakes repository for python3.12
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+    update_cache: yes
+  when: xqwatcher_use_python312
+  tags:
+    - install
+    - install:system-requirements
+
+- name: install python3.12
+  apt:
+    name: "{{ item }}"
+  when: xqwatcher_use_python312
+  with_items:
+    - python3.12-dev
+  tags:
+    - install
+    - install:system-requirements
+
 - include: code_jail.yml CODE_JAIL_COMPLAIN=false
 
 - include: deploy.yml
