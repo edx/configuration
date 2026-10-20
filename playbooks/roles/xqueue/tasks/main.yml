@@ -6,6 +6,24 @@
       update_cache: yes
   when: xqueue_use_python312
 
+# deadsnakes no longer publishes for Ubuntu 20.04, so on focal install python3.12
+# from edx/vendored first (as edxapp does for 3.11, BOMS-239); the next task then
+# finds it already installed.
+- name: install vendored python3.12 on focal
+  apt:
+    deb: "https://raw.githubusercontent.com/edx/vendored/35b1ada7111d308f6b2c9413fc4e64f2a129f708/deadsnakes-py3.12-focal/{{ item }}_3.12.11-16-gade85bc5f4-1+focal1_amd64.deb"
+  with_items:
+    - libpython3.12-stdlib
+    - python3.12
+    - python3.12-venv
+    - libpython3.12
+    - libpython3.12-dev
+    - python3.12-dev
+  when: xqueue_use_python312 and ansible_distribution_release == 'focal'
+  tags:
+    - install
+    - install:system-requirements
+
 - name: install python3.12
   apt:
     name: "{{ item }}"
