@@ -2,6 +2,20 @@
 # The watcher can watch one or many queues and dispatch submissions
 # to the appropriate grader which lives in a separate SCM repository.
 
+# Install the repo's pinned pip first, rather than keeping the pip that
+# virtualenv bundles.
+- name: Install pinned pip
+  pip:
+    requirements: "{{ xqwatcher_pip_requirements_file }}"
+    virtualenv: "{{ xqwatcher_app_dir }}/venvs/{{ xqwatcher_service_name }}"
+    virtualenv_python: "{{ xqwatcher_python_version }}"
+    state: present
+  become: true
+  become_user: "{{ xqwatcher_user }}"
+  tags:
+    - install
+    - install:app-requirements
+
 - name: Install application requirements
   pip:
     requirements: "{{ xqwatcher_requirements_file }}"

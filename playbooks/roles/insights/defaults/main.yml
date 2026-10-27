@@ -250,6 +250,7 @@ insights_manage: "{{ insights_code_dir }}/manage.py"
 
 insights_requirements_base: "{{ insights_code_dir }}/requirements"
 insights_requirements:
+  - pip.txt
   - production.txt
   - optional.txt
 
