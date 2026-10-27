@@ -27,6 +27,7 @@ dependencies:
     edx_django_service_name: '{{ analytics_api_service_name }}'
     edx_django_service_user: '{{ analytics_api_user }}'
     edx_django_service_home: '{{ COMMON_APP_DIR }}/{{ analytics_api_service_name }}'
+    edx_django_service_pip_install_args: '-r {{ COMMON_APP_DIR }}/{{ analytics_api_service_name }}/{{ analytics_api_service_name }}/requirements/pip.txt'
     edx_django_service_config_overrides: '{{ analytics_api_service_config_overrides }}'
     edx_django_service_nginx_port: '{{ ANALYTICS_API_NGINX_PORT }}'
     edx_django_service_nginx_read_timeout: 300

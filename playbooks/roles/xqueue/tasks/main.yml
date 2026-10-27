@@ -69,6 +69,21 @@
     - install
     - install:system-requirements
 
+# The venv gets whatever pip python3.12's ensurepip bundles, so install the
+# repo's pinned pip before the app requirements.
+- name: "Install pinned pip into the python3.12 venv"
+  pip:
+    requirements: "{{ xqueue_pip_requirements_file }}"
+    virtualenv: "{{ xqueue_venv_dir }}"
+    virtualenv_command: 'python3.12 -m venv'
+    state: present
+    extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
+  become_user: "{{ xqueue_user }}"
+  when: xqueue_use_python312
+  tags:
+    - install
+    - install:app-requirements
+
 - name: "Install python3.12 requirements"
   pip:
     requirements: "{{ xqueue_requirements_file }}"

@@ -176,6 +176,7 @@ xqueue_environment:
   XQUEUE_CFG: '{{ COMMON_CFG_DIR }}/xqueue.yml'
 
 xqueue_requirements_file:      "{{ xqueue_code_dir }}/requirements.txt"
+xqueue_pip_requirements_file:  "{{ xqueue_code_dir }}/requirements/pip.txt"
 xqueue_openstack_requirements_file: "{{ xqueue_code_dir }}/openstack-requirements.txt"
 
 # These packages are required for the xqueue server,

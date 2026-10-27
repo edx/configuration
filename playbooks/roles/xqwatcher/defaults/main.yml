@@ -100,6 +100,7 @@ xqwatcher_use_python312: true
 xqwatcher_conf_dir: "{{ xqwatcher_app_dir }}"
 
 xqwatcher_requirements_file: "{{ xqwatcher_code_dir }}/requirements/production.txt"
+xqwatcher_pip_requirements_file: "{{ xqwatcher_code_dir }}/requirements/pip.txt"
 xqwatcher_log_dir: "{{ COMMON_LOG_DIR }}/{{ xqwatcher_service_name }}"
 xqwatcher_module: "xqueue_watcher"
 
