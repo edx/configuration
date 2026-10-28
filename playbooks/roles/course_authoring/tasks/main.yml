@@ -3,3 +3,5 @@
     name: mfe
   vars:
     MFE_ENVIRONMENT_EXTRA: '{{ course_authoring_env_extra | default(MFE_DEPLOY_ENVIRONMENT_EXTRA) }}'
+    MFE_REPO: 'frontend-app-authoring'
+    MFE_VERSION: 'release-ulmo'
